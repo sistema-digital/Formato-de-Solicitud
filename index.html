@@ -1116,8 +1116,9 @@
         /* Vista temporal para medir la primera hoja antes de abrir el diálogo de impresión. */
         body.print-preparing .document-container {
             width: 215.9mm;
-            height: 250mm;
-            min-height: 250mm;
+            /* Carta (279.4mm) menos márgenes de impresión: 15mm + 18mm. */
+            height: 246mm;
+            min-height: 246mm;
             padding: 10mm 5mm;
             position: relative;
         }
@@ -1277,8 +1278,9 @@
                 border: none;
                 width: 215.9mm;
                 max-width: none;
-                height: 250mm;
-                min-height: 250mm;
+                /* Debe caber dentro de los 246.4mm útiles de la hoja Carta. */
+                height: 246mm;
+                min-height: 246mm;
                 padding: 10mm 5mm;
                 margin: 0 auto;
                 display: block;
@@ -3221,29 +3223,5 @@
         // ========== CIERRE DE DOCUMENTO ==========
         console.log('Sistema de Solicitudes de Compra cargado.');
     </script>
-
-    <!-- ========== INSTRUCCIONES SQL (ejecutar en Supabase) ========== -->
-    <!-- 
-    CREATE SEQUENCE IF NOT EXISTS solicitud_num_seq START 1;
-
-    ALTER TABLE historial_solicitudes 
-    ADD COLUMN IF NOT EXISTS numero_solicitud TEXT;
-
-    CREATE OR REPLACE FUNCTION asignar_numero_solicitud()
-    RETURNS TRIGGER AS $$
-    BEGIN
-        IF NEW.numero_solicitud IS NULL OR NEW.numero_solicitud = '' THEN
-            NEW.numero_solicitud := 'Solicitud_' || LPAD(nextval('solicitud_num_seq')::TEXT, 3, '0');
-        END IF;
-        RETURN NEW;
-    END;
-    $$ LANGUAGE plpgsql;
-
-    DROP TRIGGER IF EXISTS tr_asignar_numero_solicitud ON historial_solicitudes;
-    CREATE TRIGGER tr_asignar_numero_solicitud
-    BEFORE INSERT ON historial_solicitudes
-    FOR EACH ROW
-    EXECUTE FUNCTION asignar_numero_solicitud();
-    -->
 </body>
 </html>
