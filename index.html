@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema de Solicitudes de Compra</title>
+    <!-- FAVICON PARA ACCESO DIRECTO -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -2249,7 +2251,6 @@
             if (obsRow.style.display === 'none') {
                 obsRow.style.display = 'table-row';
                 btn.textContent = '- Ocultar observación';
-                // Enfocar automáticamente el campo de texto
                 const ta = obsRow.querySelector('.row-obs');
                 if (ta) {
                     ta.focus();
