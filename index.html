@@ -2487,7 +2487,8 @@
                             departamento: data['departamento'] || 'SIN DEPTO',
                             etapa: data['etapa'] || 'SIN ETAPA',
                             datos: data,
-                            fecha_guardado: new Date().toISOString()
+                            fecha_guardado: new Date().toISOString(),
+                            user_id: currentUserInfo.id  // ← CORRECCIÓN: se agrega user_id
                         })
                         .eq('id', solicitudEditandoId);
                     if (error) throw error;
