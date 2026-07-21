@@ -2249,6 +2249,12 @@
             if (obsRow.style.display === 'none') {
                 obsRow.style.display = 'table-row';
                 btn.textContent = '- Ocultar observación';
+                // Enfocar automáticamente el campo de texto
+                const ta = obsRow.querySelector('.row-obs');
+                if (ta) {
+                    ta.focus();
+                    autoResize(ta);
+                }
             } else {
                 obsRow.style.display = 'none';
                 btn.textContent = '+ Agregar observación';
@@ -2488,7 +2494,7 @@
                             etapa: data['etapa'] || 'SIN ETAPA',
                             datos: data,
                             fecha_guardado: new Date().toISOString(),
-                            user_id: currentUserInfo.id  // ← CORRECCIÓN: se agrega user_id
+                            user_id: currentUserInfo.id
                         })
                         .eq('id', solicitudEditandoId);
                     if (error) throw error;
