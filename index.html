@@ -11,7 +11,6 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ... (todo el CSS existente) ... */
         /* Solo añadimos un estilo para el botón de instalación */
         #install-btn {
             position: fixed;
@@ -32,7 +31,7 @@
         #install-btn:hover {
             background: var(--primary-hover);
         }
-        /* El resto del CSS no se modifica, solo se copia tal cual */
+        
         :root {
             --border-color: #000;
             --primary: #3b82f6;
@@ -193,18 +192,9 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-        .role-admin {
-            background: #ef4444;
-            color: white;
-        }
-        .role-supervisor {
-            background: #f59e0b;
-            color: white;
-        }
-        .role-usuario {
-            background: #3b82f6;
-            color: white;
-        }
+        .role-admin { background: #ef4444; color: white; }
+        .role-supervisor { background: #f59e0b; color: white; }
+        .role-usuario { background: #3b82f6; color: white; }
 
         .nav-menu {
             flex: 1;
@@ -220,16 +210,12 @@
             font-size: 14px;
             transition: all 0.2s;
         }
-        .nav-item:hover {
-            background-color: #374151;
-        }
+        .nav-item:hover { background-color: #374151; }
         .nav-item.active {
             background-color: #374151;
             border-left-color: var(--primary);
         }
-        .nav-item .icon {
-            font-size: 18px;
-        }
+        .nav-item .icon { font-size: 18px; }
         .nav-logout {
             padding: 15px 20px;
             background-color: #111827;
@@ -240,9 +226,7 @@
             border-top: 1px solid #374151;
             transition: background 0.2s;
         }
-        .nav-logout:hover {
-            background-color: #1f2937;
-        }
+        .nav-logout:hover { background-color: #1f2937; }
 
         .menu-toggle {
             display: none;
@@ -260,9 +244,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             transition: background 0.2s;
         }
-        .menu-toggle:hover {
-            background: #374151;
-        }
+        .menu-toggle:hover { background: #374151; }
 
         .main-content {
             flex: 1;
@@ -273,23 +255,15 @@
             transition: margin-left 0.3s ease;
             background-color: var(--bg-body);
         }
-        .main-content.expanded {
-            margin-left: 0;
-        }
-
+        .main-content.expanded { margin-left: 0; }
         .content-wrapper {
             max-width: 1500px;
             margin: 0 auto;
             padding: 24px 24px 40px 24px;
             width: 100%;
         }
-
-        .view-section {
-            display: none;
-        }
-        .view-section.active {
-            display: block;
-        }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
 
         /* ========== DASHBOARD ========== */
         .dashboard-header {
@@ -336,9 +310,7 @@
             background: #f3f4f6;
             flex-shrink: 0;
         }
-        .stat-info {
-            flex: 1;
-        }
+        .stat-info { flex: 1; }
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
@@ -347,34 +319,18 @@
             animation: countUp 0.8s ease-out;
         }
         @keyframes countUp {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
         .stat-label {
             font-size: 0.9rem;
             color: #6b7280;
             font-weight: 500;
         }
-        .stat-total {
-            border-left-color: #3b82f6;
-        }
-        .stat-total .stat-icon {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        .stat-user {
-            border-left-color: #10b981;
-        }
-        .stat-user .stat-icon {
-            background: #d1fae5;
-            color: #065f46;
-        }
+        .stat-total { border-left-color: #3b82f6; }
+        .stat-total .stat-icon { background: #dbeafe; color: #1e40af; }
+        .stat-user { border-left-color: #10b981; }
+        .stat-user .stat-icon { background: #d1fae5; color: #065f46; }
 
         #recent-activity {
             background: white;
@@ -382,9 +338,7 @@
             padding: 20px;
             box-shadow: var(--card-shadow);
         }
-        #recent-activity h3 {
-            margin-top: 0;
-        }
+        #recent-activity h3 { margin-top: 0; }
         #recent-list {
             max-height: 400px;
             overflow-y: auto;
@@ -412,16 +366,10 @@
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
         }
         @keyframes recent-solicitud-shadow {
-            0%, 100% {
-                box-shadow: var(--card-shadow);
-            }
-            50% {
-                box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.3), 0 12px 28px rgba(6, 95, 70, 0.32);
-            }
+            0%, 100% { box-shadow: var(--card-shadow); }
+            50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.3), 0 12px 28px rgba(6, 95, 70, 0.32); }
         }
-        .history-card.recently-created {
-            animation: recent-solicitud-shadow 1s ease-in-out 4;
-        }
+        .history-card.recently-created { animation: recent-solicitud-shadow 1s ease-in-out 4; }
         .history-card .solicitud-numero {
             background-color: #d1fae5;
             padding: 4px 14px;
@@ -458,9 +406,7 @@
             padding-left: 6px;
             border-left: 2px solid #e5e7eb;
         }
-        .history-card .material-item .desc {
-            font-weight: 500;
-        }
+        .history-card .material-item .desc { font-weight: 500; }
         .history-card .material-item .code {
             font-size: 11px;
             color: #6b7280;
@@ -490,30 +436,14 @@
             align-items: center;
             gap: 4px;
         }
-        .btn-open {
-            background: var(--primary);
-        }
-        .btn-open:hover {
-            background: var(--primary-hover);
-        }
-        .btn-edit {
-            background: var(--warning);
-        }
-        .btn-edit:hover {
-            background: var(--warning-hover);
-        }
-        .btn-delete {
-            background: var(--danger);
-        }
-        .btn-delete:hover {
-            background: var(--danger-hover);
-        }
-        .btn-print {
-            background: #6b7280;
-        }
-        .btn-print:hover {
-            background: #4b5563;
-        }
+        .btn-open { background: var(--primary); }
+        .btn-open:hover { background: var(--primary-hover); }
+        .btn-edit { background: var(--warning); }
+        .btn-edit:hover { background: var(--warning-hover); }
+        .btn-delete { background: var(--danger); }
+        .btn-delete:hover { background: var(--danger-hover); }
+        .btn-print { background: #6b7280; }
+        .btn-print:hover { background: #4b5563; }
 
         /* ========== TOOLBAR ========== */
         .controls-top {
@@ -550,28 +480,12 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .controls-top .btn:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
-        .controls-top .btn-save {
-            background: var(--success);
-        }
-        .controls-top .btn-save:hover {
-            background: var(--success-hover);
-        }
-        .controls-top .btn-print {
-            background: var(--primary);
-        }
-        .controls-top .btn-print:hover {
-            background: var(--primary-hover);
-        }
-        .controls-top .btn-clear {
-            background: var(--danger);
-        }
-        .controls-top .btn-clear:hover {
-            background: var(--danger-hover);
-        }
+        .controls-top .btn-save { background: var(--success); }
+        .controls-top .btn-save:hover { background: var(--success-hover); }
+        .controls-top .btn-print { background: var(--primary); }
+        .controls-top .btn-print:hover { background: var(--primary-hover); }
+        .controls-top .btn-clear { background: var(--danger); }
+        .controls-top .btn-clear:hover { background: var(--danger-hover); }
 
         /* ========== BOTONES SECUNDARIOS ========== */
         .btn-add-row {
@@ -590,15 +504,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             letter-spacing: 0.3px;
         }
-        .btn-add-row:hover {
-            background: var(--success-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .btn-add-row:active {
-            transform: translateY(0);
-        }
-
+        .btn-add-row:hover { background: var(--success-hover); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn-search-db {
             background: var(--primary);
             color: white;
@@ -613,13 +519,8 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            letter-spacing: 0.3px;
         }
-        .btn-search-db:hover {
-            background: var(--primary-hover);
-            transform: scale(1.03);
-        }
-
+        .btn-search-db:hover { background: var(--primary-hover); transform: scale(1.03); }
         .btn-delete-row {
             background: var(--danger);
             color: white;
@@ -635,11 +536,7 @@
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-        .btn-delete-row:hover {
-            background: var(--danger-hover);
-            transform: scale(1.05);
-        }
-
+        .btn-delete-row:hover { background: var(--danger-hover); transform: scale(1.05); }
         .btn-clear-firma {
             font-size: 11px;
             margin-top: 2px;
@@ -654,12 +551,8 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            letter-spacing: 0.3px;
         }
-        .btn-clear-firma:hover {
-            background: #4b5563;
-            transform: translateY(-1px);
-        }
+        .btn-clear-firma:hover { background: #4b5563; transform: translateY(-1px); }
 
         /* ========== FORMULARIO ========== */
         .document-wrapper {
@@ -679,100 +572,27 @@
             position: relative;
             margin: 0 auto;
         }
-        .campo-invalido {
-            border: 2px solid red !important;
-            background: #ffe6e6 !important;
-        }
-        .header {
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 8px;
-        }
-        .header-title {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .header-details,
-        .header-dates {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .header h2 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .header label {
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .header-user {
-            width: 50%;
-            padding-left: 5%;
-        }
-        .header-department {
-            width: 50%;
-            padding-right: 5%;
-            text-align: right;
-        }
-        .header-stage {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 5px;
-            margin-top: 8px;
-        }
-        .header-stage select {
-            width: auto !important;
-            min-width: 110px;
-        }
-        .header-dates {
-            padding: 0 5%;
-            margin-top: 10px;
-        }
-        .header-date {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .campo-invalido { border: 2px solid red !important; background: #ffe6e6 !important; }
+        .header { margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+        .header-title { text-align: center; margin-bottom: 10px; }
+        .header-details, .header-dates { display: flex; justify-content: space-between; align-items: flex-start; }
+        .header h2 { margin: 0; font-size: 16px; font-weight: bold; }
+        .header label { font-size: 11px; font-weight: bold; }
+        .header-user { width: 50%; padding-left: 5%; }
+        .header-department { width: 50%; padding-right: 5%; text-align: right; }
+        .header-stage { display: flex; justify-content: flex-end; align-items: center; gap: 5px; margin-top: 8px; }
+        .header-stage select { width: auto !important; min-width: 110px; }
+        .header-dates { padding: 0 5%; margin-top: 10px; }
+        .header-date { display: flex; align-items: center; gap: 5px; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-            margin-bottom: 5px;
-        }
-        th,
-        td {
-            border: 1px solid var(--border-color);
-            padding: 1px 3px;
-            vertical-align: middle;
-        }
-        th {
-            background-color: #f9f9f9;
-            text-align: center;
-            font-weight: bold;
-            font-size: 10px;
-        }
-        .col-renglon {
-            width: 5%;
-            text-align: center;
-            font-weight: bold;
-        }
-        .col-cantidad {
-            width: 10%;
-        }
-        .col-descripcion {
-            width: 70%;
-        }
-        .col-codigo {
-            width: 15%;
-        }
-        input[type="text"],
-        input[type="date"],
-        textarea,
-        select {
+        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 5px; }
+        th, td { border: 1px solid var(--border-color); padding: 1px 3px; vertical-align: middle; }
+        th { background-color: #f9f9f9; text-align: center; font-weight: bold; font-size: 10px; }
+        .col-renglon { width: 5%; text-align: center; font-weight: bold; }
+        .col-cantidad { width: 10%; }
+        .col-descripcion { width: 70%; position: relative; }
+        .col-codigo { width: 15%; }
+        input[type="text"], input[type="date"], textarea, select {
             width: 100%;
             border: none;
             outline: none;
@@ -782,16 +602,8 @@
             box-sizing: border-box;
             text-transform: uppercase;
         }
-        textarea {
-            resize: none;
-            overflow: hidden;
-            display: block;
-            min-height: 25px;
-        }
+        textarea { resize: none; overflow: hidden; display: block; min-height: 25px; }
 
-        .col-descripcion {
-            position: relative;
-        }
         .dropdown-results {
             position: absolute;
             top: 100%;
@@ -809,896 +621,228 @@
             display: none;
             text-align: left;
         }
-        .dropdown-results li {
-            padding: 6px;
-            font-size: 10px;
-            border-bottom: 1px solid #ccc;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-        .dropdown-results li:hover {
-            background: #e5e7eb;
-        }
+        .dropdown-results li { padding: 6px; font-size: 10px; border-bottom: 1px solid #ccc; cursor: pointer; text-transform: uppercase; }
+        .dropdown-results li:hover { background: #e5e7eb; }
 
-        .signatures-section {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 25px;
-            gap: 20px;
-        }
-        .signature-box {
-            flex: 1;
-            border: 1px solid var(--border-color);
-            padding: 4px 6px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 200px;
-        }
-        .signature-box canvas {
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 3px;
-            cursor: crosshair;
-            touch-action: none;
-            background: #fafafa;
-            width: 150px;
-            height: 40px;
-        }
-        .signature-name {
-            width: 100%;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 2px;
-            font-weight: bold;
-            font-size: 10px;
-            padding: 2px 0;
-        }
-        .signature-box label {
-            font-size: 9px;
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
+        .signatures-section { display: flex; justify-content: space-between; margin-top: 25px; gap: 20px; }
+        .signature-box { flex: 1; border: 1px solid var(--border-color); padding: 4px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; max-width: 200px; }
+        .signature-box canvas { border-bottom: 1px solid var(--border-color); margin-bottom: 3px; cursor: crosshair; touch-action: none; background: #fafafa; width: 150px; height: 40px; }
+        .signature-name { width: 100%; text-align: center; border-bottom: 1px solid var(--border-color); margin-bottom: 2px; font-weight: bold; font-size: 10px; padding: 2px 0; }
+        .signature-box label { font-size: 9px; font-weight: bold; margin-bottom: 2px; }
 
         /* ========== ADMIN ========== */
-        .admin-form {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-        }
-        .admin-form .form-group {
-            margin-bottom: 15px;
-        }
-        .admin-form label {
-            display: block;
-            font-weight: 600;
-            font-size: 13px;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        .admin-form input,
-        .admin-form select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-            background: #f9f9f9;
-            transition: border-color 0.2s;
-        }
-        .admin-form input:focus,
-        .admin-form select:focus {
-            border-color: var(--primary);
-            background: #fff;
-            outline: none;
-        }
-        .admin-form .btn-submit {
-            background: var(--primary);
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        .admin-form .btn-submit:hover {
-            background: var(--primary-hover);
-        }
-        .admin-msg {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 6px;
-            display: none;
-        }
-        .admin-msg.success {
-            display: block;
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .admin-msg.error {
-            display: block;
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .admin-toolbar {
-            max-width: 960px;
-            margin: 0 auto 16px;
-            display: flex;
-            justify-content: flex-end;
-        }
-        .admin-users-card {
-            max-width: 960px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            overflow-x: auto;
-        }
-        .admin-users-table {
-            width: 100%;
-            min-width: 620px;
-            font-size: 14px;
-            margin: 0;
-        }
-        .admin-users-table th,
-        .admin-users-table td {
-            padding: 10px;
-            text-align: left;
-        }
-        .admin-users-table th {
-            font-size: 12px;
-        }
-        .admin-users-table tr.admin-current-user td {
-            background: #dbeafe;
-            box-shadow: inset 4px 0 0 var(--primary);
-        }
-        .admin-current-user-badge {
-            display: inline-block;
-            margin-left: 8px;
-            padding: 2px 7px;
-            border-radius: 999px;
-            background: #2563eb;
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .admin-user-actions {
-            display: flex;
-            gap: 8px;
-        }
-        .admin-user-modal .modal-box {
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .admin-password-toggle {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            margin: 10px 0;
-            font-size: 13px;
-        }
-        .admin-password-toggle input {
-            width: auto;
-        }
-        .admin-form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 18px;
-        }
-        .admin-form-actions .btn-submit {
-            margin: 0;
-        }
+        .admin-form { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
+        .admin-form .form-group { margin-bottom: 15px; }
+        .admin-form label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 5px; color: #333; }
+        .admin-form input, .admin-form select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #f9f9f9; transition: border-color 0.2s; }
+        .admin-form input:focus, .admin-form select:focus { border-color: var(--primary); background: #fff; outline: none; }
+        .admin-form .btn-submit { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; width: 100%; font-weight: bold; transition: background 0.2s; }
+        .admin-form .btn-submit:hover { background: var(--primary-hover); }
+        .admin-msg { margin-top: 15px; padding: 10px; border-radius: 6px; display: none; }
+        .admin-msg.success { display: block; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .admin-msg.error { display: block; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .admin-toolbar { max-width: 960px; margin: 0 auto 16px; display: flex; justify-content: flex-end; }
+        .admin-users-card { max-width: 960px; margin: 0 auto; background: white; padding: 20px; border-radius: var(--card-radius); box-shadow: var(--card-shadow); overflow-x: auto; }
+        .admin-users-table { width: 100%; min-width: 620px; font-size: 14px; margin: 0; }
+        .admin-users-table th, .admin-users-table td { padding: 10px; text-align: left; }
+        .admin-users-table th { font-size: 12px; }
+        .admin-users-table tr.admin-current-user td { background: #dbeafe; box-shadow: inset 4px 0 0 var(--primary); }
+        .admin-current-user-badge { display: inline-block; margin-left: 8px; padding: 2px 7px; border-radius: 999px; background: #2563eb; color: white; font-size: 11px; font-weight: 700; }
+        .admin-user-actions { display: flex; gap: 8px; }
+        .admin-user-modal .modal-box { max-height: 90vh; overflow-y: auto; }
+        .admin-password-toggle { display: flex; gap: 8px; align-items: center; margin: 10px 0; font-size: 13px; }
+        .admin-password-toggle input { width: auto; }
+        .admin-form-actions { display: flex; gap: 10px; margin-top: 18px; }
+        .admin-form-actions .btn-submit { margin: 0; }
 
         /* ========== NOTIFICACIONES Y MODALES ========== */
-        #notification-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 400px;
-            width: 100%;
-            pointer-events: none;
-        }
-        #notification-container .notification {
-            pointer-events: auto;
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            animation: slideIn 0.3s ease;
-            backdrop-filter: blur(4px);
-        }
-        .notification-success {
-            background: var(--success);
-        }
-        .notification-error {
-            background: var(--danger);
-        }
-        .notification-warning {
-            background: var(--warning);
-        }
-        .notification-info {
-            background: var(--primary);
-        }
-        .notification .close-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: inherit;
-            padding: 0 4px;
-            line-height: 1;
-            opacity: 0.8;
-        }
-        .notification .close-btn:hover {
-            opacity: 1;
-        }
+        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 400px; width: 100%; pointer-events: none; }
+        #notification-container .notification { pointer-events: auto; padding: 12px 16px; border-radius: 8px; color: white; font-weight: 500; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); display: flex; align-items: center; justify-content: space-between; animation: slideIn 0.3s ease; backdrop-filter: blur(4px); }
+        .notification-success { background: var(--success); }
+        .notification-error { background: var(--danger); }
+        .notification-warning { background: var(--warning); }
+        .notification-info { background: var(--primary); }
+        .notification .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: inherit; padding: 0 4px; line-height: 1; opacity: 0.8; }
+        .notification .close-btn:hover { opacity: 1; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; border-radius: 12px; padding: 28px 32px; max-width: 500px; width: 90%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); animation: modalFade 0.2s ease; }
+        .modal-box p { font-size: 16px; margin: 0 0 20px 0; color: #1f2937; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-actions .btn { padding: 8px 20px; font-size: 14px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-secondary { background: #6b7280; color: white; }
+        .btn-secondary:hover { background: #4b5563; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: var(--danger-hover); }
+        @keyframes modalFade { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* Modales */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(2px);
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-box {
-            background: white;
-            border-radius: 12px;
-            padding: 28px 32px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: modalFade 0.2s ease;
-        }
-        .modal-box p {
-            font-size: 16px;
-            margin: 0 0 20px 0;
-            color: #1f2937;
-            line-height: 1.5;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        .modal-actions .btn {
-            padding: 8px 20px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        .btn-primary:hover {
-            background: var(--primary-hover);
-        }
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background: #4b5563;
-        }
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-        .btn-danger:hover {
-            background: var(--danger-hover);
-        }
-
-        @keyframes modalFade {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* Vista temporal para medir la primera hoja antes de abrir el diálogo de impresión. */
+        /* Vista temporal de impresión */
         body.print-preparing .document-container {
             width: 215.9mm;
-            /* Carta (279.4mm) menos márgenes de impresión: 15mm + 18mm. */
             height: 246mm;
             min-height: 246mm;
             padding: 10mm 5mm;
             position: relative;
         }
-        body.print-preparing #print-footer {
-            position: absolute;
-            right: 5mm;
-            bottom: 2rem;
-            left: 5mm;
-        }
-        body.print-preparing .no-print,
-        body.print-preparing .btn-add-row {
-            display: none !important;
-        }
-        body.print-preparing table {
-            min-width: 100%;
-            table-layout: fixed;
-            font-size: 10px;
-        }
-        body.print-preparing th,
-        body.print-preparing td {
-            padding: 2px 4px;
-        }
-        body.print-preparing input,
-        body.print-preparing textarea,
-        body.print-preparing select {
-            font-size: inherit !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            min-height: auto !important;
-        }
+        body.print-preparing #print-footer { position: absolute; right: 5mm; bottom: 2rem; left: 5mm; }
+        body.print-preparing .no-print, body.print-preparing .btn-add-row { display: none !important; }
+        body.print-preparing table { min-width: 100%; table-layout: fixed; font-size: 10px; }
+        body.print-preparing th, body.print-preparing td { padding: 2px 4px; }
+        body.print-preparing input, body.print-preparing textarea, body.print-preparing select { font-size: inherit !important; padding: 0 !important; margin: 0 !important; min-height: auto !important; }
+        
+        /* Ajuste de textareas en modo de preparación - Se elimina limitación de altura */
         body.print-preparing textarea {
             white-space: pre-wrap;
-            height: auto !important;
         }
         body.print-preparing #observacion-general {
             min-height: 30px;
-            max-height: 112px;
             font-size: 11px !important;
             line-height: 14px;
-            overflow: hidden;
+            overflow: visible;
             overflow-wrap: break-word;
-            height: var(--print-observation-height) !important;
         }
-        body.print-preparing .signatures-section {
-            gap: 20px;
-            margin-top: 20px;
-        }
-        body.print-preparing .signature-box {
-            max-width: 180px;
-            padding: 3px;
-        }
-        body.print-preparing .signature-box canvas {
-            width: 130px;
-            height: 35px;
-        }
-        body.print-preparing .header-date input[type="date"] {
-            width: 120px !important;
-            min-width: 120px;
-            font-size: 11px !important;
-        }
-        body.print-preparing .row-code::placeholder {
-            color: transparent !important;
-            opacity: 0 !important;
-        }
-        body.print-preparing .main-row.fila-vacia,
-        body.print-preparing .main-row.fila-vacia + .obs-row,
-        body.print-preparing .obs-row.obs-vacia {
-            display: none !important;
-        }
+        
+        body.print-preparing .signatures-section { gap: 20px; margin-top: 20px; }
+        body.print-preparing .signature-box { max-width: 180px; padding: 3px; }
+        body.print-preparing .signature-box canvas { width: 130px; height: 35px; }
+        body.print-preparing .header-date input[type="date"] { width: 120px !important; min-width: 120px; font-size: 11px !important; }
+        body.print-preparing .row-code::placeholder { color: transparent !important; opacity: 0 !important; }
+        body.print-preparing .main-row.fila-vacia, body.print-preparing .main-row.fila-vacia + .obs-row, body.print-preparing .obs-row.obs-vacia { display: none !important; }
 
         /* ========== IMPRESIÓN ========== */
         @media print {
             @page {
                 size: letter portrait;
                 margin: 15mm 0 18mm;
-
-                @top-left {
-                    content: "";
-                    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-                    font-size: 10px;
-                    margin-left: 5mm;
-                    text-align: left;
-                }
-
-                @top-right {
-                    content: "Página " counter(page) " de " counter(pages);
-                    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-                    font-size: 10px;
-                    margin-right: 5mm;
-                    text-align: right;
-                }
-
-                @bottom-left {
-                    content: "";
-                    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-                    font-size: 10px;
-                    margin-left: 5mm;
-                    text-align: left;
-                }
-
-                @bottom-right {
-                    content: "Página " counter(page) " de " counter(pages);
-                    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-                    font-size: 10px;
-                    margin-right: 5mm;
-                    text-align: right;
-                }
+                @top-left { content: ""; font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-left: 5mm; text-align: left; }
+                @top-right { content: "Página " counter(page) " de " counter(pages); font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-right: 5mm; text-align: right; }
+                @bottom-left { content: ""; font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-left: 5mm; text-align: left; }
+                @bottom-right { content: "Página " counter(page) " de " counter(pages); font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-right: 5mm; text-align: right; }
             }
-            body {
-                background: #fff;
-                display: block;
-                overflow: visible;
-                height: auto;
-            }
-            #dashboard {
-                display: block;
-            }
-            .sidebar,
-            .menu-toggle,
-            .controls-top,
-            .no-print,
-            .btn-add-row,
-            #notification-container,
-            .modal-overlay {
-                display: none !important;
-            }
-            .main-content {
-                margin-left: 0 !important;
-                display: block;
-                padding: 0;
-                overflow: visible;
-                width: 100%;
-            }
-            .content-wrapper {
-                max-width: 100%;
-                padding: 0;
-                margin: 0;
-            }
-            .view-section {
-                padding: 0;
-                display: block !important;
-            }
-            #history-view,
-            #admin-view,
-            #dashboard-view {
-                display: none !important;
-            }
-            .document-wrapper {
-                display: block;
-                overflow: visible;
-                padding: 0;
-                margin: 0;
-                text-align: center;
-            }
+            body { background: #fff; display: block; overflow: visible; height: auto; }
+            #dashboard { display: block; }
+            .sidebar, .menu-toggle, .controls-top, .no-print, .btn-add-row, #notification-container, .modal-overlay { display: none !important; }
+            .main-content { margin-left: 0 !important; display: block; padding: 0; overflow: visible; width: 100%; }
+            .content-wrapper { max-width: 100%; padding: 0; margin: 0; }
+            .view-section { padding: 0; display: block !important; }
+            #history-view, #admin-view, #dashboard-view { display: none !important; }
+            .document-wrapper { display: block; overflow: visible; padding: 0; margin: 0; text-align: center; }
+            
             .document-container {
-                box-shadow: none;
-                border: none;
-                width: 215.9mm;
-                max-width: none;
-                /* Debe caber dentro de los 246.4mm útiles de la hoja Carta. */
-                height: 246mm;
-                min-height: 246mm;
-                padding: 10mm 5mm;
-                margin: 0 auto;
-                display: block;
-                box-sizing: border-box;
-                position: relative;
+                box-shadow: none; border: none; width: 215.9mm; max-width: none;
+                height: 246mm; min-height: 246mm; padding: 10mm 5mm; margin: 0 auto; display: block; box-sizing: border-box; position: relative;
             }
-            table {
-                width: 100% !important;
-                min-width: 100%;
-                table-layout: fixed;
-                font-size: 10px;
-            }
-            th,
-            td {
-                padding: 2px 4px;
-            }
-            .col-renglon {
-                width: 7%;
-            }
-            .col-cantidad {
-                width: 10%;
-            }
-            .col-descripcion {
-                width: 68%;
-            }
-            .col-codigo {
-                width: 15%;
-            }
-            thead {
-                display: table-header-group;
-            }
-            tr {
-                page-break-inside: avoid;
-            }
-            #print-footer {
-                position: absolute;
-                right: 5mm;
-                bottom: 2rem;
-                left: 5mm;
-            }
+            table { width: 100% !important; min-width: 100%; table-layout: fixed; font-size: 10px; }
+            th, td { padding: 2px 4px; }
+            .col-renglon { width: 7%; } .col-cantidad { width: 10%; } .col-descripcion { width: 68%; } .col-codigo { width: 15%; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+            #print-footer { position: absolute; right: 5mm; bottom: 2rem; left: 5mm; }
+            
             #observacion-general {
                 min-height: 30px !important;
-                max-height: 112px !important;
                 font-size: 11px !important;
                 line-height: 14px !important;
-                overflow: hidden !important;
-                overflow-wrap: break-word;
-                height: var(--print-observation-height) !important;
-            }
-            #tabla-materiales-2 {
-                break-before: page;
-                page-break-before: always;
-            }
-            #tabla-materiales-2:not(:has(tbody .main-row)) {
-                display: none !important;
-                break-before: auto;
-                page-break-before: auto;
-            }
-
-            .signatures-section {
-                flex-direction: row !important;
-                justify-content: space-between !important;
-                gap: 20px !important;
-                margin-top: 20px !important;
-            }
-            .signature-box {
-                max-width: 180px !important;
-                flex: 1 !important;
-                padding: 3px !important;
-            }
-            .signature-box canvas {
-                width: 130px !important;
-                height: 35px !important;
-            }
-            .signature-name {
-                font-size: 9px !important;
-            }
-            .signature-box label {
-                font-size: 8px !important;
-            }
-
-            textarea {
                 overflow: visible !important;
+                overflow-wrap: break-word;
             }
-            .dropdown-results {
-                display: none !important;
-            }
-            input[type="date"] {
-                border: none;
-                background: transparent;
-            }
-            .header-date input[type="date"] {
-                width: 120px !important;
-                min-width: 120px;
-                font-size: 11px !important;
-            }
-            .row-code::placeholder {
-                color: transparent !important;
-                opacity: 0 !important;
-            }
-            .campo-invalido {
-                border: none !important;
-                background: transparent !important;
-            }
+            
+            #tabla-materiales-2 { break-before: page; page-break-before: always; }
+            #tabla-materiales-2:not(:has(tbody .main-row)) { display: none !important; break-before: auto; page-break-before: auto; }
+            .signatures-section { flex-direction: row !important; justify-content: space-between !important; gap: 20px !important; margin-top: 20px !important; }
+            .signature-box { max-width: 180px !important; flex: 1 !important; padding: 3px !important; }
+            .signature-box canvas { width: 130px !important; height: 35px !important; }
+            .signature-name { font-size: 9px !important; }
+            .signature-box label { font-size: 8px !important; }
 
-            .obs-row {
-                display: table-row !important;
-            }
-            .main-row.fila-vacia {
-                display: none !important;
-            }
-            .main-row.fila-vacia+.obs-row {
-                display: none !important;
-            }
+            textarea { white-space: pre-wrap; overflow: visible !important; }
+            
+            .dropdown-results { display: none !important; }
+            input[type="date"] { border: none; background: transparent; }
+            .header-date input[type="date"] { width: 120px !important; min-width: 120px; font-size: 11px !important; }
+            .row-code::placeholder { color: transparent !important; opacity: 0 !important; }
+            .campo-invalido { border: none !important; background: transparent !important; }
+            .obs-row { display: table-row !important; }
+            .main-row.fila-vacia { display: none !important; }
+            .main-row.fila-vacia+.obs-row { display: none !important; }
+            .obs-row.obs-vacia { display: none !important; }
+            .obs-row td { background: #fafafa !important; font-size: 9px; padding: 2px 4px; }
+            .obs-row .obs-label { font-weight: bold; color: #333; margin-right: 4px; }
 
-            .obs-row.obs-vacia {
-                display: none !important;
+            input, textarea, select {
+                border: none !important; background: transparent !important; box-shadow: none !important; -webkit-appearance: none !important; color: #000 !important; font-size: inherit !important; padding: 0 !important; margin: 0 !important; min-height: auto !important; resize: none !important; outline: none !important;
             }
-
-            .obs-row td {
-                background: #fafafa !important;
-                font-size: 9px;
-                padding: 2px 4px;
-            }
-            .obs-row .obs-label {
-                font-weight: bold;
-                color: #333;
-                margin-right: 4px;
-            }
-
-            input,
-            textarea,
-            select {
-                border: none !important;
-                background: transparent !important;
-                box-shadow: none !important;
-                -webkit-appearance: none !important;
-                color: #000 !important;
-                font-size: inherit !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                min-height: auto !important;
-                resize: none !important;
-                outline: none !important;
-            }
-            textarea {
-                white-space: pre-wrap;
-                overflow: visible;
-                height: auto !important;
-            }
-            .btn-search-db,
-            .btn-delete-row,
-            .btn-toggle-obs,
-            .btn-clear-firma {
-                display: none !important;
-            }
-            canvas {
-                border: 1px solid #000;
-                max-width: 100%;
-            }
+            
+            .btn-search-db, .btn-delete-row, .btn-toggle-obs, .btn-clear-firma { display: none !important; }
+            canvas { border: 1px solid #000; max-width: 100%; }
         }
 
         /* ========== RESPONSIVE ========== */
         @media screen and (max-width: 1024px) {
-            .menu-toggle {
-                display: block;
-            }
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0 !important;
-            }
-            .content-wrapper {
-                padding: 16px;
-            }
-            .controls-top {
-                justify-content: center;
-            }
+            .menu-toggle { display: block; }
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; }
+            .content-wrapper { padding: 16px; }
+            .controls-top { justify-content: center; }
         }
-
         @media screen and (max-width: 768px) {
-            .sidebar {
-                width: 280px;
-            }
-            .content-wrapper {
-                padding: 12px;
-            }
-            .dashboard-stats {
-                grid-template-columns: 1fr 1fr;
-            }
-            .history-grid {
-                grid-template-columns: 1fr;
-            }
-            .header {
-                gap: 8px;
-            }
-            .header-details,
-            .header-dates {
-                flex-direction: column;
-                width: 100%;
-                gap: 8px;
-            }
-            .header-user,
-            .header-department {
-                width: 100%;
-                padding: 0;
-                text-align: center;
-            }
-            .header-stage {
-                justify-content: center;
-            }
-            .header-date {
-                justify-content: center;
-            }
-            .document-container {
-                width: 100%;
-                padding: 8px;
-                min-height: auto;
-            }
-            .signatures-section {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-            }
-            .signature-box {
-                max-width: 100%;
-            }
-            .controls-top .btn {
-                font-size: 12px;
-                padding: 6px 12px;
-                min-width: 100px;
-            }
-            #recent-list .recent-item {
-                flex-direction: column;
-                align-items: stretch !important;
-                gap: 8px;
-            }
-            #recent-list .recent-item .actions {
-                justify-content: center;
-            }
+            .sidebar { width: 280px; }
+            .content-wrapper { padding: 12px; }
+            .dashboard-stats { grid-template-columns: 1fr 1fr; }
+            .history-grid { grid-template-columns: 1fr; }
+            .header { gap: 8px; }
+            .header-details, .header-dates { flex-direction: column; width: 100%; gap: 8px; }
+            .header-user, .header-department { width: 100%; padding: 0; text-align: center; }
+            .header-stage { justify-content: center; }
+            .header-date { justify-content: center; }
+            .document-container { width: 100%; padding: 8px; min-height: auto; }
+            .signatures-section { flex-direction: column; align-items: center; gap: 15px; }
+            .signature-box { max-width: 100%; }
+            .controls-top .btn { font-size: 12px; padding: 6px 12px; min-width: 100px; }
+            #recent-list .recent-item { flex-direction: column; align-items: stretch !important; gap: 8px; }
+            #recent-list .recent-item .actions { justify-content: center; }
         }
 
         /* Historial buscador */
-        #history-search {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-            background: white;
-            padding: 16px 20px;
-            border-radius: var(--card-radius);
-            box-shadow: var(--card-shadow);
-            align-items: flex-end;
-        }
-        #history-search .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1 1 150px;
-            min-width: 130px;
-        }
-        #history-search .filter-group label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #4b5563;
-            letter-spacing: 0.3px;
-        }
-        #history-search .filter-group input,
-        #history-search .filter-group select {
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            font-size: 13px;
-            background: white;
-            transition: border 0.2s;
-            width: 100%;
-        }
-        #history-search .filter-group input:focus,
-        #history-search .filter-group select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-        }
-        #history-search .btn-group {
-            display: flex;
-            gap: 8px;
-            flex: 0 0 auto;
-            align-items: center;
-            padding-top: 4px;
-        }
-        #history-search .btn-group .btn {
-            padding: 8px 18px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            color: white;
-            font-size: 13px;
-        }
-        #history-search .btn-group .btn-primary {
-            background: var(--primary);
-        }
-        #history-search .btn-group .btn-primary:hover {
-            background: var(--primary-hover);
-        }
-        #history-search .btn-group .btn-secondary {
-            background: #6b7280;
-        }
-        #history-search .btn-group .btn-secondary:hover {
-            background: #4b5563;
-        }
+        #history-search { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; background: white; padding: 16px 20px; border-radius: var(--card-radius); box-shadow: var(--card-shadow); align-items: flex-end; }
+        #history-search .filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1 1 150px; min-width: 130px; }
+        #history-search .filter-group label { font-size: 12px; font-weight: 600; color: #4b5563; letter-spacing: 0.3px; }
+        #history-search .filter-group input, #history-search .filter-group select { padding: 8px 10px; border-radius: 6px; border: 1px solid #d1d5db; font-size: 13px; background: white; transition: border 0.2s; width: 100%; }
+        #history-search .filter-group input:focus, #history-search .filter-group select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+        #history-search .btn-group { display: flex; gap: 8px; flex: 0 0 auto; align-items: center; padding-top: 4px; }
+        #history-search .btn-group .btn { padding: 8px 18px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; color: white; font-size: 13px; }
+        #history-search .btn-group .btn-primary { background: var(--primary); }
+        #history-search .btn-group .btn-primary:hover { background: var(--primary-hover); }
+        #history-search .btn-group .btn-secondary { background: #6b7280; }
+        #history-search .btn-group .btn-secondary:hover { background: #4b5563; }
 
         /* Indicador de edición */
-        #modo-edicion-indicator {
-            display: none;
-            background: #fef3c7;
-            padding: 8px 16px;
-            border-radius: 6px;
-            margin-bottom: 12px;
-            text-align: center;
-            font-weight: 600;
-            color: #92400e;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        #modo-edicion-indicator .btn-cancelar-edicion {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 4px 14px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-            transition: background 0.2s;
-        }
-        #modo-edicion-indicator .btn-cancelar-edicion:hover {
-            background: #4b5563;
-        }
+        #modo-edicion-indicator { display: none; background: #fef3c7; padding: 8px 16px; border-radius: 6px; margin-bottom: 12px; text-align: center; font-weight: 600; color: #92400e; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        #modo-edicion-indicator .btn-cancelar-edicion { background: #6b7280; color: white; border: none; padding: 4px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.2s; }
+        #modo-edicion-indicator .btn-cancelar-edicion:hover { background: #4b5563; }
 
         /* Estilos para items del dashboard */
-        .recent-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .recent-item .info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .recent-item .info .departamento {
-            font-weight: 600;
-        }
-        .recent-item .info .fecha {
-            color: #6b7280;
-            font-size: 13px;
-        }
-        .recent-item .info .etapa {
-            font-size: 11px;
-            background: #f3f4f6;
-            padding: 2px 8px;
-            border-radius: 12px;
-        }
-        .recent-item .actions {
-            display: flex;
-            gap: 6px;
-        }
-        .recent-item .actions .btn-sm {
-            padding: 4px 10px;
-            font-size: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
-            color: white;
-            font-weight: 600;
-            transition: background 0.2s;
+        .recent-item { padding: 12px 0; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .recent-item .info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .recent-item .info .departamento { font-weight: 600; }
+        .recent-item .info .fecha { color: #6b7280; font-size: 13px; }
+        .recent-item .info .etapa { font-size: 11px; background: #f3f4f6; padding: 2px 8px; border-radius: 12px; }
+        .recent-item .actions { display: flex; gap: 6px; }
+        .recent-item .actions .btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 6px; cursor: pointer; border: none; color: white; font-weight: 600; transition: background 0.2s; }
+
+        /* Para todos los textarea dentro de la tabla */
+        #tabla-materiales textarea,
+        #tabla-materiales-2 textarea,
+        #observacion-general {
+            overflow: visible !important;
+            resize: none !important;
+            box-sizing: border-box;
+            min-height: 25px;
         }
     </style>
 </head>
@@ -1859,17 +1003,14 @@
                 <div id="history-view" class="view-section">
                     <h2 style="text-align:center; margin-bottom:20px;">📁 Historial de Solicitudes</h2>
                     <div id="history-search">
-                        <!-- Buscador por texto -->
                         <div class="filter-group" style="flex: 2 1 250px;">
                             <label>🔍 Buscar por descripción o código</label>
                             <input type="text" id="history-search-input" placeholder="Escribe para filtrar..." oninput="aplicarFiltrosHistorial()" />
                         </div>
-                        <!-- Filtro por mes -->
                         <div class="filter-group">
                             <label>📅 Mes</label>
                             <input type="month" id="history-filter-month" onchange="aplicarFiltrosHistorial()" />
                         </div>
-                        <!-- Filtro por fecha desde / hasta -->
                         <div class="filter-group">
                             <label>📆 Desde</label>
                             <input type="date" id="history-filter-date-from" onchange="aplicarFiltrosHistorial()" />
@@ -1878,7 +1019,6 @@
                             <label>📆 Hasta</label>
                             <input type="date" id="history-filter-date-to" onchange="aplicarFiltrosHistorial()" />
                         </div>
-                        <!-- Filtro por etapa -->
                         <div class="filter-group">
                             <label>🏷️ Etapa</label>
                             <select id="history-filter-etapa" onchange="aplicarFiltrosHistorial()">
@@ -1887,7 +1027,6 @@
                                 <option value="ZAFRA">ZAFRA</option>
                             </select>
                         </div>
-                        <!-- Botones -->
                         <div class="btn-group">
                             <button class="btn btn-secondary" onclick="limpiarFiltrosHistorial()">Limpiar filtros</button>
                         </div>
@@ -1980,7 +1119,6 @@
         </div>
     </div>
 
-    <!-- Botón de instalación (PWA) -->
     <button id="install-btn">📲 Instalar App</button>
 
     <script>
@@ -1993,32 +1131,21 @@
         const SUPA_PROD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ud3Rqam5nbmVvZXFidmlmaW5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0MDA0NTIsImV4cCI6MjA5Mjk3NjQ1Mn0.PDNubsNqbhSaqPatkO1FfjSDpAYwAUvzq662Ua0uw7Q';
         const supaProducts = supabase.createClient(SUPA_PROD_URL, SUPA_PROD_KEY);
 
-        // ========== NOTIFICACIONES ==========
         function mostrarNotificacion(tipo, mensaje, duracion = 3000) {
             const container = document.getElementById('notification-container');
             const notif = document.createElement('div');
             notif.className = `notification notification-${tipo}`;
-            notif.innerHTML = `
-                <span>${mensaje}</span>
-                <button class="close-btn" onclick="this.parentElement.remove()">×</button>
-            `;
+            notif.innerHTML = `<span>${mensaje}</span><button class="close-btn" onclick="this.parentElement.remove()">×</button>`;
             container.appendChild(notif);
-            if (duracion > 0) {
-                setTimeout(() => {
-                    if (notif.parentNode) notif.remove();
-                }, duracion);
-            }
+            if (duracion > 0) setTimeout(() => { if (notif.parentNode) notif.remove(); }, duracion);
         }
 
-        // ========== MODALES ==========
         function mostrarAlerta(mensaje) {
             return new Promise((resolve) => {
                 const modal = document.getElementById('alert-modal');
-                const msg = document.getElementById('alert-message');
-                msg.textContent = mensaje;
+                document.getElementById('alert-message').textContent = mensaje;
                 modal.classList.add('active');
-                const okBtn = document.getElementById('alert-ok');
-                okBtn.onclick = function() {
+                document.getElementById('alert-ok').onclick = function() {
                     modal.classList.remove('active');
                     resolve();
                 };
@@ -2028,53 +1155,28 @@
         function mostrarConfirmacion(mensaje) {
             return new Promise((resolve) => {
                 const modal = document.getElementById('dialog-modal');
-                const msg = document.getElementById('dialog-message');
-                msg.textContent = mensaje;
+                document.getElementById('dialog-message').textContent = mensaje;
                 modal.classList.add('active');
-                const confirmBtn = document.getElementById('dialog-confirm');
-                const cancelBtn = document.getElementById('dialog-cancel');
-                confirmBtn.onclick = function() {
-                    modal.classList.remove('active');
-                    resolve(true);
-                };
-                cancelBtn.onclick = function() {
-                    modal.classList.remove('active');
-                    resolve(false);
-                };
+                document.getElementById('dialog-confirm').onclick = function() { modal.classList.remove('active'); resolve(true); };
+                document.getElementById('dialog-cancel').onclick = function() { modal.classList.remove('active'); resolve(false); };
             });
         }
 
-        // ========== UTILITY ==========
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         document.addEventListener('click', function(e) {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.getElementById('menuToggle');
-            if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
-                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
-                    sidebar.classList.remove('open');
-                }
+            if (window.innerWidth <= 1024 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
             }
         });
 
-        // ========== LOGIN ==========
         window.onload = async function() {
             const fechaInput = document.getElementById('fecha-creacion');
-            if (fechaInput && !fechaInput.value) {
-                const hoy = new Date().toISOString().split('T')[0];
-                fechaInput.value = hoy;
-            }
-
+            if (fechaInput && !fechaInput.value) { fechaInput.value = new Date().toISOString().split('T')[0]; }
             document.getElementById('dashboard').style.display = 'none';
             const { data: { session } } = await supaUsers.auth.getSession();
-            if (session) {
-                await cargarPerfil(session.user.id, session.user.email);
-            } else {
-                document.getElementById('login-screen').style.display = 'flex';
-            }
-
-            // Inicializar PWA después de cargar la página
+            if (session) { await cargarPerfil(session.user.id, session.user.email); } else { document.getElementById('login-screen').style.display = 'flex'; }
             initPWA();
         };
 
@@ -2082,124 +1184,66 @@
             e.preventDefault();
             const btn = document.getElementById('btn-submit-login');
             const errorMsg = document.getElementById('login-error-msg');
-            btn.textContent = 'Verificando...';
-            btn.disabled = true;
-            errorMsg.style.display = 'none';
-
-            const { data, error } = await supaUsers.auth.signInWithPassword({
-                email: document.getElementById('login-email').value,
-                password: document.getElementById('login-password').value
-            });
-
-            if (error) {
-                errorMsg.style.display = 'block';
-                btn.textContent = 'Iniciar Sesión';
-                btn.disabled = false;
-            } else {
-                await cargarPerfil(data.user.id, data.user.email);
-            }
+            btn.textContent = 'Verificando...'; btn.disabled = true; errorMsg.style.display = 'none';
+            const { data, error } = await supaUsers.auth.signInWithPassword({ email: document.getElementById('login-email').value, password: document.getElementById('login-password').value });
+            if (error) { errorMsg.style.display = 'block'; btn.textContent = 'Iniciar Sesión'; btn.disabled = false; } else { await cargarPerfil(data.user.id, data.user.email); }
         });
 
         async function cargarPerfil(userId, email) {
             const { data } = await supaUsers.from('usuarios').select('nombre_completo, rol').eq('id', userId).single();
-            currentUserInfo = {
-                id: userId,
-                email: email,
-                nombre: (data && data.nombre_completo) ? data.nombre_completo : 'Usuario',
-                rol: (data && data.rol) ? data.rol : 'usuario'
-            };
-
+            currentUserInfo = { id: userId, email: email, nombre: (data && data.nombre_completo) ? data.nombre_completo : 'Usuario', rol: (data && data.rol) ? data.rol : 'usuario' };
             document.getElementById('display-user-name').textContent = currentUserInfo.nombre;
             document.getElementById('user-initials').textContent = currentUserInfo.nombre.charAt(0).toUpperCase();
             document.getElementById('dash-user-name').textContent = currentUserInfo.nombre;
             const badge = document.getElementById('display-user-role');
-            badge.textContent = currentUserInfo.rol;
-            badge.className = 'role-badge role-' + currentUserInfo.rol;
-
-            const navAdmin = document.getElementById('nav-admin');
-            navAdmin.style.display = (currentUserInfo.rol === 'admin') ? 'block' : 'none';
-
-            document.getElementById('departamento').value =
-                `${currentUserInfo.nombre.toUpperCase()} - ${currentUserInfo.rol.toUpperCase()}`;
-
+            badge.textContent = currentUserInfo.rol; badge.className = 'role-badge role-' + currentUserInfo.rol;
+            document.getElementById('nav-admin').style.display = (currentUserInfo.rol === 'admin') ? 'block' : 'none';
+            document.getElementById('departamento').value = `${currentUserInfo.nombre.toUpperCase()} - ${currentUserInfo.rol.toUpperCase()}`;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
-
             cargarBorrador();
             switchView('dashboard-view');
         }
 
-        async function cerrarSesion() {
-            await supaUsers.auth.signOut();
-            location.reload();
-        }
+        async function cerrarSesion() { await supaUsers.auth.signOut(); location.reload(); }
 
         async function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const map = { 'dashboard-view': 0, 'form-view': 1, 'history-view': 2, 'admin-view': 3 };
             const idx = map[viewId];
-            if (idx !== undefined) {
-                const items = document.querySelectorAll('.nav-item');
-                if (items[idx]) items[idx].classList.add('active');
-            }
-
+            if (idx !== undefined) { const items = document.querySelectorAll('.nav-item'); if (items[idx]) items[idx].classList.add('active'); }
             if (viewId === 'form-view') setTimeout(initCanvases, 300);
             if (viewId === 'history-view') await renderHistorial();
             if (viewId === 'dashboard-view') actualizarDashboard();
-            if (viewId === 'admin-view') {
-                if (currentUserInfo.rol !== 'admin') {
-                    await mostrarAlerta('Acceso denegado. Solo administradores.');
-                    switchView('dashboard-view');
-                    return;
-                }
-                await cargarUsuariosAdmin();
-            }
-            if (window.innerWidth <= 1024) {
-                document.getElementById('sidebar').classList.remove('open');
-            }
+            if (viewId === 'admin-view') { if (currentUserInfo.rol !== 'admin') { await mostrarAlerta('Acceso denegado. Solo administradores.'); switchView('dashboard-view'); return; } await cargarUsuariosAdmin(); }
+            if (window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open');
         }
 
         function forzarMayusculas(el) { el.value = el.value.toUpperCase(); }
 
         function autoResize(el) {
-            el.style.height = 'auto';
-            el.style.height = el.scrollHeight + 'px';
+            el.style.height = '1px'; // Reiniciar para calcular correcto scrollHeight
+            el.style.height = (el.scrollHeight) + 'px';
         }
 
         function quitarResaltado(el) { el.classList.remove('campo-invalido'); }
 
         function validarCamposObligatorios() {
             let valido = true;
-            const campos = [
-                { id: 'observacion-general', nombre: 'Observación General' },
-                { id: 'fecha-creacion', nombre: 'Fecha Creación' },
-                { id: 'fecha-entrega', nombre: 'Fecha Entrega' },
-                { id: 'etapa', nombre: 'Etapa' }
-            ];
-            campos.forEach(c => {
-                const el = document.getElementById(c.id);
-                if (el.value.trim() === '') {
-                    el.classList.add('campo-invalido');
-                    valido = false;
-                } else {
-                    el.classList.remove('campo-invalido');
-                }
-            });
+            const campos = [{ id: 'observacion-general', nombre: 'Observación General' }, { id: 'fecha-creacion', nombre: 'Fecha Creación' }, { id: 'fecha-entrega', nombre: 'Fecha Entrega' }, { id: 'etapa', nombre: 'Etapa' }];
+            campos.forEach(c => { const el = document.getElementById(c.id); if (el.value.trim() === '') { el.classList.add('campo-invalido'); valido = false; } else { el.classList.remove('campo-invalido'); } });
             return valido;
         }
 
-        // ========== FILAS ==========
         function agregarRenglon(data = null) {
             let tbody = document.getElementById('tbody-materiales');
             if (!tbody) return;
             rowCount++;
             const hasObs = (data && data.obs && data.obs.trim() !== '');
             const trMain = document.createElement('tr');
-            trMain.className = 'main-row';
-            trMain.setAttribute('data-id', rowCount);
+            trMain.className = 'main-row'; trMain.setAttribute('data-id', rowCount);
             trMain.innerHTML = `
                 <td class="col-renglon">${rowCount}</td>
                 <td class="col-cantidad"><input type="text" class="row-qty" placeholder="Cant." value="${data?.qty || ''}" oninput="forzarMayusculas(this); guardarDatos()"></td>
@@ -2219,795 +1263,243 @@
                 </td>
             `;
             const trObs = document.createElement('tr');
-            trObs.className = 'obs-row';
-            trObs.setAttribute('data-id', rowCount);
-            trObs.id = `obs-row-${rowCount}`;
-            trObs.style.display = hasObs ? 'table-row' : 'none';
+            trObs.className = 'obs-row'; trObs.setAttribute('data-id', rowCount); trObs.id = `obs-row-${rowCount}`; trObs.style.display = hasObs ? 'table-row' : 'none';
             trObs.innerHTML = `
                 <td colspan="4" style="padding:2px 4px; background:#fafafa;">
                     <span style="font-weight:bold; font-size:9px; color:#666;">OBSERVACIÓN:</span>
                     <textarea class="row-obs" rows="1" placeholder="Observación adicional" oninput="forzarMayusculas(this); autoResize(this); guardarDatos();" style="width:100%; border:1px dashed #ccc; padding:2px; min-height:16px;">${data?.obs || ''}</textarea>
                 </td>
             `;
-            tbody.appendChild(trMain);
-            tbody.appendChild(trObs);
-            setTimeout(() => {
-                autoResize(trMain.querySelector('.row-desc'));
-                autoResize(trObs.querySelector('.row-obs'));
-            }, 0);
+            tbody.appendChild(trMain); tbody.appendChild(trObs);
+            setTimeout(() => { autoResize(trMain.querySelector('.row-desc')); autoResize(trObs.querySelector('.row-obs')); }, 0);
             if (!data) guardarDatos();
         }
 
         function eliminarRenglon(id) {
-            const row = document.querySelector(`.main-row[data-id="${id}"]`);
-            const obsRow = document.querySelector(`.obs-row[data-id="${id}"]`);
-            rowsToRestore = rowsToRestore.filter(item => item.row !== row);
-            row?.remove();
-            obsRow?.remove();
-
+            const row = document.querySelector(`.main-row[data-id="${id}"]`); const obsRow = document.querySelector(`.obs-row[data-id="${id}"]`);
+            rowsToRestore = rowsToRestore.filter(item => item.row !== row); row?.remove(); obsRow?.remove();
             const secondaryTable = document.getElementById('tabla-materiales-2');
-            if (secondaryTable && !secondaryTable.querySelector('.main-row')) {
-                secondaryTable.remove();
-                restaurarDespuesImpresion();
-            }
-            recalcularNumeracion();
-            guardarDatos();
+            if (secondaryTable && !secondaryTable.querySelector('.main-row')) { secondaryTable.remove(); restaurarDespuesImpresion(); }
+            recalcularNumeracion(); guardarDatos();
         }
 
         function recalcularNumeracion() {
             rowCount = 0;
             document.querySelectorAll('.main-row').forEach((row, index) => {
-                rowCount++;
-                row.setAttribute('data-id', rowCount);
-                row.querySelector('.col-renglon').textContent = rowCount;
+                rowCount++; row.setAttribute('data-id', rowCount); row.querySelector('.col-renglon').textContent = rowCount;
                 row.querySelector('.btn-delete-row').setAttribute('onclick', `eliminarRenglon(${rowCount})`);
                 row.querySelector('.btn-search-db').setAttribute('onclick', `buscarProducto(${rowCount})`);
-                const toggle = row.querySelector('.btn-toggle-obs');
-                toggle.id = `btn-toggle-obs-${rowCount}`;
-                toggle.setAttribute('onclick', `toggleObs(${rowCount})`);
-                row.querySelector('.row-desc').id = `desc-${rowCount}`;
-                row.querySelector('.row-code').id = `code-${rowCount}`;
-                row.querySelector('.dropdown-results').id = `dropdown-${rowCount}`;
+                const toggle = row.querySelector('.btn-toggle-obs'); toggle.id = `btn-toggle-obs-${rowCount}`; toggle.setAttribute('onclick', `toggleObs(${rowCount})`);
+                row.querySelector('.row-desc').id = `desc-${rowCount}`; row.querySelector('.row-code').id = `code-${rowCount}`; row.querySelector('.dropdown-results').id = `dropdown-${rowCount}`;
                 const obsRow = document.querySelectorAll('.obs-row')[index];
-                if (obsRow) {
-                    obsRow.setAttribute('data-id', rowCount);
-                    obsRow.id = `obs-row-${rowCount}`;
-                }
+                if (obsRow) { obsRow.setAttribute('data-id', rowCount); obsRow.id = `obs-row-${rowCount}`; }
             });
         }
 
         function toggleObs(id) {
-            const obsRow = document.getElementById(`obs-row-${id}`);
-            const btn = document.getElementById(`btn-toggle-obs-${id}`);
-            if (obsRow.style.display === 'none') {
-                obsRow.style.display = 'table-row';
-                btn.textContent = '- Ocultar observación';
-                const ta = obsRow.querySelector('.row-obs');
-                if (ta) {
-                    ta.focus();
-                    autoResize(ta);
-                }
-            } else {
-                obsRow.style.display = 'none';
-                btn.textContent = '+ Agregar observación';
-                const ta = obsRow.querySelector('.row-obs');
-                if (ta) { ta.value = '';
-                    autoResize(ta); }
-                guardarDatos();
-            }
+            const obsRow = document.getElementById(`obs-row-${id}`); const btn = document.getElementById(`btn-toggle-obs-${id}`);
+            if (obsRow.style.display === 'none') { obsRow.style.display = 'table-row'; btn.textContent = '- Ocultar observación'; const ta = obsRow.querySelector('.row-obs'); if (ta) { ta.focus(); autoResize(ta); } } else { obsRow.style.display = 'none'; btn.textContent = '+ Agregar observación'; const ta = obsRow.querySelector('.row-obs'); if (ta) { ta.value = ''; autoResize(ta); } guardarDatos(); }
         }
 
         async function buscarProducto(id) {
-            const query = document.getElementById(`desc-${id}`).value.trim();
-            const dd = document.getElementById(`dropdown-${id}`);
-            if (query.length < 2) {
-                await mostrarAlerta('Escribe al menos 2 letras.');
-                return;
-            }
-            dd.style.display = 'block';
-            dd.innerHTML = '<li>Buscando...</li>';
-            const { data, error } = await supaProducts
-                .from('mv_producto_busqueda_solicitud_go')
-                .select('nombre, cod_producto')
-                .ilike('nombre', `%${query}%`)
-                .limit(15);
+            const query = document.getElementById(`desc-${id}`).value.trim(); const dd = document.getElementById(`dropdown-${id}`);
+            if (query.length < 2) { await mostrarAlerta('Escribe al menos 2 letras.'); return; }
+            dd.style.display = 'block'; dd.innerHTML = '<li>Buscando...</li>';
+            const { data, error } = await supaProducts.from('mv_producto_busqueda_solicitud_go').select('nombre, cod_producto').ilike('nombre', `%${query}%`).limit(15);
             dd.innerHTML = '';
-            if (error || !data || data.length === 0) {
-                dd.innerHTML = '<li style="color:red;">No se encontraron resultados</li>';
-                setTimeout(() => dd.style.display = 'none', 2000);
-                return;
-            }
-            data.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = `${item.nombre} - [${item.cod_producto}]`;
-                li.onclick = () => {
-                    const elDesc = document.getElementById(`desc-${id}`);
-                    elDesc.value = item.nombre.toUpperCase();
-                    autoResize(elDesc);
-                    document.getElementById(`code-${id}`).value = (item.cod_producto || '').toUpperCase();
-                    dd.style.display = 'none';
-                    guardarDatos();
-                };
-                dd.appendChild(li);
-            });
+            if (error || !data || data.length === 0) { dd.innerHTML = '<li style="color:red;">No se encontraron resultados</li>'; setTimeout(() => dd.style.display = 'none', 2000); return; }
+            data.forEach(item => { const li = document.createElement('li'); li.textContent = `${item.nombre} - [${item.cod_producto}]`; li.onclick = () => { const elDesc = document.getElementById(`desc-${id}`); elDesc.value = item.nombre.toUpperCase(); autoResize(elDesc); document.getElementById(`code-${id}`).value = (item.cod_producto || '').toUpperCase(); dd.style.display = 'none'; guardarDatos(); }; dd.appendChild(li); });
         }
-        document.addEventListener('click', e => {
-            if (!e.target.closest('.col-descripcion'))
-                document.querySelectorAll('.dropdown-results').forEach(dd => dd.style.display = 'none');
-        });
+        document.addEventListener('click', e => { if (!e.target.closest('.col-descripcion')) document.querySelectorAll('.dropdown-results').forEach(dd => dd.style.display = 'none'); });
 
-        // ========== CANVAS ==========
         let canvasesSetup = false;
-
-        function initCanvases() {
-            if (canvasesSetup) return;
-            ['canvas-almacen', 'canvas-gerencia'].forEach(setupCanvas);
-            canvasesSetup = true;
-        }
-
+        function initCanvases() { if (canvasesSetup) return; ['canvas-almacen', 'canvas-gerencia'].forEach(setupCanvas); canvasesSetup = true; }
         function setupCanvas(id) {
-            const canvas = document.getElementById(id);
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let drawing = false;
-
-            function getPos(e) {
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX || (e.touches && e.touches[0].clientX);
-                const y = e.clientY || (e.touches && e.touches[0].clientY);
-                return { x: x - rect.left, y: y - rect.top };
-            }
-            const start = e => {
-                e.preventDefault();
-                drawing = true;
-                ctx.beginPath();
-                const p = getPos(e);
-                ctx.moveTo(p.x, p.y);
-            };
-            const draw = e => {
-                if (!drawing) return;
-                e.preventDefault();
-                const p = getPos(e);
-                ctx.lineTo(p.x, p.y);
-                ctx.stroke();
-            };
-            const stop = () => {
-                if (drawing) {
-                    drawing = false;
-                    ctx.closePath();
-                    guardarDatos();
-                }
-            };
-            canvas.addEventListener('mousedown', start);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stop);
-            canvas.addEventListener('mouseleave', stop);
-            canvas.addEventListener('touchstart', start, { passive: false });
-            canvas.addEventListener('touchmove', draw, { passive: false });
-            canvas.addEventListener('touchend', stop);
+            const canvas = document.getElementById(id); if (!canvas) return; const ctx = canvas.getContext('2d'); let drawing = false;
+            function getPos(e) { const rect = canvas.getBoundingClientRect(); const x = e.clientX || (e.touches && e.touches[0].clientX); const y = e.clientY || (e.touches && e.touches[0].clientY); return { x: x - rect.left, y: y - rect.top }; }
+            const start = e => { e.preventDefault(); drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); };
+            const draw = e => { if (!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+            const stop = () => { if (drawing) { drawing = false; ctx.closePath(); guardarDatos(); } };
+            canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stop); canvas.addEventListener('mouseleave', stop); canvas.addEventListener('touchstart', start, { passive: false }); canvas.addEventListener('touchmove', draw, { passive: false }); canvas.addEventListener('touchend', stop);
         }
+        function limpiarCanvas(id) { const canvas = document.getElementById(id); canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); guardarDatos(); }
 
-        function limpiarCanvas(id) {
-            const canvas = document.getElementById(id);
-            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-            guardarDatos();
-        }
-
-        // ========== DATOS ==========
         function recopilarDatos() {
             let data = { rows: [] };
-            document.querySelectorAll('.main-row').forEach((row, i) => {
-                const obsRow = document.querySelectorAll('.obs-row')[i];
-                data.rows.push({
-                    qty: row.querySelector('.row-qty').value.toUpperCase(),
-                    desc: row.querySelector('.row-desc').value.toUpperCase(),
-                    code: row.querySelector('.row-code').value.toUpperCase(),
-                    obs: obsRow ? obsRow.querySelector('.row-obs').value.toUpperCase() : ''
-                });
-            });
-            const deptoInput = document.getElementById('departamento');
-            data['departamento'] = deptoInput.value.toUpperCase();
-            data['etapa'] = document.getElementById('etapa').value.toUpperCase();
-            ['fecha-creacion', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) data[id] = el.value.toUpperCase();
-            });
-            ['canvas-almacen', 'canvas-gerencia'].forEach(id => {
-                const c = document.getElementById(id);
-                if (c) data[id] = c.toDataURL();
-            });
+            document.querySelectorAll('.main-row').forEach((row, i) => { const obsRow = document.querySelectorAll('.obs-row')[i]; data.rows.push({ qty: row.querySelector('.row-qty').value.toUpperCase(), desc: row.querySelector('.row-desc').value.toUpperCase(), code: row.querySelector('.row-code').value.toUpperCase(), obs: obsRow ? obsRow.querySelector('.row-obs').value.toUpperCase() : '' }); });
+            data['departamento'] = document.getElementById('departamento').value.toUpperCase(); data['etapa'] = document.getElementById('etapa').value.toUpperCase();
+            ['fecha-creacion', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia'].forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value.toUpperCase(); });
+            ['canvas-almacen', 'canvas-gerencia'].forEach(id => { const c = document.getElementById(id); if (c) data[id] = c.toDataURL(); });
             return data;
         }
 
-        function filtrarFilasVacias(data) {
-            if (!data || !data.rows) return data;
-            data.rows = data.rows.filter(row =>
-                row.qty.trim() !== '' || row.desc.trim() !== '' || row.code.trim() !== ''
-            );
-            return data;
-        }
-
-        function guardarDatos() {
-            if (document.getElementById('form-view').classList.contains('active'))
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(recopilarDatos()));
-        }
+        function filtrarFilasVacias(data) { if (!data || !data.rows) return data; data.rows = data.rows.filter(row => row.qty.trim() !== '' || row.desc.trim() !== '' || row.code.trim() !== '' ); return data; }
+        function guardarDatos() { if (document.getElementById('form-view').classList.contains('active')) localStorage.setItem(STORAGE_KEY, JSON.stringify(recopilarDatos())); }
 
         function cargarBorrador(dataLoad = null) {
-            document.getElementById('tbody-materiales').innerHTML = '';
-            rowCount = 0;
-            let data = dataLoad || JSON.parse(localStorage.getItem(STORAGE_KEY));
-            if (data) {
-                data = filtrarFilasVacias(data);
-            }
+            document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0; let data = dataLoad || JSON.parse(localStorage.getItem(STORAGE_KEY)); if (data) { data = filtrarFilasVacias(data); }
             if (data && data.rows && data.rows.length > 0) {
                 data.rows.forEach(r => agregarRenglon(r));
-                ['fecha-creacion', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia', 'etapa'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el && data[id]) {
-                        el.value = data[id];
-                        if (el.tagName === 'TEXTAREA') autoResize(el);
-                    }
-                });
-                setTimeout(() => {
-                    initCanvases();
-                    ['canvas-almacen', 'canvas-gerencia'].forEach(id => {
-                        if (data[id]) {
-                            const c = document.getElementById(id);
-                            const img = new Image();
-                            img.onload = () => {
-                                c.getContext('2d').clearRect(0, 0, c.width, c.height);
-                                c.getContext('2d').drawImage(img, 0, 0);
-                            };
-                            img.src = data[id];
-                        }
-                    });
-                }, 300);
-            } else {
-                for (let i = 0; i < ROWS_INICIALES; i++) agregarRenglon();
-                setTimeout(initCanvases, 300);
-            }
+                ['fecha-creacion', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia', 'etapa'].forEach(id => { const el = document.getElementById(id); if (el && data[id]) { el.value = data[id]; if (el.tagName === 'TEXTAREA') autoResize(el); } });
+                setTimeout(() => { initCanvases(); ['canvas-almacen', 'canvas-gerencia'].forEach(id => { if (data[id]) { const c = document.getElementById(id); const img = new Image(); img.onload = () => { c.getContext('2d').clearRect(0, 0, c.width, c.height); c.getContext('2d').drawImage(img, 0, 0); }; img.src = data[id]; } }); }, 300);
+            } else { for (let i = 0; i < ROWS_INICIALES; i++) agregarRenglon(); setTimeout(initCanvases, 300); }
         }
 
-        // ========== LIMPIAR ==========
         async function limpiarSolicitudActual(silent = false) {
-            if (!silent) {
-                const confirmado = await mostrarConfirmacion('¿Limpiar formato? Se perderán datos no guardados.');
-                if (!confirmado) return;
-            }
-            localStorage.removeItem(STORAGE_KEY);
-            ['canvas-almacen', 'canvas-gerencia'].forEach(limpiarCanvas);
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('fecha-creacion').value = hoy;
-            document.getElementById('fecha-entrega').value = '';
-            document.getElementById('observacion-general').value = '';
-            document.getElementById('nombre-almacen').value = '';
-            document.getElementById('nombre-gerencia').value = '';
-            document.getElementById('etapa').value = '';
-            numeroSolicitudActual = '';
-            configurarBotonImpresion('');
-            document.getElementById('tbody-materiales').innerHTML = '';
-            rowCount = 0;
+            if (!silent) { const confirmado = await mostrarConfirmacion('¿Limpiar formato? Se perderán datos no guardados.'); if (!confirmado) return; }
+            localStorage.removeItem(STORAGE_KEY); ['canvas-almacen', 'canvas-gerencia'].forEach(limpiarCanvas);
+            document.getElementById('fecha-creacion').value = new Date().toISOString().split('T')[0]; document.getElementById('fecha-entrega').value = ''; document.getElementById('observacion-general').value = ''; document.getElementById('nombre-almacen').value = ''; document.getElementById('nombre-gerencia').value = ''; document.getElementById('etapa').value = '';
+            numeroSolicitudActual = ''; configurarBotonImpresion(''); document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0;
             for (let i = 0; i < ROWS_INICIALES; i++) agregarRenglon();
             document.querySelectorAll('.campo-invalido').forEach(el => el.classList.remove('campo-invalido'));
-            guardarDatos();
-            if (!silent) {
-                mostrarNotificacion('success', 'Formato limpiado correctamente.');
-            }
+            guardarDatos(); if (!silent) { mostrarNotificacion('success', 'Formato limpiado correctamente.'); }
         }
 
-        // ========== VARIABLES DE EDICIÓN ==========
-        let solicitudEditandoId = null;
-        let numeroSolicitudActual = '';
+        let solicitudEditandoId = null; let numeroSolicitudActual = '';
 
-        // ========== GUARDAR EN HISTORIAL (INSERT o UPDATE) ==========
         async function guardarEnHistorial() {
-            if (!validarCamposObligatorios()) {
-                await mostrarAlerta('Complete todos los campos obligatorios.');
-                return;
-            }
-            let data = recopilarDatos();
-            data = filtrarFilasVacias(data);
-            if (data.rows.length === 0) {
-                await mostrarAlerta('No hay ningún ítem con contenido para guardar.');
-                return;
-            }
-            if (!currentUserInfo) {
-                await mostrarAlerta('Debe iniciar sesión.');
-                return;
-            }
+            if (!validarCamposObligatorios()) { await mostrarAlerta('Complete todos los campos obligatorios.'); return; }
+            let data = recopilarDatos(); data = filtrarFilasVacias(data); if (data.rows.length === 0) { await mostrarAlerta('No hay ningún ítem con contenido para guardar.'); return; }
+            if (!currentUserInfo) { await mostrarAlerta('Debe iniciar sesión.'); return; }
             let numeroSolicitudCreada = null;
             try {
                 if (solicitudEditandoId) {
-                    // ===== UPDATE =====
-                    const { error } = await supaUsers
-                        .from('historial_solicitudes')
-                        .update({
-                            departamento: data['departamento'] || 'SIN DEPTO',
-                            etapa: data['etapa'] || 'SIN ETAPA',
-                            datos: data,
-                            fecha_guardado: new Date().toISOString(),
-                            user_id: currentUserInfo.id
-                        })
-                        .eq('id', solicitudEditandoId);
-                    if (error) throw error;
-                    mostrarNotificacion('success', 'Solicitud actualizada exitosamente.');
+                    const { error } = await supaUsers.from('historial_solicitudes').update({ departamento: data['departamento'] || 'SIN DEPTO', etapa: data['etapa'] || 'SIN ETAPA', datos: data, fecha_guardado: new Date().toISOString(), user_id: currentUserInfo.id }).eq('id', solicitudEditandoId);
+                    if (error) throw error; mostrarNotificacion('success', 'Solicitud actualizada exitosamente.');
                 } else {
-                    // ===== INSERT =====
-                    const { data: registroCreado, error } = await supaUsers
-                        .from('historial_solicitudes')
-                        .insert([{
-                            user_id: currentUserInfo.id,
-                            creado_por: currentUserInfo.nombre,
-                            departamento: data['departamento'] || 'SIN DEPTO',
-                            etapa: data['etapa'] || 'SIN ETAPA',
-                            datos: data
-                        }])
-                        .select('id, numero_solicitud')
-                        .single();
-                    if (error) throw error;
-                    numeroSolicitudCreada = registroCreado?.numero_solicitud || null;
-                    mostrarNotificacion('success', 'Solicitud guardada exitosamente.');
+                    const { data: registroCreado, error } = await supaUsers.from('historial_solicitudes').insert([{ user_id: currentUserInfo.id, creado_por: currentUserInfo.nombre, departamento: data['departamento'] || 'SIN DEPTO', etapa: data['etapa'] || 'SIN ETAPA', datos: data }]).select('id, numero_solicitud').single();
+                    if (error) throw error; numeroSolicitudCreada = registroCreado?.numero_solicitud || null; mostrarNotificacion('success', 'Solicitud guardada exitosamente.');
                 }
-                // Limpiar modo edición y formulario
-                cancelarEdicion();
-                await limpiarSolicitudActual(true);
-                // Volver al historial
-                if (numeroSolicitudCreada) {
-                    document.getElementById('history-search-input').value = '';
-                    document.getElementById('history-filter-month').value = '';
-                    document.getElementById('history-filter-date-from').value = '';
-                    document.getElementById('history-filter-date-to').value = '';
-                    document.getElementById('history-filter-etapa').value = '';
-                }
-                await switchView('history-view');
-                if (numeroSolicitudCreada) {
-                    resaltarSolicitudRecienCreada(numeroSolicitudCreada);
-                }
-            } catch (err) {
-                await mostrarAlerta('Error: ' + err.message);
-                console.error(err);
-            }
+                cancelarEdicion(); await limpiarSolicitudActual(true);
+                if (numeroSolicitudCreada) { document.getElementById('history-search-input').value = ''; document.getElementById('history-filter-month').value = ''; document.getElementById('history-filter-date-from').value = ''; document.getElementById('history-filter-date-to').value = ''; document.getElementById('history-filter-etapa').value = ''; }
+                await switchView('history-view'); if (numeroSolicitudCreada) { resaltarSolicitudRecienCreada(numeroSolicitudCreada); }
+            } catch (err) { await mostrarAlerta('Error: ' + err.message); console.error(err); }
         }
 
-        // ========== IMPRIMIR ==========
         function configurarBotonImpresion(numeroSolicitud = '') {
-            const boton = document.querySelector('.controls-top .btn-print');
-            if (!boton) return;
-
-            if (numeroSolicitud) {
-                boton.dataset.numeroSolicitud = numeroSolicitud;
-                boton.style.display = 'inline-flex';
-            } else {
-                delete boton.dataset.numeroSolicitud;
-                boton.style.display = 'none';
-            }
+            const boton = document.querySelector('.controls-top .btn-print'); if (!boton) return;
+            if (numeroSolicitud) { boton.dataset.numeroSolicitud = numeroSolicitud; boton.style.display = 'inline-flex'; } else { delete boton.dataset.numeroSolicitud; boton.style.display = 'none'; }
         }
 
         async function imprimirSinGuardar(numeroSolicitud = '') {
             configurarBotonImpresion(numeroSolicitud);
-            if (!validarCamposObligatorios()) {
-                await mostrarAlerta('No se puede imprimir: faltan campos obligatorios.');
-                return;
-            }
+            if (!validarCamposObligatorios()) { await mostrarAlerta('No se puede imprimir: faltan campos obligatorios.'); return; }
             prepararImpresion(numeroSolicitud);
-            const afterPrint = () => {
-                restaurarDespuesImpresion();
-                window.removeEventListener('afterprint', afterPrint);
-            };
+            const afterPrint = () => { restaurarDespuesImpresion(); window.removeEventListener('afterprint', afterPrint); };
             window.addEventListener('afterprint', afterPrint);
             window.print();
-            setTimeout(() => {
-                restaurarDespuesImpresion();
-                window.removeEventListener('afterprint', afterPrint);
-            }, 1000);
+            setTimeout(() => { restaurarDespuesImpresion(); window.removeEventListener('afterprint', afterPrint); }, 1000);
         }
 
-        // ========== DASHBOARD ==========
         async function actualizarDashboard() {
-            const container = document.getElementById('stats-container');
-            container.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Cargando estadísticas...</p>';
+            const container = document.getElementById('stats-container'); container.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Cargando estadísticas...</p>';
             try {
-                let query = supaUsers.from('historial_solicitudes').select('*');
-                if (currentUserInfo.rol !== 'admin') {
-                    query = query.eq('user_id', currentUserInfo.id);
-                }
-                const { data, error } = await query;
-                if (error) throw error;
-
-                const total = data.length;
-                let tusSolicitudes = total;
-                if (currentUserInfo.rol === 'admin') {
-                    const { data: misDatos } = await supaUsers
-                        .from('historial_solicitudes')
-                        .select('*', { count: 'exact' })
-                        .eq('user_id', currentUserInfo.id);
-                    tusSolicitudes = misDatos?.length || 0;
-                }
-
-                const cards = [
-                    { label: 'Total Solicitudes', icon: '📋', color: 'stat-total', count: total },
-                    { label: 'Mis Solicitudes', icon: '👤', color: 'stat-user', count: tusSolicitudes }
-                ];
-
-                container.innerHTML = '';
-                cards.forEach(card => {
-                    const div = document.createElement('div');
-                    div.className = `stat-card ${card.color}`;
-                    div.innerHTML = `
-                        <div class="stat-icon">${card.icon}</div>
-                        <div class="stat-info">
-                            <div class="stat-number">${card.count}</div>
-                            <div class="stat-label">${card.label}</div>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-
-                const recent = data.slice(-5).reverse();
-                const list = document.getElementById('recent-list');
-                if (recent.length === 0) {
-                    list.innerHTML = '<p style="color:#6b7280;">No hay solicitudes recientes.</p>';
-                } else {
+                let query = supaUsers.from('historial_solicitudes').select('*'); if (currentUserInfo.rol !== 'admin') { query = query.eq('user_id', currentUserInfo.id); }
+                const { data, error } = await query; if (error) throw error;
+                const total = data.length; let tusSolicitudes = total;
+                if (currentUserInfo.rol === 'admin') { const { data: misDatos } = await supaUsers.from('historial_solicitudes').select('*', { count: 'exact' }).eq('user_id', currentUserInfo.id); tusSolicitudes = misDatos?.length || 0; }
+                const cards = [{ label: 'Total Solicitudes', icon: '📋', color: 'stat-total', count: total }, { label: 'Mis Solicitudes', icon: '👤', color: 'stat-user', count: tusSolicitudes }];
+                container.innerHTML = ''; cards.forEach(card => { const div = document.createElement('div'); div.className = `stat-card ${card.color}`; div.innerHTML = `<div class="stat-icon">${card.icon}</div><div class="stat-info"><div class="stat-number">${card.count}</div><div class="stat-label">${card.label}</div></div>`; container.appendChild(div); });
+                const recent = data.slice(-5).reverse(); const list = document.getElementById('recent-list');
+                if (recent.length === 0) { list.innerHTML = '<p style="color:#6b7280;">No hay solicitudes recientes.</p>'; } else {
                     list.innerHTML = '';
                     recent.forEach(reg => {
-                        const item = document.createElement('div');
-                        item.className = 'recent-item';
-                        item.innerHTML = `
-                            <div class="info">
-                                <span class="departamento">${reg.departamento || 'SIN DEPTO'}</span>
-                                <span class="fecha">${new Date(reg.fecha_guardado || Date.now()).toLocaleDateString()}</span>
-                                ${reg.etapa ? `<span class="etapa">${reg.etapa}</span>` : ''}
-                            </div>
-                            <div class="actions">
-                                <button class="btn-sm btn-open" onclick="abrirDelHistorial('${reg.id}')">📂</button>
-                                <button class="btn-sm btn-edit" onclick="editarDelHistorial('${reg.id}')">✏️</button>
-                                <button class="btn-sm btn-delete" onclick="eliminarDelHistorial('${reg.id}')">🗑️</button>
-                                <button class="btn-sm btn-print" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')">🖨️</button>
-                            </div>
-                        `;
+                        const item = document.createElement('div'); item.className = 'recent-item';
+                        item.innerHTML = `<div class="info"><span class="departamento">${reg.departamento || 'SIN DEPTO'}</span><span class="fecha">${new Date(reg.fecha_guardado || Date.now()).toLocaleDateString()}</span>${reg.etapa ? `<span class="etapa">${reg.etapa}</span>` : ''}</div><div class="actions"><button class="btn-sm btn-open" onclick="abrirDelHistorial('${reg.id}')">📂</button><button class="btn-sm btn-edit" onclick="editarDelHistorial('${reg.id}')">✏️</button><button class="btn-sm btn-delete" onclick="eliminarDelHistorial('${reg.id}')">🗑️</button><button class="btn-sm btn-print" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')">🖨️</button></div>`;
                         list.appendChild(item);
                     });
                 }
-            } catch (err) {
-                container.innerHTML = `<p style="color:red;">Error al cargar dashboard: ${err.message}</p>`;
-                console.error(err);
-            }
+            } catch (err) { container.innerHTML = `<p style="color:red;">Error al cargar dashboard: ${err.message}</p>`; console.error(err); }
         }
 
-        // ========== HISTORIAL ==========
         let historialData = [];
-
         async function renderHistorial() {
-            const grid = document.getElementById('history-grid');
-            grid.innerHTML = '<p style="text-align:center;width:100%;">Cargando...</p>';
-            if (!currentUserInfo) {
-                grid.innerHTML = '<p>Inicie sesión.</p>';
-                return;
-            }
-            try {
-                let query = supaUsers.from('historial_solicitudes').select('*');
-                if (currentUserInfo.rol !== 'admin') {
-                    query = query.eq('user_id', currentUserInfo.id);
-                }
-                query = query.order('fecha_guardado', { ascending: false });
-                const { data, error } = await query;
-                if (error) throw error;
-                historialData = data || [];
-                aplicarFiltrosHistorial(); // Aplica los filtros actuales
-            } catch (err) {
-                grid.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
-                console.error(err);
-            }
+            const grid = document.getElementById('history-grid'); grid.innerHTML = '<p style="text-align:center;width:100%;">Cargando...</p>'; if (!currentUserInfo) { grid.innerHTML = '<p>Inicie sesión.</p>'; return; }
+            try { let query = supaUsers.from('historial_solicitudes').select('*'); if (currentUserInfo.rol !== 'admin') { query = query.eq('user_id', currentUserInfo.id); } query = query.order('fecha_guardado', { ascending: false }); const { data, error } = await query; if (error) throw error; historialData = data || []; aplicarFiltrosHistorial(); } catch (err) { grid.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`; console.error(err); }
         }
 
         function aplicarFiltrosHistorial() {
-            const grid = document.getElementById('history-grid');
-            const texto = document.getElementById('history-search-input').value.trim().toUpperCase();
-            const mes = document.getElementById('history-filter-month').value; // formato "YYYY-MM"
-            const fromDate = document.getElementById('history-filter-date-from').value;
-            const toDate = document.getElementById('history-filter-date-to').value;
-            const etapa = document.getElementById('history-filter-etapa').value.toUpperCase();
-
+            const texto = document.getElementById('history-search-input').value.trim().toUpperCase(); const mes = document.getElementById('history-filter-month').value; const fromDate = document.getElementById('history-filter-date-from').value; const toDate = document.getElementById('history-filter-date-to').value; const etapa = document.getElementById('history-filter-etapa').value.toUpperCase();
             let filtrados = historialData;
-
-            // Filtro por texto (descripción o código)
-            if (texto !== '') {
-                filtrados = filtrados.filter(reg => {
-                    if (!reg.datos || !reg.datos.rows) return false;
-                    return reg.datos.rows.some(row => {
-                        const desc = (row.desc || '').toUpperCase();
-                        const code = (row.code || '').toUpperCase();
-                        return desc.includes(texto) || code.includes(texto);
-                    });
-                });
-            }
-
-            // Filtro por mes (año-mes)
-            if (mes !== '') {
-                filtrados = filtrados.filter(reg => {
-                    const fecha = new Date(reg.fecha_guardado);
-                    const yearMonth = fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0');
-                    return yearMonth === mes;
-                });
-            }
-
-            // Filtro por fecha desde
-            if (fromDate !== '') {
-                const from = new Date(fromDate);
-                from.setHours(0, 0, 0, 0);
-                filtrados = filtrados.filter(reg => {
-                    const fecha = new Date(reg.fecha_guardado);
-                    return fecha >= from;
-                });
-            }
-
-            // Filtro por fecha hasta
-            if (toDate !== '') {
-                const to = new Date(toDate);
-                to.setHours(23, 59, 59, 999);
-                filtrados = filtrados.filter(reg => {
-                    const fecha = new Date(reg.fecha_guardado);
-                    return fecha <= to;
-                });
-            }
-
-            // Filtro por etapa
-            if (etapa !== '') {
-                filtrados = filtrados.filter(reg => {
-                    return (reg.etapa || '').toUpperCase() === etapa;
-                });
-            }
-
+            if (texto !== '') { filtrados = filtrados.filter(reg => { if (!reg.datos || !reg.datos.rows) return false; return reg.datos.rows.some(row => { const desc = (row.desc || '').toUpperCase(); const code = (row.code || '').toUpperCase(); return desc.includes(texto) || code.includes(texto); }); }); }
+            if (mes !== '') { filtrados = filtrados.filter(reg => { const fecha = new Date(reg.fecha_guardado); const yearMonth = fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0'); return yearMonth === mes; }); }
+            if (fromDate !== '') { const from = new Date(fromDate); from.setHours(0, 0, 0, 0); filtrados = filtrados.filter(reg => { const fecha = new Date(reg.fecha_guardado); return fecha >= from; }); }
+            if (toDate !== '') { const to = new Date(toDate); to.setHours(23, 59, 59, 999); filtrados = filtrados.filter(reg => { const fecha = new Date(reg.fecha_guardado); return fecha <= to; }); }
+            if (etapa !== '') { filtrados = filtrados.filter(reg => { return (reg.etapa || '').toUpperCase() === etapa; }); }
             renderizarTarjetas(filtrados);
         }
 
         function renderizarTarjetas(data) {
-            const grid = document.getElementById('history-grid');
-            if (!data || data.length === 0) {
-                grid.innerHTML = '<p style="text-align:center;width:100%;">No hay solicitudes que coincidan con los filtros.</p>';
-                return;
-            }
+            const grid = document.getElementById('history-grid'); if (!data || data.length === 0) { grid.innerHTML = '<p style="text-align:center;width:100%;">No hay solicitudes que coincidan con los filtros.</p>'; return; }
             grid.innerHTML = '';
             data.forEach(reg => {
-                const numSolicitud = reg.numero_solicitud || 'SIN NÚMERO';
-                const rows = reg.datos?.rows || [];
-                const primerosItems = rows.slice(0, 5);
-
-                const esAdminOPropietario = (currentUserInfo.rol === 'admin' || reg.user_id === currentUserInfo.id);
-                const btnEliminar = esAdminOPropietario ?
-                    `<button class="btn-sm btn-delete" onclick="eliminarDelHistorial('${reg.id}')">🗑️ Eliminar</button>` :
-                    '';
-
-                const card = document.createElement('div');
-                card.className = 'history-card';
-                card.dataset.numeroSolicitud = numSolicitud;
-                card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                        <span class="solicitud-numero">📁 ${numSolicitud}</span>
-                        <span class="departamento">🏢 ${reg.departamento || 'SIN DEPTO'}</span>
-                        ${reg.etapa ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 10px; border-radius:12px;">${reg.etapa}</span>` : ''}
-                    </div>
-
-                    <div style="margin:10px 0 6px 0; flex:1;">
-                        ${primerosItems.length > 0 ? `
-                            <div style="font-weight:600; font-size:13px; color:#4b5563; margin-bottom:4px;">Materiales:</div>
-                            ${primerosItems.map(row => `
-                                <div class="material-item">
-                                    <span class="desc">🔹 ${row.desc || 'Sin descripción'}</span>
-                                    ${row.code ? `<span class="code">Cód: ${row.code}</span>` : ''}
-                                </div>
-                            `).join('')}
-                            ${rows.length > 5 ? `<div style="font-size:12px; color:#6b7280; margin-top:4px;">... y ${rows.length - 5} más</div>` : ''}
-                        ` : `<div style="font-size:13px; color:#9ca3af;">Sin materiales registrados</div>`}
-                    </div>
-
-                    <div class="fecha">📅 ${new Date(reg.fecha_guardado).toLocaleString()}</div>
-
-                    <div class="history-actions">
-                        <button class="btn-sm btn-open" onclick="abrirDelHistorial('${reg.id}')">📂 Abrir</button>
-                        <button class="btn-sm btn-edit" onclick="editarDelHistorial('${reg.id}')">✏️ Editar</button>
-                        <button class="btn-sm btn-print" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')">🖨️ Imprimir</button>
-                        ${btnEliminar}
-                    </div>
-                `;
+                const numSolicitud = reg.numero_solicitud || 'SIN NÚMERO'; const rows = reg.datos?.rows || []; const primerosItems = rows.slice(0, 5); const esAdminOPropietario = (currentUserInfo.rol === 'admin' || reg.user_id === currentUserInfo.id); const btnEliminar = esAdminOPropietario ? `<button class="btn-sm btn-delete" onclick="eliminarDelHistorial('${reg.id}')">🗑️ Eliminar</button>` : '';
+                const card = document.createElement('div'); card.className = 'history-card'; card.dataset.numeroSolicitud = numSolicitud;
+                card.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;"><span class="solicitud-numero">📁 ${numSolicitud}</span><span class="departamento">🏢 ${reg.departamento || 'SIN DEPTO'}</span>${reg.etapa ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 10px; border-radius:12px;">${reg.etapa}</span>` : ''}</div><div style="margin:10px 0 6px 0; flex:1;">${primerosItems.length > 0 ? `<div style="font-weight:600; font-size:13px; color:#4b5563; margin-bottom:4px;">Materiales:</div>${primerosItems.map(row => `<div class="material-item"><span class="desc">🔹 ${row.desc || 'Sin descripción'}</span>${row.code ? `<span class="code">Cód: ${row.code}</span>` : ''}</div>`).join('')}${rows.length > 5 ? `<div style="font-size:12px; color:#6b7280; margin-top:4px;">... y ${rows.length - 5} más</div>` : ''}` : `<div style="font-size:13px; color:#9ca3af;">Sin materiales registrados</div>`}</div><div class="fecha">📅 ${new Date(reg.fecha_guardado).toLocaleString()}</div><div class="history-actions"><button class="btn-sm btn-open" onclick="abrirDelHistorial('${reg.id}')">📂 Abrir</button><button class="btn-sm btn-edit" onclick="editarDelHistorial('${reg.id}')">✏️ Editar</button><button class="btn-sm btn-print" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')">🖨️ Imprimir</button>${btnEliminar}</div>`;
                 grid.appendChild(card);
             });
         }
 
-        function resaltarSolicitudRecienCreada(numeroSolicitud) {
-            const card = Array.from(document.querySelectorAll('.history-card'))
-                .find(item => item.dataset.numeroSolicitud === numeroSolicitud);
-            if (!card) return;
-
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            requestAnimationFrame(() => card.classList.add('recently-created'));
-            card.addEventListener('animationend', () => {
-                card.classList.remove('recently-created');
-            }, { once: true });
-        }
-
-        // ========== FUNCIONES DE EDICIÓN ==========
-        function editarDelHistorial(id) {
-            solicitudEditandoId = id;
-            abrirDelHistorial(id, true);
-        }
+        function resaltarSolicitudRecienCreada(numeroSolicitud) { const card = Array.from(document.querySelectorAll('.history-card')).find(item => item.dataset.numeroSolicitud === numeroSolicitud); if (!card) return; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); requestAnimationFrame(() => card.classList.add('recently-created')); card.addEventListener('animationend', () => { card.classList.remove('recently-created'); }, { once: true }); }
+        function editarDelHistorial(id) { solicitudEditandoId = id; abrirDelHistorial(id, true); }
 
         async function abrirDelHistorial(id, modoEdicion = false) {
             try {
-                const { data, error } = await supaUsers
-                    .from('historial_solicitudes')
-                    .select('datos, numero_solicitud')
-                    .eq('id', id)
-                    .single();
-                if (error) throw error;
+                const { data, error } = await supaUsers.from('historial_solicitudes').select('datos, numero_solicitud').eq('id', id).single(); if (error) throw error;
                 if (data && data.datos) {
-                    numeroSolicitudActual = data.numero_solicitud || '';
-                    configurarBotonImpresion('');
-                    const datosFiltrados = filtrarFilasVacias(data.datos);
-                    if (modoEdicion) {
-                        const indicator = document.getElementById('modo-edicion-indicator');
-                        indicator.style.display = 'flex';
-                        document.getElementById('modo-edicion-texto').textContent =
-                            `✏️ Editando solicitud: ${data.numero_solicitud || 'SIN NÚMERO'}`;
-                        switchView('form-view');
-                        cargarBorrador(datosFiltrados);
-                    } else {
-                        cancelarEdicion();
-                        switchView('form-view');
-                        cargarBorrador(datosFiltrados);
-                    }
-                } else {
-                    await mostrarAlerta('No se encontraron datos.');
-                }
-            } catch (err) {
-                await mostrarAlerta('Error: ' + err.message);
-                console.error(err);
-            }
+                    numeroSolicitudActual = data.numero_solicitud || ''; configurarBotonImpresion(''); const datosFiltrados = filtrarFilasVacias(data.datos);
+                    if (modoEdicion) { const indicator = document.getElementById('modo-edicion-indicator'); indicator.style.display = 'flex'; document.getElementById('modo-edicion-texto').textContent = `✏️ Editando solicitud: ${data.numero_solicitud || 'SIN NÚMERO'}`; switchView('form-view'); cargarBorrador(datosFiltrados); } else { cancelarEdicion(); switchView('form-view'); cargarBorrador(datosFiltrados); }
+                } else { await mostrarAlerta('No se encontraron datos.'); }
+            } catch (err) { await mostrarAlerta('Error: ' + err.message); console.error(err); }
         }
 
-        function cancelarEdicion() {
-            solicitudEditandoId = null;
-            document.getElementById('modo-edicion-indicator').style.display = 'none';
-        }
+        function cancelarEdicion() { solicitudEditandoId = null; document.getElementById('modo-edicion-indicator').style.display = 'none'; }
 
-        // ========== IMPRIMIR DESDE HISTORIAL / DASHBOARD ==========
         async function imprimirSolicitudDesdeHistorial(id) {
             try {
-                const { data, error } = await supaUsers
-                    .from('historial_solicitudes')
-                    .select('datos, numero_solicitud')
-                    .eq('id', id)
-                    .single();
-                if (error) throw error;
-                if (data && data.datos) {
-                    numeroSolicitudActual = data.numero_solicitud || '';
-                    const datosFiltrados = filtrarFilasVacias(data.datos);
-                    // Cancelar modo edición por si acaso
-                    cancelarEdicion();
-                    // Cambiar a la vista de formulario
-                    switchView('form-view');
-                    // Cargar los datos
-                    cargarBorrador(datosFiltrados);
-                    // Esperar a que se renderice y luego imprimir
-                    setTimeout(() => {
-                        imprimirSinGuardar(data.numero_solicitud || '');
-                    }, 300);
-                } else {
-                    await mostrarAlerta('No se encontraron datos para imprimir.');
-                }
-            } catch (err) {
-                await mostrarAlerta('Error: ' + err.message);
-                console.error(err);
-            }
+                const { data, error } = await supaUsers.from('historial_solicitudes').select('datos, numero_solicitud').eq('id', id).single(); if (error) throw error;
+                if (data && data.datos) { numeroSolicitudActual = data.numero_solicitud || ''; const datosFiltrados = filtrarFilasVacias(data.datos); cancelarEdicion(); switchView('form-view'); cargarBorrador(datosFiltrados); setTimeout(() => { imprimirSinGuardar(data.numero_solicitud || ''); }, 300); } else { await mostrarAlerta('No se encontraron datos para imprimir.'); }
+            } catch (err) { await mostrarAlerta('Error: ' + err.message); console.error(err); }
         }
 
-        // ========== FILTROS ==========
-        function limpiarFiltrosHistorial() {
-            document.getElementById('history-search-input').value = '';
-            document.getElementById('history-filter-month').value = '';
-            document.getElementById('history-filter-date-from').value = '';
-            document.getElementById('history-filter-date-to').value = '';
-            document.getElementById('history-filter-etapa').value = '';
-            aplicarFiltrosHistorial();
-        }
+        function limpiarFiltrosHistorial() { document.getElementById('history-search-input').value = ''; document.getElementById('history-filter-month').value = ''; document.getElementById('history-filter-date-from').value = ''; document.getElementById('history-filter-date-to').value = ''; document.getElementById('history-filter-etapa').value = ''; aplicarFiltrosHistorial(); }
 
-        // ========== ELIMINAR ==========
         async function eliminarDelHistorial(id) {
-            const confirmado = await mostrarConfirmacion('¿Eliminar esta solicitud?');
-            if (!confirmado) return;
-            try {
-                const { error } = await supaUsers
-                    .from('historial_solicitudes')
-                    .delete()
-                    .eq('id', id);
-                if (error) throw error;
-                mostrarNotificacion('success', 'Solicitud eliminada.');
-                if (document.getElementById('dashboard-view').classList.contains('active')) {
-                    actualizarDashboard();
-                } else {
-                    renderHistorial();
-                }
-            } catch (err) {
-                await mostrarAlerta('Error al eliminar: ' + err.message);
-                console.error(err);
-            }
+            const confirmado = await mostrarConfirmacion('¿Eliminar esta solicitud?'); if (!confirmado) return;
+            try { const { error } = await supaUsers.from('historial_solicitudes').delete().eq('id', id); if (error) throw error; mostrarNotificacion('success', 'Solicitud eliminada.'); if (document.getElementById('dashboard-view').classList.contains('active')) { actualizarDashboard(); } else { renderHistorial(); } } catch (err) { await mostrarAlerta('Error al eliminar: ' + err.message); console.error(err); }
         }
 
-        // ========== IMPRESIÓN NUEVA LÓGICA DE SEGMENTACIÓN ==========
+        // ========== IMPRESIÓN NUEVA LÓGICA ==========
         let rowsToRestore = [];
-        let printObservationHeight = null;
 
         function configurarNumeroSolicitudImpresion(numeroSolicitud) {
             let style = document.getElementById('print-solicitud-page-style');
-            if (!style) {
-                style = document.createElement('style');
-                style.id = 'print-solicitud-page-style';
-                document.head.appendChild(style);
-            }
-
-            const numeroSeguro = String(numeroSolicitud || 'SIN NÚMERO')
-                .replace(/_/g, ' ')
-                .replace(/\\/g, '\\\\')
-                .replace(/"/g, '\\"')
-                .replace(/[\r\n]+/g, ' ');
-            style.textContent = `
-                @page {
-                    @top-left {
-                        content: "${numeroSeguro}";
-                        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-                        font-size: 10px;
-                        margin-left: 5mm;
-                        text-align: left;
-                    }
-
-                    @bottom-left {
-                        content: "${numeroSeguro}";
-                        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-                        font-size: 10px;
-                        margin-left: 5mm;
-                        text-align: left;
-                    }
-                }
-            `;
+            if (!style) { style = document.createElement('style'); style.id = 'print-solicitud-page-style'; document.head.appendChild(style); }
+            const numeroSeguro = String(numeroSolicitud || 'SIN NÚMERO').replace(/_/g, ' ').replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
+            style.textContent = `@page { @top-left { content: "${numeroSeguro}"; font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-left: 5mm; text-align: left; } @bottom-left { content: "${numeroSeguro}"; font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-left: 5mm; text-align: left; } }`;
         }
 
         function prepararImpresion(numeroSolicitud = '') {
-            if (
-                rowsToRestore.length > 0 ||
-                document.getElementById('tabla-materiales-2') ||
-                document.body.classList.contains('print-preparing')
-            ) {
-                restaurarDespuesImpresion();
-            }
-
+            if (rowsToRestore.length > 0 || document.getElementById('tabla-materiales-2') || document.body.classList.contains('print-preparing')) { restaurarDespuesImpresion(); }
             configurarNumeroSolicitudImpresion(numeroSolicitud);
-
-            const generalObservation = document.getElementById('observacion-general');
-            printObservationHeight = generalObservation.style.getPropertyValue('--print-observation-height');
-            generalObservation.style.removeProperty('--print-observation-height');
+            
+            // Agregamos la clase que establece los anchos de impresión
             document.body.classList.add('print-preparing');
-            const observationHeight = Math.max(30, Math.min(generalObservation.scrollHeight, 112));
-            generalObservation.style.setProperty('--print-observation-height', `${observationHeight}px`);
+            
+            // Recalcular alturas de todos los textareas sin límite ahora que las reglas CSS cambiaron
+            document.querySelectorAll('textarea').forEach(ta => {
+                ta.style.maxHeight = 'none'; // Quitar límite de altura temporalmente
+                autoResize(ta);
+            });
 
-            // 1. Identificar y ocultar filas totalmente vacías tal como la lógica original
+            // 1. Identificar y ocultar filas totalmente vacías
             document.querySelectorAll('.main-row').forEach(row => {
-                        const qty = row.querySelector('.row-qty').value.trim();
-                        const desc = row.querySelector('.row-desc').value.trim();
-                        const code = row.querySelector('.row-code').value.trim();
-                        if (qty === '' && desc === '' && code === '') {
-                            row.classList.add('fila-vacia');
-                        } else {
-                            row.classList.remove('fila-vacia');
-                        }
-                    });
-
-                    document.querySelectorAll('.obs-row').forEach(obsRow => {
+                const qty = row.querySelector('.row-qty').value.trim(); const desc = row.querySelector('.row-desc').value.trim(); const code = row.querySelector('.row-code').value.trim();
+                if (qty === '' && desc === '' && code === '') { row.classList.add('fila-vacia'); } else { row.classList.remove('fila-vacia'); }
+            });
+            document.querySelectorAll('.obs-row').forEach(obsRow => {
                 const obsText = obsRow.querySelector('.row-obs').value.trim();
-                if (obsText === '') {
-                    obsRow.classList.add('obs-vacia');
-                } else {
-                    obsRow.classList.remove('obs-vacia');
-                }
+                if (obsText === '') { obsRow.classList.add('obs-vacia'); } else { obsRow.classList.remove('obs-vacia'); }
             });
 
             // 2. Dejar en la primera hoja solo los renglones que no invaden el pie fijo.
@@ -3023,317 +1515,96 @@
             if (firstOverflowIndex !== -1) {
                 const rowsToMove = activeRows.slice(firstOverflowIndex);
                 const originalTable = document.getElementById('tabla-materiales');
-                
-                // Crear la tabla secundaria transitoria
-                const table2 = document.createElement('table');
-                table2.id = 'tabla-materiales-2';
-                table2.style.width = '100%';
-                table2.style.pageBreakBefore = 'always';
-                
-                // Clonar el encabezado original para mantener la repetición de títulos
+                const table2 = document.createElement('table'); table2.id = 'tabla-materiales-2'; table2.style.width = '100%'; table2.style.pageBreakBefore = 'always';
                 const originalThead = originalTable.querySelector('thead');
-                if (originalThead) {
-                    table2.appendChild(originalThead.cloneNode(true));
-                }
+                if (originalThead) { table2.appendChild(originalThead.cloneNode(true)); }
+                const tbody2 = document.createElement('tbody'); table2.appendChild(tbody2);
                 
-                const tbody2 = document.createElement('tbody');
-                table2.appendChild(tbody2);
-                
-                // Mover los renglones que no caben en la primera hoja sin perder canvas ni eventos.
                 rowsToMove.forEach(row => {
-                    const id = row.getAttribute('data-id');
-                    const obsRow = document.getElementById(`obs-row-${id}`);
-                    
-                    // Almacenar referencias exactas de la posición original para su posterior restauración
-                    rowsToRestore.push({
-                        row: row,
-                        obsRow: obsRow,
-                        parent: row.parentNode,
-                        nextSibling: obsRow ? obsRow.nextSibling : row.nextSibling
-                    });
-                    
-                    tbody2.appendChild(row);
-                    if (obsRow) {
-                        tbody2.appendChild(obsRow);
-                    }
+                    const id = row.getAttribute('data-id'); const obsRow = document.getElementById(`obs-row-${id}`);
+                    rowsToRestore.push({ row: row, obsRow: obsRow, parent: row.parentNode, nextSibling: obsRow ? obsRow.nextSibling : row.nextSibling });
+                    tbody2.appendChild(row); if (obsRow) { tbody2.appendChild(obsRow); }
                 });
-                
-                // El pie permanece en la primera hoja; los productos restantes inician la siguiente.
-                if (tbody2.querySelector('.main-row') && footer && footer.parentNode) {
-                    footer.parentNode.insertBefore(table2, footer.nextSibling);
-                }
+                if (tbody2.querySelector('.main-row') && footer && footer.parentNode) { footer.parentNode.insertBefore(table2, footer.nextSibling); }
             }
         }
 
         function restaurarDespuesImpresion() {
-            // Reinsertar las filas trasladadas a su contenedor y orden jerárquico original en reversa
             for (let i = rowsToRestore.length - 1; i >= 0; i--) {
                 const item = rowsToRestore[i];
                 if (item.nextSibling) {
                     if (item.obsRow) item.parent.insertBefore(item.obsRow, item.nextSibling);
                     item.parent.insertBefore(item.row, item.obsRow || item.nextSibling);
                 } else {
-                    item.parent.appendChild(item.row);
-                    if (item.obsRow) item.parent.appendChild(item.obsRow);
+                    item.parent.appendChild(item.row); if (item.obsRow) item.parent.appendChild(item.obsRow);
                 }
             }
-            
-            // Destruir la tabla secundaria temporal
-            const table2 = document.getElementById('tabla-materiales-2');
-            if (table2) {
-                table2.remove();
-            }
+            const table2 = document.getElementById('tabla-materiales-2'); if (table2) { table2.remove(); }
             rowsToRestore = [];
+            
+            // Retirar la preparación de impresión
             document.body.classList.remove('print-preparing');
-            const generalObservation = document.getElementById('observacion-general');
-            if (printObservationHeight) {
-                generalObservation.style.setProperty('--print-observation-height', printObservationHeight);
-            } else {
-                generalObservation.style.removeProperty('--print-observation-height');
-            }
-            printObservationHeight = null;
-
-            // Limpiar las clases de filas vacías para restaurar la visualización en pantalla
+            
+            // Recalcular textareas para volver al tamaño correcto en pantalla
+            document.querySelectorAll('textarea').forEach(ta => {
+                ta.style.maxHeight = ''; // Restaurar restricciones de alto si las había
+                autoResize(ta);
+            });
+            
             document.querySelectorAll('.main-row.fila-vacia').forEach(row => row.classList.remove('fila-vacia'));
         }
 
         // ========== ADMIN ==========
         let adminUsers = [];
-
-        function escaparHtml(valor = '') {
-            return String(valor)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
+        function escaparHtml(valor = '') { return String(valor).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
         async function cargarUsuariosAdmin() {
-            const list = document.getElementById('admin-users-list');
-            list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando usuarios...</td></tr>';
-            const { data, error } = await supaUsers
-                .from('usuarios')
-                .select('id, email, nombre_completo, rol')
-                .order('nombre_completo', { ascending: true });
-            if (error) {
-                list.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#b91c1c;">Error al cargar usuarios: ${escaparHtml(error.message)}</td></tr>`;
-                return;
-            }
-            adminUsers = data || [];
-            if (!adminUsers.length) {
-                list.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay usuarios registrados.</td></tr>';
-                return;
-            }
+            const list = document.getElementById('admin-users-list'); list.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando usuarios...</td></tr>';
+            const { data, error } = await supaUsers.from('usuarios').select('id, email, nombre_completo, rol').order('nombre_completo', { ascending: true });
+            if (error) { list.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#b91c1c;">Error al cargar usuarios: ${escaparHtml(error.message)}</td></tr>`; return; }
+            adminUsers = data || []; if (!adminUsers.length) { list.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay usuarios registrados.</td></tr>'; return; }
             const emailActual = (currentUserInfo?.email || '').trim().toLowerCase();
             list.innerHTML = adminUsers.map(user => {
                 const esUsuarioActual = (user.email || '').trim().toLowerCase() === emailActual;
-                return `
-                <tr class="${esUsuarioActual ? 'admin-current-user' : ''}">
-                    <td>${escaparHtml(user.nombre_completo)}${esUsuarioActual ? '<span class="admin-current-user-badge">Tu cuenta</span>' : ''}</td>
-                    <td>${escaparHtml(user.email)}</td>
-                    <td>${escaparHtml(user.rol)}</td>
-                    <td>
-                        <div class="admin-user-actions">
-                            <button type="button" class="btn btn-primary btn-editar-usuario" data-user-id="${escaparHtml(user.id)}">Editar</button>
-                            <button type="button" class="btn btn-delete btn-eliminar-usuario" data-user-id="${escaparHtml(user.id)}">Eliminar</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+                return `<tr class="${esUsuarioActual ? 'admin-current-user' : ''}"><td>${escaparHtml(user.nombre_completo)}${esUsuarioActual ? '<span class="admin-current-user-badge">Tu cuenta</span>' : ''}</td><td>${escaparHtml(user.email)}</td><td>${escaparHtml(user.rol)}</td><td><div class="admin-user-actions"><button type="button" class="btn btn-primary btn-editar-usuario" data-user-id="${escaparHtml(user.id)}">Editar</button><button type="button" class="btn btn-delete btn-eliminar-usuario" data-user-id="${escaparHtml(user.id)}">Eliminar</button></div></td></tr>`;
             }).join('');
-            document.querySelectorAll('.btn-editar-usuario').forEach(button => {
-                button.addEventListener('click', () => abrirFormularioUsuario(button.dataset.userId));
-            });
-            document.querySelectorAll('.btn-eliminar-usuario').forEach(button => {
-                button.addEventListener('click', () => eliminarUsuarioAdmin(button.dataset.userId));
-            });
+            document.querySelectorAll('.btn-editar-usuario').forEach(button => { button.addEventListener('click', () => abrirFormularioUsuario(button.dataset.userId)); });
+            document.querySelectorAll('.btn-eliminar-usuario').forEach(button => { button.addEventListener('click', () => eliminarUsuarioAdmin(button.dataset.userId)); });
         }
-
-        function mostrarCampoContrasena() {
-            const crear = !document.getElementById('admin-user-id').value;
-            const cambiar = document.getElementById('admin-cambiar-password').checked;
-            const visible = crear || cambiar;
-            document.getElementById('admin-password-group').style.display = visible ? 'block' : 'none';
-            document.getElementById('admin-password').required = visible;
-        }
-
+        function mostrarCampoContrasena() { const crear = !document.getElementById('admin-user-id').value; const cambiar = document.getElementById('admin-cambiar-password').checked; const visible = crear || cambiar; document.getElementById('admin-password-group').style.display = visible ? 'block' : 'none'; document.getElementById('admin-password').required = visible; }
         function abrirFormularioUsuario(userId = null) {
-            const user = userId ? adminUsers.find(item => item.id === userId) : null;
-            const esEdicion = Boolean(user);
-            document.getElementById('admin-user-form').reset();
-            document.getElementById('admin-user-id').value = user?.id || '';
-            document.getElementById('admin-email').value = user?.email || '';
-            document.getElementById('admin-nombre').value = user?.nombre_completo || '';
-            document.getElementById('admin-rol').value = user?.rol || 'usuario';
-            document.getElementById('admin-cambiar-password').checked = false;
-            document.getElementById('admin-change-password-label').style.display = esEdicion ? 'flex' : 'none';
-            document.getElementById('admin-form-title').textContent = esEdicion ? 'Editar usuario' : 'Crear usuario';
-            document.getElementById('btn-guardar-admin-user').textContent = esEdicion ? 'Guardar cambios' : 'Crear usuario';
-            document.getElementById('admin-msg').style.display = 'none';
-            mostrarCampoContrasena();
-            document.getElementById('admin-user-modal').classList.add('active');
+            const user = userId ? adminUsers.find(item => item.id === userId) : null; const esEdicion = Boolean(user);
+            document.getElementById('admin-user-form').reset(); document.getElementById('admin-user-id').value = user?.id || ''; document.getElementById('admin-email').value = user?.email || ''; document.getElementById('admin-nombre').value = user?.nombre_completo || ''; document.getElementById('admin-rol').value = user?.rol || 'usuario'; document.getElementById('admin-cambiar-password').checked = false; document.getElementById('admin-change-password-label').style.display = esEdicion ? 'flex' : 'none'; document.getElementById('admin-form-title').textContent = esEdicion ? 'Editar usuario' : 'Crear usuario'; document.getElementById('btn-guardar-admin-user').textContent = esEdicion ? 'Guardar cambios' : 'Crear usuario'; document.getElementById('admin-msg').style.display = 'none'; mostrarCampoContrasena(); document.getElementById('admin-user-modal').classList.add('active');
         }
-
-        function cerrarFormularioUsuario() {
-            document.getElementById('admin-user-modal').classList.remove('active');
-        }
-
-        async function mensajeErrorFuncion(error) {
-            if (error?.context instanceof Response) {
-                const body = await error.context.clone().json().catch(() => null);
-                if (body?.error) return body.error;
-            }
-            return error?.message || 'No se pudo completar la operación.';
-        }
-
+        function cerrarFormularioUsuario() { document.getElementById('admin-user-modal').classList.remove('active'); }
+        async function mensajeErrorFuncion(error) { if (error?.context instanceof Response) { const body = await error.context.clone().json().catch(() => null); if (body?.error) return body.error; } return error?.message || 'No se pudo completar la operación.'; }
         async function eliminarUsuarioAdmin(userId) {
-            const user = adminUsers.find(item => item.id === userId);
-            if (!user) return;
-            const confirmado = await mostrarConfirmacion(
-                `¿Eliminar permanentemente a ${user.nombre_completo || user.email}? Esta acción borra su perfil y acceso.`
-            );
-            if (!confirmado) return;
-            try {
-                const { error } = await supaUsers.functions.invoke('admin-users', {
-                    body: { action: 'delete', userId }
-                });
-                if (error) throw error;
-                mostrarNotificacion('success', 'Usuario eliminado exitosamente.');
-                await cargarUsuariosAdmin();
-            } catch (error) {
-                await mostrarAlerta('Error al eliminar usuario: ' + await mensajeErrorFuncion(error));
-            }
+            const user = adminUsers.find(item => item.id === userId); if (!user) return; const confirmado = await mostrarConfirmacion(`¿Eliminar permanentemente a ${user.nombre_completo || user.email}? Esta acción borra su perfil y acceso.`); if (!confirmado) return;
+            try { const { error } = await supaUsers.functions.invoke('admin-users', { body: { action: 'delete', userId } }); if (error) throw error; mostrarNotificacion('success', 'Usuario eliminado exitosamente.'); await cargarUsuariosAdmin(); } catch (error) { await mostrarAlerta('Error al eliminar usuario: ' + await mensajeErrorFuncion(error)); }
         }
-
-        document.getElementById('btn-nuevo-usuario').addEventListener('click', () => abrirFormularioUsuario());
-        document.getElementById('btn-cancelar-admin-user').addEventListener('click', cerrarFormularioUsuario);
-        document.getElementById('admin-cambiar-password').addEventListener('change', mostrarCampoContrasena);
-
+        document.getElementById('btn-nuevo-usuario').addEventListener('click', () => abrirFormularioUsuario()); document.getElementById('btn-cancelar-admin-user').addEventListener('click', cerrarFormularioUsuario); document.getElementById('admin-cambiar-password').addEventListener('change', mostrarCampoContrasena);
         document.getElementById('admin-user-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const msgDiv = document.getElementById('admin-msg');
-            const userId = document.getElementById('admin-user-id').value;
-            const cambiarContrasena = document.getElementById('admin-cambiar-password').checked;
-            const nuevaContrasena = document.getElementById('admin-password').value;
-            const esEdicion = Boolean(userId);
-            if ((!esEdicion || cambiarContrasena) && nuevaContrasena.length < 6) {
-                msgDiv.textContent = 'La contraseña debe tener al menos 6 caracteres.';
-                msgDiv.className = 'admin-msg error';
-                return;
-            }
-
-            const button = document.getElementById('btn-guardar-admin-user');
-            button.disabled = true;
-            button.textContent = esEdicion ? 'Guardando...' : 'Creando...';
-            msgDiv.style.display = 'none';
+            e.preventDefault(); const msgDiv = document.getElementById('admin-msg'); const userId = document.getElementById('admin-user-id').value; const cambiarContrasena = document.getElementById('admin-cambiar-password').checked; const nuevaContrasena = document.getElementById('admin-password').value; const esEdicion = Boolean(userId);
+            if ((!esEdicion || cambiarContrasena) && nuevaContrasena.length < 6) { msgDiv.textContent = 'La contraseña debe tener al menos 6 caracteres.'; msgDiv.className = 'admin-msg error'; return; }
+            const button = document.getElementById('btn-guardar-admin-user'); button.disabled = true; button.textContent = esEdicion ? 'Guardando...' : 'Creando...'; msgDiv.style.display = 'none';
             try {
-                const { error } = await supaUsers.functions.invoke('admin-users', {
-                    body: {
-                        action: esEdicion ? 'update' : 'create',
-                        userId: userId || undefined,
-                        email: document.getElementById('admin-email').value.trim(),
-                        nombre_completo: document.getElementById('admin-nombre').value.trim(),
-                        rol: document.getElementById('admin-rol').value,
-                        cambiarContrasena: esEdicion ? cambiarContrasena : true,
-                        nuevaContrasena: nuevaContrasena
-                    }
-                });
-                if (error) throw error;
-                cerrarFormularioUsuario();
-                mostrarNotificacion('success', esEdicion ? 'Usuario actualizado exitosamente.' : 'Usuario creado exitosamente.');
-                await cargarUsuariosAdmin();
-            } catch (error) {
-                msgDiv.textContent = 'Error: ' + await mensajeErrorFuncion(error);
-                msgDiv.className = 'admin-msg error';
-                msgDiv.style.display = 'block';
-            } finally {
-                button.disabled = false;
-                button.textContent = esEdicion ? 'Guardar cambios' : 'Crear usuario';
-            }
+                const { error } = await supaUsers.functions.invoke('admin-users', { body: { action: esEdicion ? 'update' : 'create', userId: userId || undefined, email: document.getElementById('admin-email').value.trim(), nombre_completo: document.getElementById('admin-nombre').value.trim(), rol: document.getElementById('admin-rol').value, cambiarContrasena: esEdicion ? cambiarContrasena : true, nuevaContrasena: nuevaContrasena } });
+                if (error) throw error; cerrarFormularioUsuario(); mostrarNotificacion('success', esEdicion ? 'Usuario actualizado exitosamente.' : 'Usuario creado exitosamente.'); await cargarUsuariosAdmin();
+            } catch (error) { msgDiv.textContent = 'Error: ' + await mensajeErrorFuncion(error); msgDiv.className = 'admin-msg error'; msgDiv.style.display = 'block'; } finally { button.disabled = false; button.textContent = esEdicion ? 'Guardar cambios' : 'Crear usuario'; }
         });
 
         // ========== PWA: MANIFEST Y SERVICE WORKER ==========
         function initPWA() {
-            // 1. Crear el manifest dinámicamente
-            const manifest = {
-                name: "Sistema de Solicitudes de Compra",
-                short_name: "Solicitudes",
-                description: "Gestión de solicitudes de compra",
-                start_url: "./",
-                display: "standalone",
-                background_color: "#f3f4f6",
-                theme_color: "#3b82f6",
-                icons: [
-                    {
-                        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E",
-                        sizes: "any",
-                        type: "image/svg+xml",
-                        purpose: "any"
-                    }
-                ]
-            };
-
-            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-            const manifestURL = URL.createObjectURL(manifestBlob);
-            const manifestLink = document.getElementById('manifest-link');
-            manifestLink.href = manifestURL;
-
-            // 2. Registrar Service Worker (desde un blob)
-            const swScript = `
-                self.addEventListener('install', function(e) {
-                    e.waitUntil(
-                        caches.open('solicitudes-v1').then(function(cache) {
-                            return cache.addAll(['./']);
-                        })
-                    );
-                });
-                self.addEventListener('fetch', function(e) {
-                    e.respondWith(
-                        caches.match(e.request).then(function(response) {
-                            return response || fetch(e.request);
-                        })
-                    );
-                });
-            `;
-            const swBlob = new Blob([swScript], { type: 'application/javascript' });
-            const swURL = URL.createObjectURL(swBlob);
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(swURL, { scope: './' })
-                    .then(reg => console.log('Service Worker registrado', reg))
-                    .catch(err => console.warn('Error al registrar SW:', err));
-            }
-
-            // 3. Botón de instalación (mostrar si la app es instalable)
-            const installBtn = document.getElementById('install-btn');
-            let deferredPrompt = null;
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installBtn.style.display = 'block';
-                installBtn.onclick = async () => {
-                    if (deferredPrompt) {
-                        deferredPrompt.prompt();
-                        const result = await deferredPrompt.userChoice;
-                        console.log('Resultado instalación:', result);
-                        deferredPrompt = null;
-                        installBtn.style.display = 'none';
-                    }
-                };
-            });
-            window.addEventListener('appinstalled', () => {
-                installBtn.style.display = 'none';
-                mostrarNotificacion('success', 'Aplicación instalada correctamente.');
-            });
+            const manifest = { name: "Sistema de Solicitudes de Compra", short_name: "Solicitudes", description: "Gestión de solicitudes de compra", start_url: "./", display: "standalone", background_color: "#f3f4f6", theme_color: "#3b82f6", icons: [{ src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E", sizes: "any", type: "image/svg+xml", purpose: "any" }] };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' }); const manifestURL = URL.createObjectURL(manifestBlob); document.getElementById('manifest-link').href = manifestURL;
+            const swScript = `self.addEventListener('install', function(e) { e.waitUntil(caches.open('solicitudes-v1').then(function(cache) { return cache.addAll(['./']); })); }); self.addEventListener('fetch', function(e) { e.respondWith(caches.match(e.request).then(function(response) { return response || fetch(e.request); })); });`;
+            const swBlob = new Blob([swScript], { type: 'application/javascript' }); const swURL = URL.createObjectURL(swBlob);
+            if ('serviceWorker' in navigator) { navigator.serviceWorker.register(swURL, { scope: './' }).then(reg => console.log('Service Worker registrado', reg)).catch(err => console.warn('Error al registrar SW:', err)); }
+            const installBtn = document.getElementById('install-btn'); let deferredPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; installBtn.onclick = async () => { if (deferredPrompt) { deferredPrompt.prompt(); const result = await deferredPrompt.userChoice; console.log('Resultado instalación:', result); deferredPrompt = null; installBtn.style.display = 'none'; } }; });
+            window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; mostrarNotificacion('success', 'Aplicación instalada correctamente.'); });
         }
 
-        // ========== VARIABLES GLOBALES ==========
-        const STORAGE_KEY = 'solicitud_compra_v3';
-        const ROWS_INICIALES = 2;
-        let rowCount = 0;
-        let currentUserInfo = null;
-
-        // ========== CIERRE DE DOCUMENTO ==========
+        const STORAGE_KEY = 'solicitud_compra_v3'; const ROWS_INICIALES = 2; let rowCount = 0; let currentUserInfo = null;
         console.log('Sistema de Solicitudes de Compra cargado.');
     </script>
 </body>
