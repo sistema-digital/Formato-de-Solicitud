@@ -5,11 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema de Solicitudes de Compra</title>
     <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="Sistema de gestión de solicitudes de compra" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="manifest" id="manifest-link" />
-    <!-- Favicon (para marcadores y acceso directo) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Solicitudes" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
     <style>
         /* Solo añadimos un estilo para el botón de instalación */
         #install-btn {
@@ -216,6 +223,30 @@
             border-left-color: var(--primary);
         }
         .nav-item .icon { font-size: 18px; }
+        .nav-item .nav-label { flex: 1; }
+        .draft-notification-badge {
+            display: none;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 22px;
+            text-align: center;
+            box-shadow: 0 0 0 2px rgba(31, 41, 55, 0.95), 0 3px 8px rgba(239, 68, 68, 0.35);
+            flex-shrink: 0;
+        }
+        .draft-notification-badge.visible {
+            display: inline-block;
+            animation: draftBadgePop 0.22s ease-out;
+        }
+        @keyframes draftBadgePop {
+            from { transform: scale(0.65); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
         .nav-logout {
             padding: 15px 20px;
             background-color: #111827;
@@ -364,7 +395,18 @@
         }
         .history-card:hover {
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
         }
+        .history-card { cursor: pointer; }
+        .history-card:focus-visible {
+            outline: 3px solid rgba(59, 130, 246, 0.35);
+            outline-offset: 3px;
+        }
+        .history-card .history-actions { cursor: default; }
+        .btn-back-history {
+            background: #374151 !important;
+        }
+        .btn-back-history:hover { background: #1f2937 !important; }
         @keyframes recent-solicitud-shadow {
             0%, 100% { box-shadow: var(--card-shadow); }
             50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.3), 0 12px 28px rgba(6, 95, 70, 0.32); }
@@ -564,6 +606,7 @@
             display: inline-block;
             text-align: left;
             background-color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
             width: 215.9mm;
             min-height: 279.4mm;
             padding: 10mm;
@@ -589,7 +632,8 @@
         th, td { border: 1px solid var(--border-color); padding: 1px 3px; vertical-align: middle; }
         th { background-color: #f9f9f9; text-align: center; font-weight: bold; font-size: 10px; }
         .col-renglon { width: 5%; text-align: center; font-weight: bold; }
-        .col-cantidad { width: 10%; }
+        .col-cantidad { width: 10%; text-align: center; }
+        .row-qty { text-align: center !important; font-weight: 600; }
         .col-descripcion { width: 70%; position: relative; }
         .col-codigo { width: 15%; }
         input[type="text"], input[type="date"], textarea, select {
@@ -692,7 +736,21 @@
         body.print-preparing .no-print, body.print-preparing .btn-add-row { display: none !important; }
         body.print-preparing table { min-width: 100%; table-layout: fixed; font-size: 10px; }
         body.print-preparing th, body.print-preparing td { padding: 2px 4px; }
-        body.print-preparing input, body.print-preparing textarea, body.print-preparing select { font-size: inherit !important; padding: 0 !important; margin: 0 !important; min-height: auto !important; }
+        body.print-preparing input, body.print-preparing textarea, body.print-preparing select {
+            font-family: Arial, Helvetica, sans-serif !important;
+            font-size: inherit !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.12px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            min-height: auto !important;
+        }
+        body.print-preparing th,
+        body.print-preparing td,
+        body.print-preparing label,
+        body.print-preparing span {
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
         
         /* Ajuste de textareas en modo de preparación - Se elimina limitación de altura */
         body.print-preparing textarea {
@@ -723,13 +781,13 @@
                 @bottom-left { content: ""; font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-left: 5mm; text-align: left; }
                 @bottom-right { content: "Página " counter(page) " de " counter(pages); font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-right: 5mm; text-align: right; }
             }
-            body { background: #fff; display: block; overflow: visible; height: auto; }
+            body { background: #fff; display: block; overflow: visible; height: auto; font-family: Arial, Helvetica, sans-serif !important; }
             #dashboard { display: block; }
             .sidebar, .menu-toggle, .controls-top, .no-print, .btn-add-row, #notification-container, .modal-overlay { display: none !important; }
             .main-content { margin-left: 0 !important; display: block; padding: 0; overflow: visible; width: 100%; }
             .content-wrapper { max-width: 100%; padding: 0; margin: 0; }
             .view-section { padding: 0; display: block !important; }
-            #history-view, #admin-view, #dashboard-view { display: none !important; }
+            #history-view, #record-view, #drafts-view, #admin-view, #dashboard-view { display: none !important; }
             .document-wrapper { display: block; overflow: visible; padding: 0; margin: 0; text-align: center; }
             
             .document-container {
@@ -760,6 +818,25 @@
             .signature-box label { font-size: 8px !important; }
 
             textarea { white-space: pre-wrap; overflow: visible !important; }
+            .col-descripcion > div { display: block !important; }
+            .row-qty, .row-code, .row-desc, .row-obs {
+                display: block !important;
+                width: 100% !important;
+                min-height: 0 !important;
+                height: var(--print-height, auto) !important;
+                border: none !important;
+                outline: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                overflow: hidden !important;
+                white-space: pre-wrap !important;
+                word-break: break-word !important;
+                line-height: 1.15 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
+            .obs-row td { background: #fff !important; }
             
             .dropdown-results { display: none !important; }
             input[type="date"] { border: none; background: transparent; }
@@ -774,11 +851,51 @@
             .obs-row .obs-label { font-weight: bold; color: #333; margin-right: 4px; }
 
             input, textarea, select {
-                border: none !important; background: transparent !important; box-shadow: none !important; -webkit-appearance: none !important; color: #000 !important; font-size: inherit !important; padding: 0 !important; margin: 0 !important; min-height: auto !important; resize: none !important; outline: none !important;
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                -webkit-appearance: none !important;
+                color: #000 !important;
+                font-family: Arial, Helvetica, sans-serif !important;
+                font-size: inherit !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.12px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                min-height: auto !important;
+                resize: none !important;
+                outline: none !important;
             }
+            .row-qty { text-align: center !important; }
             
             .btn-search-db, .btn-delete-row, .btn-toggle-obs, .btn-clear-firma { display: none !important; }
             canvas { border: 1px solid #000; max-width: 100%; }
+
+            /* Líneas y bordes que deben salir también impresos */
+            .header { border-bottom: 2px solid #000 !important; }
+            table, th, td { border-color: #000 !important; }
+            .signature-box { border: 1px solid #000 !important; }
+            .signature-name { border-bottom: 1px solid #000 !important; }
+
+            /* La observación se imprime como texto expandible para no cortar contenido */
+            #observacion-general { display: none !important; }
+            .print-only-observation {
+                display: block !important;
+                width: 100% !important;
+                min-height: 30px !important;
+                height: auto !important;
+                border: 1px solid #000 !important;
+                padding: 4px !important;
+                box-sizing: border-box !important;
+                font-size: 11px !important;
+                line-height: 14px !important;
+                white-space: pre-wrap !important;
+                overflow: visible !important;
+                overflow-wrap: anywhere !important;
+                word-break: break-word !important;
+                color: #000 !important;
+                background: #fff !important;
+            }
         }
 
         /* ========== RESPONSIVE ========== */
@@ -821,6 +938,49 @@
         #history-search .btn-group .btn-secondary { background: #6b7280; }
         #history-search .btn-group .btn-secondary:hover { background: #4b5563; }
 
+        /* Calendario de rango estilo visual */
+        #history-filter-date-range { cursor: pointer; background: #fff; }
+        .flatpickr-calendar.history-range-calendar {
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.16);
+            padding: 8px;
+            font-family: Arial, 'Segoe UI', sans-serif;
+        }
+        .history-range-calendar .flatpickr-months { padding: 4px 2px 8px; }
+        .history-range-calendar .flatpickr-current-month { font-size: 15px; font-weight: 700; }
+        .history-range-calendar .flatpickr-weekday { color: #64748b; font-weight: 600; }
+        .history-range-calendar .flatpickr-day { border-radius: 50%; }
+        .history-range-calendar .flatpickr-day.inRange {
+            border-radius: 0;
+            background: #eaf4ff;
+            border-color: #eaf4ff;
+            box-shadow: -5px 0 0 #eaf4ff, 5px 0 0 #eaf4ff;
+        }
+        .history-range-calendar .flatpickr-day.startRange,
+        .history-range-calendar .flatpickr-day.endRange,
+        .history-range-calendar .flatpickr-day.selected {
+            background: #3498db;
+            border-color: #3498db;
+            color: #fff;
+            border-radius: 50%;
+        }
+        .history-range-calendar .flatpickr-day.today:not(.selected):not(.startRange):not(.endRange) {
+            border-color: #d1d5db;
+        }
+        .history-range-calendar .flatpickr-prev-month,
+        .history-range-calendar .flatpickr-next-month { color: #64748b; fill: #64748b; }
+        #history-filter-requester { cursor: pointer; }
+
+        /* ========== BORRADORES ========== */
+        .draft-card { max-width: 900px; margin: 0 auto; background: white; padding: 22px; border-radius: var(--card-radius); box-shadow: var(--card-shadow); border-left: 4px solid var(--warning); }
+        .draft-card h3 { margin: 0 0 10px 0; color: #92400e; }
+        .draft-meta { color: #6b7280; font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
+        .draft-preview { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 13px; }
+        .draft-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .draft-actions .btn { border: none; border-radius: 6px; color: white; padding: 9px 16px; font-weight: 600; cursor: pointer; }
+        .draft-empty { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: var(--card-radius); box-shadow: var(--card-shadow); text-align: center; color: #6b7280; }
+
         /* Indicador de edición */
         #modo-edicion-indicator { display: none; background: #fef3c7; padding: 8px 16px; border-radius: 6px; margin-bottom: 12px; text-align: center; font-weight: 600; color: #92400e; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
         #modo-edicion-indicator .btn-cancelar-edicion { background: #6b7280; color: white; border: none; padding: 4px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.2s; }
@@ -844,6 +1004,354 @@
             box-sizing: border-box;
             min-height: 25px;
         }
+
+        .btn-toggle-obs {
+            margin-top: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            background: transparent;
+            color: #374151;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1.2;
+        }
+        .btn-toggle-obs:hover { color: var(--primary-hover); }
+        .btn-toggle-obs .obs-toggle-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .btn-toggle-obs svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .btn .btn-icon,
+        .btn-sm .btn-icon,
+        .btn-search-db .btn-icon,
+        .btn-delete-row .btn-icon,
+        .btn-toggle-obs .btn-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .btn .btn-icon svg,
+        .btn-sm .btn-icon svg,
+        .btn-search-db .btn-icon svg,
+        .btn-delete-row .btn-icon svg,
+        .btn-toggle-obs .btn-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .controls-top .btn,
+        .history-actions .btn-sm,
+        .recent-item .actions .btn-sm,
+        .admin-user-actions .btn,
+        #history-search .btn-group .btn,
+        .admin-toolbar .btn,
+        .btn-search-db,
+        .btn-delete-row {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .controls-top .btn,
+        .history-actions .btn-sm,
+        .recent-item .actions .btn-sm,
+        .admin-user-actions .btn,
+        #history-search .btn-group .btn,
+        .admin-toolbar .btn {
+            border-radius: 999px;
+        }
+
+        .btn-search-db {
+            min-width: auto;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+        .btn-delete-row {
+            padding: 4px 7px;
+            border-radius: 999px;
+        }
+        .btn-sm.icon-only,
+        .btn-delete-row.icon-only {
+            min-width: 34px;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            gap: 0;
+        }
+
+        .row-obs {
+            overflow-y: hidden !important;
+            overflow-x: hidden !important;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .row-obs::-webkit-scrollbar {
+            width: 0 !important;
+            height: 0 !important;
+            display: none;
+        }
+
+        body.print-preparing .main-row td,
+        body.print-preparing .obs-row td {
+            vertical-align: top;
+        }
+        body.print-preparing .col-descripcion > div {
+            display: block !important;
+        }
+        body.print-preparing .row-qty,
+        body.print-preparing .row-code,
+        body.print-preparing .row-desc,
+        body.print-preparing .row-obs {
+            display: block !important;
+            width: 100% !important;
+            min-height: 0 !important;
+            height: var(--print-height, auto) !important;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            overflow: hidden !important;
+            white-space: pre-wrap !important;
+            word-break: break-word !important;
+            line-height: 1.15 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+        body.print-preparing .obs-row td {
+            padding-top: 1px !important;
+            padding-bottom: 2px !important;
+            background: #fff !important;
+        }
+        body.print-preparing .obs-row .obs-label {
+            display: inline-block;
+            margin-right: 4px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Vista completa de la observación para impresión */
+        .print-only-observation {
+            display: none;
+        }
+        body.print-preparing #observacion-general {
+            display: none !important;
+        }
+        body.print-preparing .print-only-observation {
+            display: block !important;
+            width: 100%;
+            min-height: 30px;
+            border: 1px solid #000;
+            padding: 4px;
+            box-sizing: border-box;
+            font-size: 11px;
+            line-height: 14px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            color: #000;
+            background: #fff;
+        }
+
+        /* Mantener visibles las líneas del formato al preparar impresión */
+        body.print-preparing .header { border-bottom: 2px solid #000 !important; }
+        body.print-preparing table,
+        body.print-preparing th,
+        body.print-preparing td { border-color: #000 !important; }
+        body.print-preparing .signature-box { border: 1px solid #000 !important; }
+        body.print-preparing .signature-name { border-bottom: 1px solid #000 !important; }
+
+
+        /* Aviso discreto de autoguardado */
+        #autosave-status {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 9997;
+            display: none;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(6, 95, 70, 0.94);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.16);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        #autosave-status.visible {
+            display: inline-flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #autosave-status svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+
+        /* ========== VISTA DE SOLO LECTURA DEL HISTORIAL ========== */
+        .record-view-toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .record-view-toolbar .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            border-radius: 999px;
+            padding: 9px 18px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .record-readonly .readonly-value {
+            width: 100%;
+            min-height: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #000;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+        .record-readonly .readonly-user {
+            background: #f0f0f0;
+            padding: 2px 4px;
+        }
+        .record-readonly .record-stage {
+            display: inline-block;
+            min-width: 110px;
+            border: 1px solid #000;
+            padding: 2px 8px;
+            text-align: center;
+            font-weight: 700;
+        }
+        .record-readonly .record-date-value {
+            min-width: 105px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .record-readonly .record-obs-row td {
+            background: #fafafa;
+            font-size: 9px;
+            padding: 3px 4px;
+        }
+        .record-readonly .record-obs-text,
+        .record-readonly .record-general-observation {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            color: #000;
+        }
+        .record-readonly .record-general-observation {
+            width: 100%;
+            min-height: 30px;
+            border: 1px solid #000;
+            padding: 4px;
+            font-size: 11px;
+            line-height: 14px;
+        }
+        .record-readonly .record-signature-image {
+            display: block;
+            width: 150px;
+            height: 40px;
+            object-fit: contain;
+            border-bottom: 1px solid #000;
+            margin-bottom: 3px;
+        }
+        .record-readonly .record-signature-empty {
+            width: 150px;
+            height: 40px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 3px;
+        }
+        .record-readonly .signature-name-static {
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            margin-bottom: 2px;
+            font-weight: 700;
+            font-size: 10px;
+            min-height: 16px;
+        }
+
+        @media print {
+            body.printing-record .sidebar,
+            body.printing-record .menu-toggle,
+            body.printing-record .record-view-toolbar,
+            body.printing-record #notification-container,
+            body.printing-record .modal-overlay { display: none !important; }
+            body.printing-record #dashboard-view,
+            body.printing-record #form-view,
+            body.printing-record #history-view,
+            body.printing-record #drafts-view,
+            body.printing-record #admin-view { display: none !important; }
+            body.printing-record #record-view { display: block !important; }
+            body.printing-record .main-content { margin-left: 0 !important; overflow: visible !important; }
+            body.printing-record .content-wrapper { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+            body.printing-record .record-readonly.document-container {
+                box-shadow: none !important;
+                width: 215.9mm !important;
+                max-width: none !important;
+                min-height: 246mm !important;
+                height: auto !important;
+                padding: 10mm 5mm !important;
+                margin: 0 auto !important;
+            }
+            body.printing-record .record-readonly table {
+                width: 100% !important;
+                table-layout: fixed !important;
+                border-collapse: collapse !important;
+            }
+            body.printing-record .record-readonly th,
+            body.printing-record .record-readonly td {
+                border: 1px solid #000 !important;
+            }
+            body.printing-record .record-readonly .header { border-bottom: 2px solid #000 !important; }
+            body.printing-record .record-readonly .record-general-observation { border: 1px solid #000 !important; }
+        }
+
     </style>
 </head>
 <body>
@@ -882,11 +1390,16 @@
                 <div class="nav-item active" onclick="switchView('dashboard-view')">
                     <span class="icon">📊</span> Dashboard
                 </div>
-                <div class="nav-item" onclick="switchView('form-view')">
+                <div class="nav-item" onclick="abrirNuevaSolicitud()">
                     <span class="icon">📝</span> Nueva Solicitud
                 </div>
                 <div class="nav-item" onclick="switchView('history-view')">
                     <span class="icon">📁</span> Historial
+                </div>
+                <div class="nav-item" onclick="switchView('drafts-view')">
+                    <span class="icon">🗒️</span>
+                    <span class="nav-label">Borradores</span>
+                    <span id="draft-notification-badge" class="draft-notification-badge" aria-label="0 borradores">0</span>
                 </div>
                 <div class="nav-item" id="nav-admin" style="display:none;" onclick="switchView('admin-view')">
                     <span class="icon">👥</span> Administrar Usuarios
@@ -920,9 +1433,10 @@
                     </div>
 
                     <div class="controls-top no-print">
-                        <button class="btn btn-save" onclick="guardarEnHistorial()">GUARDAR EN HISTORIAL</button>
-                        <button class="btn btn-print" style="display:none;" onclick="imprimirSinGuardar(this.dataset.numeroSolicitud || '')">IMPRIMIR FORMATO</button>
-                        <button class="btn btn-clear" onclick="limpiarSolicitudActual()">LIMPIAR FORMATO</button>
+                        <button class="btn btn-back-history" id="btn-regresar-historial" style="display:none;" onclick="regresarAlHistorial()"></button>
+                        <button class="btn btn-save" onclick="guardarEnHistorial()" id="btn-guardar-historial"></button>
+                        <button class="btn btn-print" style="display:none;" onclick="imprimirSinGuardar(this.dataset.numeroSolicitud || '')" id="btn-imprimir-formato"></button>
+                        <button class="btn btn-clear" onclick="limpiarSolicitudActual()" id="btn-limpiar-formato"></button>
                     </div>
                     <div class="document-wrapper">
                         <div class="document-container" id="printable-area">
@@ -968,19 +1482,20 @@
                                 <thead>
                                     <tr>
                                         <th class="col-renglon">RENGLÓN</th>
-                                        <th class="col-cantidad">CANTIDAD</th>
+                                        <th class="col-cantidad">CANTIDAD <span style="color:red;">*</span></th>
                                         <th class="col-descripcion">DESCRIPCIÓN DEL MATERIAL</th>
                                         <th class="col-codigo">CÓDIGO</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-materiales"></tbody>
                             </table>
-                            <button class="btn-add-row no-print" onclick="agregarRenglon()">+ AGREGAR RENGLÓN</button>
+                            <button class="btn-add-row no-print" onclick="agregarRenglon()" id="btn-agregar-renglon"></button>
 
                             <div id="print-footer">
                                 <div style="margin-top:5px;">
                                     <label style="font-size:10px; font-weight:bold;">OBSERVACIÓN GENERAL <span style="color:red;">*</span>:</label>
                                     <textarea id="observacion-general" rows="2" style="width:100%; border:1px solid var(--border-color); padding:4px; font-size:11px; min-height:30px;" placeholder="Escriba aquí la observación general" oninput="forzarMayusculas(this); autoResize(this); guardarDatos(); quitarResaltado(this);"></textarea>
+                                    <div id="observacion-general-print" class="print-only-observation"></div>
                                 </div>
 
                                 <div class="signatures-section">
@@ -1004,6 +1519,77 @@
                     </div>
                 </div>
 
+                <!-- ===== VISUALIZAR SOLICITUD - SOLO LECTURA ===== -->
+                <div id="record-view" class="view-section">
+                    <div class="record-view-toolbar no-print">
+                        <button class="btn btn-secondary" onclick="cerrarVistaRegistro()" id="btn-record-back"></button>
+                        <button class="btn btn-edit" onclick="editarRegistroVisualizado()" id="btn-record-edit"></button>
+                        <button class="btn btn-print" onclick="imprimirRegistroVisualizado()" id="btn-record-print"></button>
+                        <button class="btn btn-open" onclick="copiarRegistroVisualizado()" id="btn-record-copy"></button>
+                    </div>
+                    <div class="document-wrapper">
+                        <div class="document-container record-readonly" id="record-printable-area">
+                            <div class="header">
+                                <div class="header-title"><h2>FORMATO SOLICITUD DE COMPRA</h2></div>
+                                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px; padding:0 5%;">
+                                    <span><strong>RUC:</strong> 59838-0019-34577-DV05</span>
+                                    <span><strong>CÓDIGO:</strong> COM-F-02-01</span>
+                                </div>
+                                <div class="header-details">
+                                    <div class="header-user">
+                                        <label>USUARIO:</label><br />
+                                        <div id="record-usuario" class="readonly-value readonly-user"></div>
+                                    </div>
+                                    <div class="header-department">
+                                        <label>DEPARTAMENTO / TALLER:</label>
+                                        <div class="header-stage">
+                                            <label>ETAPA:</label>
+                                            <span id="record-etapa" class="record-stage"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="header-dates">
+                                    <div class="header-date"><label>FECHA CREACIÓN:</label><span id="record-fecha-creacion" class="record-date-value"></span></div>
+                                    <div class="header-date"><label>FECHA ENTREGA:</label><span id="record-fecha-entrega" class="record-date-value"></span></div>
+                                </div>
+                            </div>
+
+                            <table id="record-tabla-materiales">
+                                <thead>
+                                    <tr>
+                                        <th class="col-renglon">RENGLÓN</th>
+                                        <th class="col-cantidad">CANTIDAD</th>
+                                        <th class="col-descripcion">DESCRIPCIÓN DEL MATERIAL</th>
+                                        <th class="col-codigo">CÓDIGO</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="record-tbody-materiales"></tbody>
+                            </table>
+
+                            <div id="record-print-footer">
+                                <div style="margin-top:5px;">
+                                    <label style="font-size:10px; font-weight:bold;">OBSERVACIÓN GENERAL:</label>
+                                    <div id="record-observacion-general" class="record-general-observation"></div>
+                                </div>
+                                <div class="signatures-section">
+                                    <div class="signature-box">
+                                        <label>VERIFICADO POR ALMACÉN</label>
+                                        <div id="record-firma-almacen"></div>
+                                        <div id="record-nombre-almacen" class="signature-name-static"></div>
+                                        <label style="font-size:8px;">FIRMA</label>
+                                    </div>
+                                    <div class="signature-box">
+                                        <label>APROBACIÓN DE GERENCIA</label>
+                                        <div id="record-firma-gerencia"></div>
+                                        <div id="record-nombre-gerencia" class="signature-name-static"></div>
+                                        <label style="font-size:8px;">FIRMA</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ===== HISTORIAL ===== -->
                 <div id="history-view" class="view-section">
                     <h2 style="text-align:center; margin-bottom:20px;">📁 Historial de Solicitudes</h2>
@@ -1012,17 +1598,17 @@
                             <label>🔍 Buscar por descripción o código</label>
                             <input type="text" id="history-search-input" placeholder="Escribe para filtrar..." oninput="aplicarFiltrosHistorial()" />
                         </div>
-                        <div class="filter-group">
-                            <label>📅 Mes</label>
-                            <input type="month" id="history-filter-month" onchange="aplicarFiltrosHistorial()" />
+                        <div class="filter-group" style="flex: 1.5 1 230px;">
+                            <label>📆 Rango de fechas</label>
+                            <input type="text" id="history-filter-date-range" placeholder="Selecciona fecha inicial y final" readonly />
+                            <input type="hidden" id="history-filter-date-from" />
+                            <input type="hidden" id="history-filter-date-to" />
                         </div>
-                        <div class="filter-group">
-                            <label>📆 Desde</label>
-                            <input type="date" id="history-filter-date-from" onchange="aplicarFiltrosHistorial()" />
-                        </div>
-                        <div class="filter-group">
-                            <label>📆 Hasta</label>
-                            <input type="date" id="history-filter-date-to" onchange="aplicarFiltrosHistorial()" />
+                        <div class="filter-group" style="flex: 1.3 1 200px;">
+                            <label>👤 Solicitante</label>
+                            <select id="history-filter-requester" onchange="aplicarFiltrosHistorial()">
+                                <option value="">Todos los solicitantes</option>
+                            </select>
                         </div>
                         <div class="filter-group">
                             <label>🏷️ Etapa</label>
@@ -1033,17 +1619,23 @@
                             </select>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-secondary" onclick="limpiarFiltrosHistorial()">Limpiar filtros</button>
+                            <button class="btn btn-secondary" onclick="limpiarFiltrosHistorial()" id="btn-limpiar-filtros"></button>
                         </div>
                     </div>
                     <div id="history-grid" class="history-grid"></div>
+                </div>
+
+                <!-- ===== BORRADORES ===== -->
+                <div id="drafts-view" class="view-section">
+                    <h2 style="text-align:center; margin-bottom:20px;">🗒️ Borradores</h2>
+                    <div id="drafts-container"></div>
                 </div>
 
                 <!-- ===== ADMIN ===== -->
                 <div id="admin-view" class="view-section">
                     <h2 style="text-align:center; margin-bottom:20px;">👥 Administrar Usuarios</h2>
                     <div class="admin-toolbar">
-                        <button type="button" class="btn btn-save" id="btn-nuevo-usuario">Crear usuario</button>
+                        <button type="button" class="btn btn-save" id="btn-nuevo-usuario"></button>
                     </div>
                     <div class="admin-users-card">
                         <table class="admin-users-table">
@@ -1068,6 +1660,7 @@
 
     <!-- ========== NOTIFICACIONES Y MODALES ========== -->
     <div id="notification-container"></div>
+    <div id="autosave-status" role="status" aria-live="polite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Guardado automático</span></div>
     <div class="modal-overlay" id="alert-modal">
         <div class="modal-box">
             <p id="alert-message">Mensaje de alerta</p>
@@ -1181,8 +1774,9 @@
             if (fechaInput && !fechaInput.value) { fechaInput.value = new Date().toISOString().split('T')[0]; }
             document.getElementById('dashboard').style.display = 'none';
             const { data: { session } } = await supaUsers.auth.getSession();
-            if (session) { await cargarPerfil(session.user.id, session.user.email); } else { document.getElementById('login-screen').style.display = 'flex'; }
+            if (session) { currentAccessToken = session.access_token || ''; await cargarPerfil(session.user.id, session.user.email); } else { document.getElementById('login-screen').style.display = 'flex'; }
             initPWA();
+            inicializarFiltroFechasHistorial();
         };
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -1191,7 +1785,7 @@
             const errorMsg = document.getElementById('login-error-msg');
             btn.textContent = 'Verificando...'; btn.disabled = true; errorMsg.style.display = 'none';
             const { data, error } = await supaUsers.auth.signInWithPassword({ email: document.getElementById('login-email').value, password: document.getElementById('login-password').value });
-            if (error) { errorMsg.style.display = 'block'; btn.textContent = 'Iniciar Sesión'; btn.disabled = false; } else { await cargarPerfil(data.user.id, data.user.email); }
+            if (error) { errorMsg.style.display = 'block'; btn.textContent = 'Iniciar Sesión'; btn.disabled = false; } else { currentAccessToken = data.session?.access_token || ''; await cargarPerfil(data.user.id, data.user.email); }
         });
 
         async function cargarPerfil(userId, email) {
@@ -1206,24 +1800,103 @@
             document.getElementById('departamento').value = `${currentUserInfo.nombre.toUpperCase()} - ${currentUserInfo.rol.toUpperCase()}`;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
-            cargarBorrador();
+            aplicarIconosBotonesEstaticos();
+            const borradoresDisponibles = await verificarConexionBorradoresSupabase();
+            if (borradoresDisponibles) {
+                await migrarBorradorAnterior();
+                await actualizarContadorBorradores();
+                await sincronizarFirmaBorradorRemoto();
+            }
+            iniciarAutoguardadoBorradores();
+            cargarFormularioVacio();
             switchView('dashboard-view');
         }
 
-        async function cerrarSesion() { await supaUsers.auth.signOut(); location.reload(); }
+        async function cerrarSesion() { if (draftAutoSaveInterval) clearInterval(draftAutoSaveInterval); await guardarBorradorPendienteAhora(); await supaUsers.auth.signOut(); location.reload(); }
+
+        async function abrirNuevaSolicitud() {
+            const formView = document.getElementById('form-view');
+            if (formView?.classList.contains('active') && !suspendDraftSave && (draftUserChanged || draftDirty)) {
+                await guardarBorradorPendienteAhora(true);
+            }
+            cancelarEdicion();
+            numeroSolicitudActual = '';
+            configurarBotonImpresion('');
+            mostrarBotonRegresarHistorial(false);
+            cargarFormularioVacio();
+            await switchView('form-view');
+        }
 
         async function switchView(viewId) {
+            const formView = document.getElementById('form-view');
+            const saliendoDelFormulario = formView?.classList.contains('active') && viewId !== 'form-view';
+
+            // Al salir de Nueva Solicitud guardamos el borrador actual antes de cambiar de vista.
+            // Luego el formulario se reinicia para que la próxima Nueva Solicitud siempre abra en blanco.
+            if (saliendoDelFormulario && !suspendDraftSave) {
+                try {
+                    guardarDatos();
+                    if (draftUserChanged || draftDirty) await guardarBorradorPendienteAhora(true);
+                } catch (e) {
+                    console.error('No se pudo guardar el borrador antes de cambiar de vista:', e);
+                }
+            }
+
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const map = { 'dashboard-view': 0, 'form-view': 1, 'history-view': 2, 'admin-view': 3 };
+            const map = { 'dashboard-view': 0, 'form-view': 1, 'history-view': 2, 'record-view': 2, 'drafts-view': 3, 'admin-view': 4 };
             const idx = map[viewId];
             if (idx !== undefined) { const items = document.querySelectorAll('.nav-item'); if (items[idx]) items[idx].classList.add('active'); }
             if (viewId === 'form-view') setTimeout(initCanvases, 300);
             if (viewId === 'history-view') await renderHistorial();
+            if (viewId === 'drafts-view') await renderBorradores();
             if (viewId === 'dashboard-view') actualizarDashboard();
             if (viewId === 'admin-view') { if (currentUserInfo.rol !== 'admin') { await mostrarAlerta('Acceso denegado. Solo administradores.'); switchView('dashboard-view'); return; } await cargarUsuariosAdmin(); }
+
+            if (saliendoDelFormulario) {
+                cargarFormularioVacio();
+            }
             if (window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        function iconoVector(nombre) {
+            const icons = {
+                save: '<svg viewBox="0 0 24 24"><path d="M5 21h14"></path><path d="M7 21V5h8l2 2v14"></path><path d="M9 21v-6h6v6"></path><path d="M9 5v4h5"></path></svg>',
+                print: '<svg viewBox="0 0 24 24"><path d="M7 9V4h10v5"></path><rect x="6" y="13" width="12" height="7"></rect><path d="M6 17H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path></svg>',
+                clear: '<svg viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>',
+                add: '<svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>',
+                search: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>',
+                open: '<svg viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>',
+                edit: '<svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>',
+                delete: '<svg viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>',
+                users: '<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="9.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M17 11h6"></path></svg>',
+                copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
+                back: '<svg viewBox="0 0 24 24"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>'
+            };
+            return `<span class="btn-icon" aria-hidden="true">${icons[nombre] || ''}</span>`;
+        }
+
+        function etiquetaBoton(icono, texto) {
+            return `${iconoVector(icono)}<span>${texto}</span>`;
+        }
+
+        function aplicarIconosBotonesEstaticos() {
+            const set = (id, icono, texto) => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = etiquetaBoton(icono, texto);
+            };
+            set('btn-regresar-historial', 'back', 'Regresar');
+            set('btn-guardar-historial', 'save', 'Guardar en historial');
+            set('btn-imprimir-formato', 'print', 'Imprimir formato');
+            set('btn-limpiar-formato', 'clear', 'Limpiar formato');
+            set('btn-agregar-renglon', 'add', 'Agregar renglón');
+            set('btn-nuevo-usuario', 'users', 'Crear usuario');
+            set('btn-limpiar-filtros', 'clear', 'Limpiar filtros');
+            set('btn-record-back', 'back', 'Regresar');
+            set('btn-record-edit', 'edit', 'Editar');
+            set('btn-record-print', 'print', 'Imprimir');
+            set('btn-record-copy', 'copy', 'Copiar solicitud');
         }
 
         function forzarMayusculas(el) { el.value = el.value.toUpperCase(); }
@@ -1239,6 +1912,17 @@
             let valido = true;
             const campos = [{ id: 'observacion-general', nombre: 'Observación General' }, { id: 'fecha-creacion', nombre: 'Fecha Creación' }, { id: 'fecha-entrega', nombre: 'Fecha Entrega' }, { id: 'etapa', nombre: 'Etapa' }];
             campos.forEach(c => { const el = document.getElementById(c.id); if (el.value.trim() === '') { el.classList.add('campo-invalido'); valido = false; } else { el.classList.remove('campo-invalido'); } });
+
+            document.querySelectorAll('.main-row').forEach((row, i) => {
+                const qty = row.querySelector('.row-qty');
+                const desc = row.querySelector('.row-desc');
+                const code = row.querySelector('.row-code');
+                const obsRow = document.querySelectorAll('.obs-row')[i];
+                const obs = obsRow ? obsRow.querySelector('.row-obs') : null;
+                const tieneContenido = [qty, desc, code, obs].some(el => el && el.value.trim() !== '');
+                if (tieneContenido && qty.value.trim() === '') { qty.classList.add('campo-invalido'); valido = false; }
+                else { qty.classList.remove('campo-invalido'); }
+            });
             return valido;
         }
 
@@ -1251,19 +1935,19 @@
             trMain.className = 'main-row'; trMain.setAttribute('data-id', rowCount);
             trMain.innerHTML = `
                 <td class="col-renglon">${rowCount}</td>
-                <td class="col-cantidad"><input type="text" class="row-qty" placeholder="Cant." value="${data?.qty || ''}" oninput="forzarMayusculas(this); guardarDatos()"></td>
+                <td class="col-cantidad"><input type="text" class="row-qty" placeholder="Cant." value="${data?.qty || ''}" required aria-required="true" oninput="forzarMayusculas(this); quitarResaltado(this); guardarDatos()"></td>
                 <td class="col-descripcion">
                     <div style="display:flex; gap:4px; align-items:flex-start;">
                         <textarea class="row-desc" id="desc-${rowCount}" rows="1" placeholder="Descripción del material" oninput="forzarMayusculas(this); autoResize(this); guardarDatos();" style="flex:1;">${data?.desc || ''}</textarea>
-                        <button type="button" class="btn-search-db no-print" onclick="buscarProducto(${rowCount})">BUSCAR</button>
+                        <button type="button" class="btn-search-db no-print" onclick="buscarProducto(${rowCount})">${etiquetaBoton('search', 'Buscar')}</button>
                     </div>
-                    <span class="btn-toggle-obs no-print" id="btn-toggle-obs-${rowCount}" onclick="toggleObs(${rowCount})">${hasObs ? '- Ocultar observación' : '+ Agregar observación'}</span>
+                    <button type="button" class="btn-toggle-obs no-print" id="btn-toggle-obs-${rowCount}" onclick="toggleObs(${rowCount})">${getObsToggleMarkup(hasObs)}</button>
                     <ul class="dropdown-results" id="dropdown-${rowCount}"></ul>
                 </td>
                 <td class="col-codigo">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <input type="text" class="row-code" id="code-${rowCount}" placeholder="Código" value="${data?.code || ''}" style="width:80%;" oninput="forzarMayusculas(this); guardarDatos()">
-                        <button type="button" class="btn-delete-row no-print" onclick="eliminarRenglon(${rowCount})">X</button>
+                        <button type="button" class="btn-delete-row no-print icon-only" onclick="eliminarRenglon(${rowCount})" title="Eliminar renglón" aria-label="Eliminar renglón">${iconoVector('delete')}</button>
                     </div>
                 </td>
             `;
@@ -1271,11 +1955,12 @@
             trObs.className = 'obs-row'; trObs.setAttribute('data-id', rowCount); trObs.id = `obs-row-${rowCount}`; trObs.style.display = hasObs ? 'table-row' : 'none';
             trObs.innerHTML = `
                 <td colspan="4" style="padding:2px 4px; background:#fafafa;">
-                    <span style="font-weight:bold; font-size:9px; color:#666;">OBSERVACIÓN:</span>
+                    <span class="obs-label" style="font-weight:bold; font-size:9px; color:#666;">OBSERVACIÓN DE LA LÍNEA ${rowCount}:</span>
                     <textarea class="row-obs" rows="1" placeholder="Observación adicional" oninput="forzarMayusculas(this); autoResize(this); guardarDatos();" style="width:100%; border:1px dashed #ccc; padding:2px; min-height:16px;">${data?.obs || ''}</textarea>
                 </td>
             `;
             tbody.appendChild(trMain); tbody.appendChild(trObs);
+            actualizarBotonObservacion(document.getElementById(`btn-toggle-obs-${rowCount}`), hasObs);
             setTimeout(() => { autoResize(trMain.querySelector('.row-desc')); autoResize(trObs.querySelector('.row-obs')); }, 0);
             if (!data) guardarDatos();
         }
@@ -1291,19 +1976,51 @@
         function recalcularNumeracion() {
             rowCount = 0;
             document.querySelectorAll('.main-row').forEach((row, index) => {
-                rowCount++; row.setAttribute('data-id', rowCount); row.querySelector('.col-renglon').textContent = rowCount;
+                rowCount++;
+                const obsRow = document.querySelectorAll('.obs-row')[index];
+                const obsVisible = obsRow ? obsRow.style.display !== 'none' : false;
+                row.setAttribute('data-id', rowCount);
+                row.querySelector('.col-renglon').textContent = rowCount;
                 row.querySelector('.btn-delete-row').setAttribute('onclick', `eliminarRenglon(${rowCount})`);
                 row.querySelector('.btn-search-db').setAttribute('onclick', `buscarProducto(${rowCount})`);
-                const toggle = row.querySelector('.btn-toggle-obs'); toggle.id = `btn-toggle-obs-${rowCount}`; toggle.setAttribute('onclick', `toggleObs(${rowCount})`);
-                row.querySelector('.row-desc').id = `desc-${rowCount}`; row.querySelector('.row-code').id = `code-${rowCount}`; row.querySelector('.dropdown-results').id = `dropdown-${rowCount}`;
-                const obsRow = document.querySelectorAll('.obs-row')[index];
-                if (obsRow) { obsRow.setAttribute('data-id', rowCount); obsRow.id = `obs-row-${rowCount}`; }
+                const toggle = row.querySelector('.btn-toggle-obs');
+                toggle.id = `btn-toggle-obs-${rowCount}`;
+                toggle.setAttribute('onclick', `toggleObs(${rowCount})`);
+                actualizarBotonObservacion(toggle, obsVisible);
+                row.querySelector('.row-desc').id = `desc-${rowCount}`;
+                row.querySelector('.row-code').id = `code-${rowCount}`;
+                row.querySelector('.dropdown-results').id = `dropdown-${rowCount}`;
+                if (obsRow) { obsRow.setAttribute('data-id', rowCount); obsRow.id = `obs-row-${rowCount}`; const obsLabel = obsRow.querySelector('.obs-label'); if (obsLabel) obsLabel.textContent = `OBSERVACIÓN DE LA LÍNEA ${rowCount}:`; }
             });
+        }
+
+        function getObsToggleMarkup(isVisible) {
+            return isVisible
+                ? `<span class="obs-toggle-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"></path><circle cx="12" cy="12" r="2.5"></circle><path d="M8 12h8"></path></svg></span><span>Ocultar observación</span>`
+                : `<span class="obs-toggle-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></span><span>Agregar observación</span>`;
+        }
+
+        function actualizarBotonObservacion(btn, isVisible) {
+            if (!btn) return;
+            btn.innerHTML = getObsToggleMarkup(isVisible);
+            btn.setAttribute('aria-label', isVisible ? 'Ocultar observación' : 'Agregar observación');
+            btn.setAttribute('title', isVisible ? 'Ocultar observación' : 'Agregar observación');
         }
 
         function toggleObs(id) {
             const obsRow = document.getElementById(`obs-row-${id}`); const btn = document.getElementById(`btn-toggle-obs-${id}`);
-            if (obsRow.style.display === 'none') { obsRow.style.display = 'table-row'; btn.textContent = '- Ocultar observación'; const ta = obsRow.querySelector('.row-obs'); if (ta) { ta.focus(); autoResize(ta); } } else { obsRow.style.display = 'none'; btn.textContent = '+ Agregar observación'; const ta = obsRow.querySelector('.row-obs'); if (ta) { ta.value = ''; autoResize(ta); } guardarDatos(); }
+            if (obsRow.style.display === 'none') {
+                obsRow.style.display = 'table-row';
+                actualizarBotonObservacion(btn, true);
+                const ta = obsRow.querySelector('.row-obs');
+                if (ta) { ta.focus(); autoResize(ta); }
+            } else {
+                obsRow.style.display = 'none';
+                actualizarBotonObservacion(btn, false);
+                const ta = obsRow.querySelector('.row-obs');
+                if (ta) { ta.value = ''; autoResize(ta); }
+                guardarDatos();
+            }
         }
 
         async function buscarProducto(id) {
@@ -1338,45 +2055,477 @@
             return data;
         }
 
-        function filtrarFilasVacias(data) { if (!data || !data.rows) return data; data.rows = data.rows.filter(row => row.qty.trim() !== '' || row.desc.trim() !== '' || row.code.trim() !== '' ); return data; }
-        function guardarDatos() { if (document.getElementById('form-view').classList.contains('active')) localStorage.setItem(STORAGE_KEY, JSON.stringify(recopilarDatos())); }
+        function filtrarFilasVacias(data) { if (!data || !data.rows) return data; data.rows = data.rows.filter(row => row.qty.trim() !== '' || row.desc.trim() !== '' || row.code.trim() !== '' || (row.obs || '').trim() !== '' ); return data; }
 
-        function cargarBorrador(dataLoad = null) {
-            document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0; let data = dataLoad || JSON.parse(localStorage.getItem(STORAGE_KEY)); if (data) { data = filtrarFilasVacias(data); }
-            if (data && data.rows && data.rows.length > 0) {
-                data.rows.forEach(r => agregarRenglon(r));
-                ['fecha-creacion', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia', 'etapa'].forEach(id => { const el = document.getElementById(id); if (el && data[id]) { el.value = data[id]; if (el.tagName === 'TEXTAREA') autoResize(el); } });
-                setTimeout(() => { initCanvases(); ['canvas-almacen', 'canvas-gerencia'].forEach(id => { if (data[id]) { const c = document.getElementById(id); const img = new Image(); img.onload = () => { c.getContext('2d').clearRect(0, 0, c.width, c.height); c.getContext('2d').drawImage(img, 0, 0); }; img.src = data[id]; } }); }, 300);
-            } else { for (let i = 0; i < ROWS_INICIALES; i++) agregarRenglon(); setTimeout(initCanvases, 300); }
+        function getDraftStorageKey() {
+            // Se conserva únicamente para migrar borradores creados por versiones anteriores.
+            return currentUserInfo?.id ? `${STORAGE_KEY}_${currentUserInfo.id}` : null;
+        }
+
+        function establecerContadorBorradores(cantidad = 0) {
+            const badge = document.getElementById('draft-notification-badge');
+            if (!badge) return;
+            const total = Math.max(0, Number(cantidad) || 0);
+            badge.textContent = total > 99 ? '99+' : String(total);
+            badge.setAttribute('aria-label', `${total} ${total === 1 ? 'borrador' : 'borradores'}`);
+            badge.classList.toggle('visible', total > 0);
+        }
+
+        async function actualizarContadorBorradores() {
+            if (!currentUserInfo?.id) { establecerContadorBorradores(0); return 0; }
+            try {
+                const { count, error } = await supaUsers
+                    .from('borradores_solicitudes')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('user_id', currentUserInfo.id);
+                if (error) throw error;
+                const total = count || 0;
+                establecerContadorBorradores(total);
+                return total;
+            } catch (e) {
+                console.error('No se pudo actualizar el contador de borradores:', e);
+                return 0;
+            }
+        }
+
+        async function verificarConexionBorradoresSupabase() {
+            if (!currentUserInfo?.id) return false;
+            try {
+                const { error } = await supaUsers
+                    .from('borradores_solicitudes')
+                    .select('id')
+                    .eq('user_id', currentUserInfo.id)
+                    .limit(1);
+                if (error) throw error;
+                return true;
+            } catch (e) {
+                console.error('Error de configuración de borradores en Supabase:', e);
+                const detalle = e?.message ? `: ${e.message}` : '';
+                mostrarNotificacion('error', `Borradores de Supabase no disponibles${detalle}`, 9000);
+                return false;
+            }
+        }
+
+        async function obtenerBorradoresGuardados() {
+            if (!currentUserInfo?.id) return [];
+            try {
+                const { data, error } = await supaUsers
+                    .from('borradores_solicitudes')
+                    .select('id, datos, created_at, updated_at')
+                    .eq('user_id', currentUserInfo.id)
+                    .order('updated_at', { ascending: false });
+                if (error) throw error;
+                return (data || []).map(item => ({
+                    id: item.id,
+                    data: item.datos || null,
+                    createdAt: item.created_at || null,
+                    updatedAt: item.updated_at || null
+                }));
+            } catch (e) {
+                console.error('No se pudieron leer los borradores desde Supabase:', e);
+                return [];
+            }
+        }
+
+        async function obtenerBorradorGuardado(id) {
+            if (!currentUserInfo?.id || !id) return null;
+            try {
+                const { data, error } = await supaUsers
+                    .from('borradores_solicitudes')
+                    .select('id, datos, created_at, updated_at')
+                    .eq('user_id', currentUserInfo.id)
+                    .eq('id', id)
+                    .maybeSingle();
+                if (error) throw error;
+                if (!data) return null;
+                return { id: data.id, data: data.datos || null, createdAt: data.created_at || null, updatedAt: data.updated_at || null };
+            } catch (e) {
+                console.error('No se pudo leer el borrador desde Supabase:', e);
+                return null;
+            }
+        }
+
+        function borradorTieneContenido(data) {
+            if (!data) return false;
+            const filas = (data.rows || []).some(row => [row.qty, row.desc, row.code, row.obs].some(v => (v || '').trim() !== ''));
+            const cabecera = ['etapa', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia'].some(id => (data[id] || '').trim() !== '');
+            return filas || cabecera;
+        }
+
+        function descripcionPrimerRenglonTieneTexto(data) {
+            return !!(data?.rows?.[0]?.desc || '').trim();
+        }
+
+        function firmaBorrador(data) {
+            try { return JSON.stringify(data || {}); }
+            catch (e) { console.error('No se pudo generar la firma del borrador:', e); return ''; }
+        }
+
+        function mostrarEstadoAutoguardado() {
+            const el = document.getElementById('autosave-status');
+            if (!el) return;
+            if (autosaveStatusTimer) clearTimeout(autosaveStatusTimer);
+            el.style.display = 'inline-flex';
+            requestAnimationFrame(() => el.classList.add('visible'));
+            autosaveStatusTimer = setTimeout(() => {
+                el.classList.remove('visible');
+                setTimeout(() => { if (!el.classList.contains('visible')) el.style.display = 'none'; }, 220);
+            }, 2400);
+        }
+
+        async function guardarBorradorEnSupabase(data, mostrarError = false, mostrarConfirmacionGuardado = false) {
+            if (!currentUserInfo?.id || !descripcionPrimerRenglonTieneTexto(data)) return false;
+
+            if (draftSaveInFlight) {
+                try { await draftSaveInFlight; } catch (_) {}
+            }
+
+            const operacion = (async () => {
+                try {
+                    if (!currentDraftId) currentDraftId = crypto.randomUUID();
+                    const now = new Date().toISOString();
+                    const payload = {
+                        id: currentDraftId,
+                        user_id: currentUserInfo.id,
+                        datos: data,
+                        updated_at: now
+                    };
+
+                    const { error } = await supaUsers
+                        .from('borradores_solicitudes')
+                        .upsert(payload, { onConflict: 'id' });
+
+                    if (error) throw error;
+                    await actualizarContadorBorradores();
+                    if (mostrarConfirmacionGuardado) mostrarEstadoAutoguardado();
+                    return true;
+                } catch (e) {
+                    console.error('No se pudo guardar el borrador en Supabase:', e);
+                    if (mostrarError) {
+                        const detalle = e?.message ? `: ${e.message}` : '';
+                        mostrarNotificacion('error', `No se pudo guardar el borrador en Supabase${detalle}`, 7000);
+                    }
+                    return false;
+                }
+            })();
+
+            draftSaveInFlight = operacion;
+            try { return await operacion; }
+            finally { if (draftSaveInFlight === operacion) draftSaveInFlight = null; }
+        }
+
+        function programarPrimerGuardadoBorrador() {
+            if (draftInitialSaveDone || draftInitialSaveTimer || !draftDirty) return;
+            draftInitialSaveTimer = setTimeout(async () => {
+                draftInitialSaveTimer = null;
+                if (!draftDirty || !draftUserChanged) return;
+                const guardado = await ejecutarAutoguardadoBorrador(true);
+                if (guardado) draftInitialSaveDone = true;
+            }, INITIAL_DRAFT_SAVE_DELAY_MS);
+        }
+
+        function guardarDatos() {
+            if (suspendDraftSave || solicitudEditandoId || !currentUserInfo || !document.getElementById('form-view').classList.contains('active')) return;
+            const data = recopilarDatos();
+            draftPendingData = data;
+            draftUserChanged = true;
+
+            // La condición para crear el borrador sigue siendo que la descripción
+            // del primer renglón tenga texto.
+            if (!descripcionPrimerRenglonTieneTexto(data)) {
+                draftDirty = false;
+                return;
+            }
+
+            const firmaActual = firmaBorrador(data);
+            draftDirty = !!firmaActual && firmaActual !== lastDraftSignature;
+
+            // El PRIMER guardado se hace poco después de comenzar a escribir para
+            // asegurar que el borrador exista. Luego las actualizaciones normales
+            // se revisan cada 4 minutos o inmediatamente al cambiar de vista.
+            if (draftDirty) programarPrimerGuardadoBorrador();
+        }
+
+        async function ejecutarAutoguardadoBorrador(forzar = false) {
+            if (draftExecutionInFlight) return draftExecutionInFlight;
+
+            const ejecucion = (async () => {
+                if (suspendDraftSave || !currentUserInfo?.id) return false;
+                if (!forzar && !draftDirty) return false;
+
+                const data = draftPendingData || recopilarDatos();
+                if (!descripcionPrimerRenglonTieneTexto(data)) return false;
+
+                const firmaActual = firmaBorrador(data);
+                if (!firmaActual || firmaActual === lastDraftSignature) {
+                    draftDirty = false;
+                    draftUserChanged = false;
+                    return false;
+                }
+
+                const guardado = await guardarBorradorEnSupabase(data, true, true);
+                if (guardado) {
+                    lastDraftSignature = firmaActual;
+                    draftDirty = false;
+                    draftUserChanged = false;
+                    draftPendingData = data;
+                    draftInitialSaveDone = true;
+                    if (draftInitialSaveTimer) {
+                        clearTimeout(draftInitialSaveTimer);
+                        draftInitialSaveTimer = null;
+                    }
+                    return true;
+                }
+                return false;
+            })();
+
+            draftExecutionInFlight = ejecucion;
+            try { return await ejecucion; }
+            finally { if (draftExecutionInFlight === ejecucion) draftExecutionInFlight = null; }
+        }
+
+        function iniciarAutoguardadoBorradores() {
+            if (draftAutoSaveInterval) clearInterval(draftAutoSaveInterval);
+            draftAutoSaveInterval = setInterval(() => {
+                // Solo escribe si desde el último guardado hubo cambios reales.
+                if (draftDirty && draftUserChanged) ejecutarAutoguardadoBorrador(false);
+            }, AUTOSAVE_INTERVAL_MS);
+        }
+
+        async function sincronizarFirmaBorradorRemoto() {
+            // Cada entrada a Nueva Solicitud comienza una sesión nueva e independiente.
+            currentDraftId = null;
+            lastDraftSignature = null;
+            draftDirty = false;
+            draftUserChanged = false;
+            draftInitialSaveDone = false;
+            return null;
+        }
+
+        async function guardarBorradorPendienteAhora(forzar = false) {
+            if (!currentUserInfo?.id || suspendDraftSave) return false;
+            if (!draftUserChanged && !draftDirty) return false;
+            return ejecutarAutoguardadoBorrador(true);
+        }
+
+        function guardarBorradorKeepalive() {
+            if (suspendDraftSave || !currentUserInfo?.id || !currentAccessToken || !draftDirty) return;
+            try {
+                const data = draftPendingData || recopilarDatos();
+                if (!descripcionPrimerRenglonTieneTexto(data)) return;
+                const firmaActual = firmaBorrador(data);
+                if (!firmaActual || firmaActual === lastDraftSignature) return;
+                if (!currentDraftId) currentDraftId = crypto.randomUUID();
+
+                fetch(`${SUPA_USERS_URL}/rest/v1/borradores_solicitudes?on_conflict=id`, {
+                    method: 'POST',
+                    keepalive: true,
+                    headers: {
+                        'apikey': SUPA_USERS_KEY,
+                        'Authorization': `Bearer ${currentAccessToken}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates,return=minimal'
+                    },
+                    body: JSON.stringify([{ id: currentDraftId, user_id: currentUserInfo.id, datos: data, updated_at: new Date().toISOString() }])
+                }).catch(() => {});
+            } catch (e) {
+                console.error('No se pudo enviar el último cambio del borrador:', e);
+            }
+        }
+
+        async function migrarBorradorAnterior() {
+            if (!currentUserInfo?.id) return;
+            const keyUsuario = getDraftStorageKey();
+            const keys = [keyUsuario, LEGACY_STORAGE_KEY].filter(Boolean);
+            let borradorLocal = null;
+            let keyEncontrada = null;
+
+            for (const key of keys) {
+                const raw = localStorage.getItem(key);
+                if (!raw) continue;
+                try {
+                    const parsed = JSON.parse(raw);
+                    const candidato = parsed?.data || parsed;
+                    if (descripcionPrimerRenglonTieneTexto(candidato)) {
+                        borradorLocal = candidato;
+                        keyEncontrada = key;
+                        break;
+                    }
+                } catch (e) {
+                    console.error('No se pudo leer un borrador local anterior:', e);
+                }
+            }
+
+            if (!borradorLocal) return;
+            const draftIdAnterior = currentDraftId;
+            currentDraftId = crypto.randomUUID();
+            const migrado = await guardarBorradorEnSupabase(borradorLocal);
+            currentDraftId = draftIdAnterior;
+            if (!migrado) return;
+            keys.forEach(key => localStorage.removeItem(key));
+            if (keyEncontrada) console.log('Borrador local migrado a Supabase correctamente.');
+        }
+
+        function cargarFormularioVacio() {
+            suspendDraftSave = true;
+            try {
+                document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0;
+                document.getElementById('departamento').value = `${currentUserInfo?.nombre || 'USUARIO'} - ${currentUserInfo?.rol || 'usuario'}`.toUpperCase();
+                document.getElementById('fecha-creacion').value = new Date().toISOString().split('T')[0];
+                document.getElementById('fecha-entrega').value = '';
+                document.getElementById('observacion-general').value = '';
+                document.getElementById('nombre-almacen').value = '';
+                document.getElementById('nombre-gerencia').value = '';
+                document.getElementById('etapa').value = '';
+                ['canvas-almacen', 'canvas-gerencia'].forEach(id => { const c = document.getElementById(id); if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height); });
+                for (let i = 0; i < ROWS_INICIALES; i++) agregarRenglon({ qty:'', desc:'', code:'', obs:'' });
+                document.querySelectorAll('.campo-invalido').forEach(el => el.classList.remove('campo-invalido'));
+                setTimeout(initCanvases, 300);
+            } finally {
+                suspendDraftSave = false;
+                currentDraftId = null;
+                draftPendingData = null;
+                lastDraftSignature = null;
+                draftDirty = false;
+                draftUserChanged = false;
+                draftInitialSaveDone = false;
+                if (draftInitialSaveTimer) { clearTimeout(draftInitialSaveTimer); draftInitialSaveTimer = null; }
+            }
+        }
+
+        function cargarBorrador(dataLoad = null, draftId = null) {
+            document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0;
+            let data = dataLoad;
+            if (data) { data = filtrarFilasVacias(structuredClone(data)); }
+            suspendDraftSave = true;
+            try {
+                if (data && data.rows && data.rows.length > 0) {
+                    data.rows.forEach(r => agregarRenglon(r));
+                } else {
+                    for (let i = 0; i < ROWS_INICIALES; i++) agregarRenglon({ qty:'', desc:'', code:'', obs:'' });
+                }
+                ['departamento', 'fecha-creacion', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia', 'etapa'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    if (id === 'departamento') {
+                        el.value = data?.departamento || `${currentUserInfo?.nombre || 'USUARIO'} - ${currentUserInfo?.rol || 'usuario'}`.toUpperCase();
+                    } else {
+                        el.value = data?.[id] || (id === 'fecha-creacion' ? new Date().toISOString().split('T')[0] : '');
+                    }
+                    if (el.tagName === 'TEXTAREA') autoResize(el);
+                });
+                setTimeout(() => { initCanvases(); ['canvas-almacen', 'canvas-gerencia'].forEach(id => { const c = document.getElementById(id); if (!c) return; c.getContext('2d').clearRect(0, 0, c.width, c.height); if (data?.[id]) { const img = new Image(); img.onload = () => { c.getContext('2d').clearRect(0, 0, c.width, c.height); c.getContext('2d').drawImage(img, 0, 0); }; img.src = data[id]; } }); }, 300);
+            } finally {
+                suspendDraftSave = false;
+                currentDraftId = draftId || null;
+                draftPendingData = data ? structuredClone(data) : null;
+                lastDraftSignature = data ? firmaBorrador(data) : null;
+                draftDirty = false;
+                draftUserChanged = false;
+                draftInitialSaveDone = !!data;
+                if (draftInitialSaveTimer) { clearTimeout(draftInitialSaveTimer); draftInitialSaveTimer = null; }
+            }
+        }
+
+        async function renderBorradores() {
+            const container = document.getElementById('drafts-container');
+            container.innerHTML = '<div class="draft-empty">Cargando borradores desde Supabase...</div>';
+            const borradores = (await obtenerBorradoresGuardados()).filter(b => b?.data && borradorTieneContenido(b.data));
+            establecerContadorBorradores(borradores.length);
+            if (!borradores.length) {
+                container.innerHTML = '<div class="draft-empty"><div style="font-size:40px; margin-bottom:8px;">🗒️</div><strong>No tienes borradores pendientes.</strong><br><span>Cada vez que salgas de Nueva Solicitud, lo escrito se guardará como un borrador independiente. Al volver a Nueva Solicitud el formulario estará en blanco.</span></div>';
+                return;
+            }
+
+            container.innerHTML = borradores.map((borrador, index) => {
+                const data = filtrarFilasVacias(structuredClone(borrador.data));
+                const items = data.rows || [];
+                const primera = escaparHtml(items.find(r => (r.desc || '').trim() !== '')?.desc || 'SIN DESCRIPCIÓN');
+                const etapa = escaparHtml(data.etapa || 'SIN DEFINIR');
+                const fechaEntrega = escaparHtml(data['fecha-entrega'] || 'SIN DEFINIR');
+                const fecha = borrador.updatedAt ? new Date(borrador.updatedAt).toLocaleString() : 'Fecha no disponible';
+                return `<div class="draft-card" style="margin-bottom:16px;">
+                    <h3>Borrador ${index + 1}</h3>
+                    <div class="draft-meta"><strong>Guardado en:</strong> Supabase<br><strong>Última actualización:</strong> ${fecha}<br><strong>Renglones con contenido:</strong> ${items.length}</div>
+                    <div class="draft-preview"><strong>Primer material:</strong> ${primera}<br><strong>Etapa:</strong> ${etapa}<br><strong>Fecha de entrega:</strong> ${fechaEntrega}</div>
+                    <div class="draft-actions">
+                        <button class="btn" style="background:var(--primary);" onclick="continuarBorrador('${borrador.id}')">${etiquetaBoton('edit', 'Continuar borrador')}</button>
+                        <button class="btn" style="background:var(--danger);" onclick="eliminarBorradorGuardado('${borrador.id}')">${etiquetaBoton('delete', 'Eliminar borrador')}</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function continuarBorrador(id) {
+            const borrador = await obtenerBorradorGuardado(id);
+            if (!borrador?.data) { await renderBorradores(); return; }
+            cancelarEdicion(); numeroSolicitudActual = ''; configurarBotonImpresion(''); mostrarBotonRegresarHistorial(false);
+            await switchView('form-view');
+            cargarBorrador(borrador.data, borrador.id);
+        }
+
+        async function eliminarBorradorGuardado(id) {
+            const confirmado = await mostrarConfirmacion('¿Eliminar este borrador? Esta acción no se puede deshacer.');
+            if (!confirmado || !currentUserInfo?.id || !id) return;
+            try {
+                const { error } = await supaUsers.from('borradores_solicitudes').delete().eq('user_id', currentUserInfo.id).eq('id', id);
+                if (error) throw error;
+                if (currentDraftId === id) cargarFormularioVacio();
+                await actualizarContadorBorradores();
+                await renderBorradores();
+                mostrarNotificacion('success', 'Borrador eliminado de Supabase.');
+            } catch (e) {
+                console.error(e);
+                mostrarNotificacion('error', 'No se pudo eliminar el borrador.');
+            }
         }
 
         async function limpiarSolicitudActual(silent = false) {
-            if (!silent) { const confirmado = await mostrarConfirmacion('¿Limpiar formato? Se perderán datos no guardados.'); if (!confirmado) return; }
-            localStorage.removeItem(STORAGE_KEY); ['canvas-almacen', 'canvas-gerencia'].forEach(limpiarCanvas);
-            document.getElementById('fecha-creacion').value = new Date().toISOString().split('T')[0]; document.getElementById('fecha-entrega').value = ''; document.getElementById('observacion-general').value = ''; document.getElementById('nombre-almacen').value = ''; document.getElementById('nombre-gerencia').value = ''; document.getElementById('etapa').value = '';
-            numeroSolicitudActual = ''; configurarBotonImpresion(''); document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0;
-            for (let i = 0; i < ROWS_INICIALES; i++) agregarRenglon();
-            document.querySelectorAll('.campo-invalido').forEach(el => el.classList.remove('campo-invalido'));
-            guardarDatos(); if (!silent) { mostrarNotificacion('success', 'Formato limpiado correctamente.'); }
+            if (!silent) { const confirmado = await mostrarConfirmacion('¿Limpiar formato? Se perderán los datos de esta solicitud.'); if (!confirmado) return; }
+            const draftIdAEliminar = currentDraftId;
+            suspendDraftSave = true;
+            try {
+                if (draftIdAEliminar && currentUserInfo?.id) {
+                    const { error: errorBorrador } = await supaUsers.from('borradores_solicitudes').delete().eq('user_id', currentUserInfo.id).eq('id', draftIdAEliminar);
+                    if (errorBorrador) console.error('No se pudo eliminar el borrador actual de Supabase:', errorBorrador);
+                }
+                cargarFormularioVacio();
+                await actualizarContadorBorradores();
+            } finally { suspendDraftSave = false; }
+            if (!silent) { mostrarNotificacion('success', 'Formato limpiado correctamente.'); }
         }
 
-        let solicitudEditandoId = null; let numeroSolicitudActual = '';
+        let solicitudEditandoId = null; let numeroSolicitudActual = ''; let formularioAbiertoDesdeHistorial = false;
+
+        function mostrarBotonRegresarHistorial(mostrar) {
+            formularioAbiertoDesdeHistorial = !!mostrar;
+            const btn = document.getElementById('btn-regresar-historial');
+            if (btn) btn.style.display = mostrar ? 'inline-flex' : 'none';
+        }
+
+        async function regresarAlHistorial() {
+            cancelarEdicion();
+            numeroSolicitudActual = '';
+            configurarBotonImpresion('');
+            mostrarBotonRegresarHistorial(false);
+            await switchView('history-view');
+        }
 
         async function guardarEnHistorial() {
-            if (!validarCamposObligatorios()) { await mostrarAlerta('Complete todos los campos obligatorios.'); return; }
+            if (!validarCamposObligatorios()) { await mostrarAlerta('Complete todos los campos obligatorios, incluyendo CANTIDAD en cada renglón con contenido.'); return; }
             let data = recopilarDatos(); data = filtrarFilasVacias(data); if (data.rows.length === 0) { await mostrarAlerta('No hay ningún ítem con contenido para guardar.'); return; }
             if (!currentUserInfo) { await mostrarAlerta('Debe iniciar sesión.'); return; }
             let numeroSolicitudCreada = null;
             try {
                 if (solicitudEditandoId) {
-                    const { error } = await supaUsers.from('historial_solicitudes').update({ departamento: data['departamento'] || 'SIN DEPTO', etapa: data['etapa'] || 'SIN ETAPA', datos: data, fecha_guardado: new Date().toISOString(), user_id: currentUserInfo.id }).eq('id', solicitudEditandoId);
+                    const { error } = await supaUsers.from('historial_solicitudes').update({ departamento: data['departamento'] || 'SIN DEPTO', etapa: data['etapa'] || 'SIN ETAPA', datos: data, fecha_guardado: new Date().toISOString() }).eq('id', solicitudEditandoId);
                     if (error) throw error; mostrarNotificacion('success', 'Solicitud actualizada exitosamente.');
                 } else {
                     const { data: registroCreado, error } = await supaUsers.from('historial_solicitudes').insert([{ user_id: currentUserInfo.id, creado_por: currentUserInfo.nombre, departamento: data['departamento'] || 'SIN DEPTO', etapa: data['etapa'] || 'SIN ETAPA', datos: data }]).select('id, numero_solicitud').single();
                     if (error) throw error; numeroSolicitudCreada = registroCreado?.numero_solicitud || null; mostrarNotificacion('success', 'Solicitud guardada exitosamente.');
                 }
                 cancelarEdicion(); await limpiarSolicitudActual(true);
-                if (numeroSolicitudCreada) { document.getElementById('history-search-input').value = ''; document.getElementById('history-filter-month').value = ''; document.getElementById('history-filter-date-from').value = ''; document.getElementById('history-filter-date-to').value = ''; document.getElementById('history-filter-etapa').value = ''; }
+                if (numeroSolicitudCreada) { document.getElementById('history-search-input').value = ''; document.getElementById('history-filter-date-from').value = ''; document.getElementById('history-filter-date-to').value = ''; document.getElementById('history-filter-etapa').value = ''; document.getElementById('history-filter-requester').value = ''; if (historialRangePicker) historialRangePicker.clear(); }
                 await switchView('history-view'); if (numeroSolicitudCreada) { resaltarSolicitudRecienCreada(numeroSolicitudCreada); }
             } catch (err) { await mostrarAlerta('Error: ' + err.message); console.error(err); }
         }
@@ -1388,7 +2537,7 @@
 
         async function imprimirSinGuardar(numeroSolicitud = '') {
             configurarBotonImpresion(numeroSolicitud);
-            if (!validarCamposObligatorios()) { await mostrarAlerta('No se puede imprimir: faltan campos obligatorios.'); return; }
+            if (!validarCamposObligatorios()) { await mostrarAlerta('No se puede imprimir: faltan campos obligatorios, incluyendo CANTIDAD en algún renglón con contenido.'); return; }
             prepararImpresion(numeroSolicitud);
             const afterPrint = () => { restaurarDespuesImpresion(); window.removeEventListener('afterprint', afterPrint); };
             window.addEventListener('afterprint', afterPrint);
@@ -1410,64 +2559,308 @@
                     list.innerHTML = '';
                     recent.forEach(reg => {
                         const item = document.createElement('div'); item.className = 'recent-item';
-                        item.innerHTML = `<div class="info"><span class="departamento">${reg.departamento || 'SIN DEPTO'}</span><span class="fecha">${new Date(reg.fecha_guardado || Date.now()).toLocaleDateString()}</span>${reg.etapa ? `<span class="etapa">${reg.etapa}</span>` : ''}</div><div class="actions"><button class="btn-sm btn-open" onclick="abrirDelHistorial('${reg.id}')">📂</button><button class="btn-sm btn-edit" onclick="editarDelHistorial('${reg.id}')">✏️</button><button class="btn-sm btn-delete" onclick="eliminarDelHistorial('${reg.id}')">🗑️</button><button class="btn-sm btn-print" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')">🖨️</button></div>`;
+                        item.innerHTML = `<div class="info"><span class="departamento">${reg.departamento || 'SIN DEPTO'}</span><span class="fecha">${new Date(reg.fecha_guardado || Date.now()).toLocaleDateString()}</span>${reg.etapa ? `<span class="etapa">${reg.etapa}</span>` : ''}</div><div class="actions"><button class="btn-sm btn-open icon-only" onclick="abrirDelHistorial('${reg.id}')" title="Abrir">${iconoVector('open')}</button><button class="btn-sm btn-edit icon-only" onclick="editarDelHistorial('${reg.id}')" title="Editar">${iconoVector('edit')}</button><button class="btn-sm btn-delete icon-only" onclick="eliminarDelHistorial('${reg.id}')" title="Eliminar">${iconoVector('delete')}</button><button class="btn-sm btn-print icon-only" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')" title="Imprimir">${iconoVector('print')}</button></div>`;
                         list.appendChild(item);
                     });
                 }
             } catch (err) { container.innerHTML = `<p style="color:red;">Error al cargar dashboard: ${err.message}</p>`; console.error(err); }
         }
 
+        let historialRangePicker = null;
+
+        function fechaLocalISO(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function inicializarFiltroFechasHistorial() {
+            const input = document.getElementById('history-filter-date-range');
+            if (!input || historialRangePicker || typeof flatpickr === 'undefined') return;
+            historialRangePicker = flatpickr(input, {
+                mode: 'range',
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'd/m/Y',
+                locale: (flatpickr.l10ns && flatpickr.l10ns.es) ? flatpickr.l10ns.es : 'default',
+                disableMobile: true,
+                conjunction: ' a ',
+                static: false,
+                onReady: function(selectedDates, dateStr, instance) {
+                    instance.calendarContainer.classList.add('history-range-calendar');
+                    if (instance.altInput) instance.altInput.placeholder = 'Selecciona fecha inicial y final';
+                },
+                onClose: function(selectedDates) {
+                    const desde = document.getElementById('history-filter-date-from');
+                    const hasta = document.getElementById('history-filter-date-to');
+                    if (selectedDates.length === 0) {
+                        desde.value = '';
+                        hasta.value = '';
+                    } else if (selectedDates.length === 1) {
+                        desde.value = fechaLocalISO(selectedDates[0]);
+                        hasta.value = fechaLocalISO(selectedDates[0]);
+                    } else {
+                        desde.value = fechaLocalISO(selectedDates[0]);
+                        hasta.value = fechaLocalISO(selectedDates[1]);
+                    }
+                    aplicarFiltrosHistorial();
+                }
+            });
+        }
+
+        function obtenerNombreSolicitante(reg) {
+            const directo = (reg?.creado_por || '').trim();
+            if (directo) return directo;
+            const departamento = (reg?.datos?.departamento || reg?.departamento || '').trim();
+            return departamento.replace(/\s+-\s+(ADMIN|ADMINISTRADOR|SUPERVISOR|USUARIO)$/i, '').trim() || 'SIN NOMBRE';
+        }
+
+        function obtenerEtiquetaUsuarioOriginal(reg) {
+            const departamentoGuardado = (reg?.datos?.departamento || reg?.departamento || '').trim();
+            const creador = (reg?.creado_por || '').trim();
+
+            if (departamentoGuardado) {
+                // El valor guardado normalmente contiene NOMBRE - ROL y es el dato más fiel al momento de crear la solicitud.
+                if (!creador || departamentoGuardado.toUpperCase().includes(creador.toUpperCase())) return departamentoGuardado.toUpperCase();
+            }
+            if (creador) return creador.toUpperCase();
+            return departamentoGuardado.toUpperCase();
+        }
+
+        function prepararDatosRegistroParaFormulario(reg) {
+            if (!reg?.datos) return null;
+            const datos = filtrarFilasVacias(structuredClone(reg.datos));
+            const usuarioOriginal = obtenerEtiquetaUsuarioOriginal(reg);
+            if (usuarioOriginal) datos.departamento = usuarioOriginal;
+            return datos;
+        }
+
+        function poblarFiltroSolicitantes() {
+            const select = document.getElementById('history-filter-requester');
+            if (!select) return;
+            const valorActual = select.value;
+            const nombres = [...new Set(historialData.map(obtenerNombreSolicitante).filter(n => n && n !== 'SIN NOMBRE'))]
+                .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+            select.innerHTML = '<option value="">Todos los solicitantes</option>' + nombres.map(nombre => `<option value="${escaparHtml(nombre)}">${escaparHtml(nombre)}</option>`).join('');
+            if (nombres.includes(valorActual)) select.value = valorActual;
+        }
+
         let historialData = [];
         async function renderHistorial() {
             const grid = document.getElementById('history-grid'); grid.innerHTML = '<p style="text-align:center;width:100%;">Cargando...</p>'; if (!currentUserInfo) { grid.innerHTML = '<p>Inicie sesión.</p>'; return; }
-            try { let query = supaUsers.from('historial_solicitudes').select('*'); if (currentUserInfo.rol !== 'admin') { query = query.eq('user_id', currentUserInfo.id); } query = query.order('fecha_guardado', { ascending: false }); const { data, error } = await query; if (error) throw error; historialData = data || []; aplicarFiltrosHistorial(); } catch (err) { grid.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`; console.error(err); }
+            try { let query = supaUsers.from('historial_solicitudes').select('*'); if (currentUserInfo.rol !== 'admin') { query = query.eq('user_id', currentUserInfo.id); } query = query.order('fecha_guardado', { ascending: false }); const { data, error } = await query; if (error) throw error; historialData = data || []; inicializarFiltroFechasHistorial(); poblarFiltroSolicitantes(); aplicarFiltrosHistorial(); } catch (err) { grid.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`; console.error(err); }
         }
 
         function aplicarFiltrosHistorial() {
-            const texto = document.getElementById('history-search-input').value.trim().toUpperCase(); const mes = document.getElementById('history-filter-month').value; const fromDate = document.getElementById('history-filter-date-from').value; const toDate = document.getElementById('history-filter-date-to').value; const etapa = document.getElementById('history-filter-etapa').value.toUpperCase();
+            const texto = document.getElementById('history-search-input').value.trim().toUpperCase(); const fromDate = document.getElementById('history-filter-date-from').value; const toDate = document.getElementById('history-filter-date-to').value; const etapa = document.getElementById('history-filter-etapa').value.toUpperCase(); const solicitante = document.getElementById('history-filter-requester').value.trim().toUpperCase();
             let filtrados = historialData;
             if (texto !== '') { filtrados = filtrados.filter(reg => { if (!reg.datos || !reg.datos.rows) return false; return reg.datos.rows.some(row => { const desc = (row.desc || '').toUpperCase(); const code = (row.code || '').toUpperCase(); return desc.includes(texto) || code.includes(texto); }); }); }
-            if (mes !== '') { filtrados = filtrados.filter(reg => { const fecha = new Date(reg.fecha_guardado); const yearMonth = fecha.getFullYear() + '-' + String(fecha.getMonth() + 1).padStart(2, '0'); return yearMonth === mes; }); }
             if (fromDate !== '') { const from = new Date(fromDate); from.setHours(0, 0, 0, 0); filtrados = filtrados.filter(reg => { const fecha = new Date(reg.fecha_guardado); return fecha >= from; }); }
             if (toDate !== '') { const to = new Date(toDate); to.setHours(23, 59, 59, 999); filtrados = filtrados.filter(reg => { const fecha = new Date(reg.fecha_guardado); return fecha <= to; }); }
             if (etapa !== '') { filtrados = filtrados.filter(reg => { return (reg.etapa || '').toUpperCase() === etapa; }); }
+            if (solicitante !== '') { filtrados = filtrados.filter(reg => obtenerNombreSolicitante(reg).toUpperCase() === solicitante); }
             renderizarTarjetas(filtrados);
         }
 
         function renderizarTarjetas(data) {
-            const grid = document.getElementById('history-grid'); if (!data || data.length === 0) { grid.innerHTML = '<p style="text-align:center;width:100%;">No hay solicitudes que coincidan con los filtros.</p>'; return; }
+            const grid = document.getElementById('history-grid');
+            if (!data || data.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;width:100%;">No hay solicitudes que coincidan con los filtros.</p>';
+                return;
+            }
             grid.innerHTML = '';
             data.forEach(reg => {
-                const numSolicitud = reg.numero_solicitud || 'SIN NÚMERO'; const rows = reg.datos?.rows || []; const primerosItems = rows.slice(0, 5); const esAdminOPropietario = (currentUserInfo.rol === 'admin' || reg.user_id === currentUserInfo.id); const btnEliminar = esAdminOPropietario ? `<button class="btn-sm btn-delete" onclick="eliminarDelHistorial('${reg.id}')">🗑️ Eliminar</button>` : '';
-                const card = document.createElement('div'); card.className = 'history-card'; card.dataset.numeroSolicitud = numSolicitud;
-                card.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;"><span class="solicitud-numero">📁 ${numSolicitud}</span><span class="departamento">🏢 ${reg.departamento || 'SIN DEPTO'}</span>${reg.etapa ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 10px; border-radius:12px;">${reg.etapa}</span>` : ''}</div><div style="margin:10px 0 6px 0; flex:1;">${primerosItems.length > 0 ? `<div style="font-weight:600; font-size:13px; color:#4b5563; margin-bottom:4px;">Materiales:</div>${primerosItems.map(row => `<div class="material-item"><span class="desc">🔹 ${row.desc || 'Sin descripción'}</span>${row.code ? `<span class="code">Cód: ${row.code}</span>` : ''}</div>`).join('')}${rows.length > 5 ? `<div style="font-size:12px; color:#6b7280; margin-top:4px;">... y ${rows.length - 5} más</div>` : ''}` : `<div style="font-size:13px; color:#9ca3af;">Sin materiales registrados</div>`}</div><div class="fecha">📅 ${new Date(reg.fecha_guardado).toLocaleString()}</div><div class="history-actions"><button class="btn-sm btn-open" onclick="abrirDelHistorial('${reg.id}')">📂 Abrir</button><button class="btn-sm btn-edit" onclick="editarDelHistorial('${reg.id}')">✏️ Editar</button><button class="btn-sm btn-print" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')">🖨️ Imprimir</button>${btnEliminar}</div>`;
+                const numSolicitud = reg.numero_solicitud || 'SIN NÚMERO';
+                const rows = reg.datos?.rows || [];
+                const primerosItems = rows.slice(0, 5);
+                const esAdminOPropietario = (currentUserInfo.rol === 'admin' || reg.user_id === currentUserInfo.id);
+                const btnEliminar = esAdminOPropietario
+                    ? `<button class="btn-sm btn-delete" onclick="event.stopPropagation(); eliminarDelHistorial('${reg.id}')">${etiquetaBoton('delete', 'Eliminar')}</button>`
+                    : '';
+                const card = document.createElement('div');
+                card.className = 'history-card';
+                card.dataset.numeroSolicitud = numSolicitud;
+                card.setAttribute('role', 'button');
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('aria-label', `Abrir solicitud ${numSolicitud}`);
+                card.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;"><span class="solicitud-numero">📁 ${numSolicitud}</span><span class="departamento">🏢 ${reg.departamento || 'SIN DEPTO'}</span>${reg.etapa ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 10px; border-radius:12px;">${reg.etapa}</span>` : ''}</div><div style="margin:10px 0 6px 0; flex:1;">${primerosItems.length > 0 ? `<div style="font-weight:600; font-size:13px; color:#4b5563; margin-bottom:4px;">Materiales:</div>${primerosItems.map(row => `<div class="material-item"><span class="desc">🔹 ${row.desc || 'Sin descripción'}</span>${row.code ? `<span class="code">Cód: ${row.code}</span>` : ''}</div>`).join('')}${rows.length > 5 ? `<div style="font-size:12px; color:#6b7280; margin-top:4px;">... y ${rows.length - 5} más</div>` : ''}` : `<div style="font-size:13px; color:#9ca3af;">Sin materiales registrados</div>`}</div><div class="fecha">📅 ${new Date(reg.fecha_guardado).toLocaleString()}</div><div class="history-actions"><button class="btn-sm btn-edit" onclick="event.stopPropagation(); editarDelHistorial('${reg.id}')">${etiquetaBoton('edit', 'Editar')}</button><button class="btn-sm btn-print" onclick="event.stopPropagation(); imprimirSolicitudDesdeHistorial('${reg.id}')">${etiquetaBoton('print', 'Imprimir')}</button><button class="btn-sm btn-open" onclick="event.stopPropagation(); copiarSolicitudDelHistorial('${reg.id}')">${etiquetaBoton('copy', 'Copiar solicitud')}</button>${btnEliminar}</div>`;
+                card.addEventListener('click', () => abrirDelHistorial(reg.id));
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        abrirDelHistorial(reg.id);
+                    }
+                });
                 grid.appendChild(card);
             });
         }
 
         function resaltarSolicitudRecienCreada(numeroSolicitud) { const card = Array.from(document.querySelectorAll('.history-card')).find(item => item.dataset.numeroSolicitud === numeroSolicitud); if (!card) return; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); requestAnimationFrame(() => card.classList.add('recently-created')); card.addEventListener('animationend', () => { card.classList.remove('recently-created'); }, { once: true }); }
-        function editarDelHistorial(id) { solicitudEditandoId = id; abrirDelHistorial(id, true); }
+
+        let registroVisualizadoActual = null;
+
+        function renderizarFirmaSoloLectura(containerId, dataUrl) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (dataUrl && String(dataUrl).startsWith('data:image')) {
+                container.innerHTML = `<img class="record-signature-image" src="${escaparHtml(dataUrl)}" alt="Firma registrada">`;
+            } else {
+                container.innerHTML = '<div class="record-signature-empty"></div>';
+            }
+        }
+
+        function renderizarRegistroSoloLectura(reg) {
+            const datos = prepararDatosRegistroParaFormulario(reg) || { rows: [] };
+            const rows = datos.rows || [];
+            document.getElementById('record-usuario').textContent = datos.departamento || obtenerEtiquetaUsuarioOriginal(reg) || 'SIN USUARIO';
+            document.getElementById('record-etapa').textContent = datos.etapa || 'SIN DEFINIR';
+            document.getElementById('record-fecha-creacion').textContent = datos['fecha-creacion'] || '';
+            document.getElementById('record-fecha-entrega').textContent = datos['fecha-entrega'] || '';
+            document.getElementById('record-observacion-general').textContent = datos['observacion-general'] || '';
+            document.getElementById('record-nombre-almacen').textContent = datos['nombre-almacen'] || '';
+            document.getElementById('record-nombre-gerencia').textContent = datos['nombre-gerencia'] || '';
+            renderizarFirmaSoloLectura('record-firma-almacen', datos['canvas-almacen']);
+            renderizarFirmaSoloLectura('record-firma-gerencia', datos['canvas-gerencia']);
+
+            const tbody = document.getElementById('record-tbody-materiales');
+            tbody.innerHTML = rows.map((row, index) => {
+                const obs = (row.obs || '').trim();
+                return `<tr class="main-row">
+                    <td class="col-renglon" style="text-align:center;">${index + 1}</td>
+                    <td class="col-cantidad" style="text-align:center; font-weight:600;">${escaparHtml(row.qty || '')}</td>
+                    <td class="col-descripcion">${escaparHtml(row.desc || '')}</td>
+                    <td class="col-codigo">${escaparHtml(row.code || '')}</td>
+                </tr>${obs ? `<tr class="record-obs-row"><td colspan="4"><strong>OBSERVACIÓN DE LA LÍNEA ${index + 1}:</strong> <span class="record-obs-text">${escaparHtml(obs)}</span></td></tr>` : ''}`;
+            }).join('');
+        }
+
+        async function editarDelHistorial(id) {
+            await abrirDelHistorial(id, true);
+        }
 
         async function abrirDelHistorial(id, modoEdicion = false) {
             try {
-                const { data, error } = await supaUsers.from('historial_solicitudes').select('datos, numero_solicitud').eq('id', id).single(); if (error) throw error;
-                if (data && data.datos) {
-                    numeroSolicitudActual = data.numero_solicitud || ''; configurarBotonImpresion(''); const datosFiltrados = filtrarFilasVacias(data.datos);
-                    if (modoEdicion) { const indicator = document.getElementById('modo-edicion-indicator'); indicator.style.display = 'flex'; document.getElementById('modo-edicion-texto').textContent = `✏️ Editando solicitud: ${data.numero_solicitud || 'SIN NÚMERO'}`; switchView('form-view'); cargarBorrador(datosFiltrados); } else { cancelarEdicion(); switchView('form-view'); cargarBorrador(datosFiltrados); }
-                } else { await mostrarAlerta('No se encontraron datos.'); }
-            } catch (err) { await mostrarAlerta('Error: ' + err.message); console.error(err); }
+                const { data, error } = await supaUsers.from('historial_solicitudes').select('id, datos, numero_solicitud, creado_por, departamento, user_id').eq('id', id).single();
+                if (error) throw error;
+                if (!data?.datos) { await mostrarAlerta('No se encontraron datos.'); return; }
+
+                numeroSolicitudActual = data.numero_solicitud || '';
+
+                if (modoEdicion) {
+                    const datosFiltrados = prepararDatosRegistroParaFormulario(data);
+                    solicitudEditandoId = id;
+                    configurarBotonImpresion(data.numero_solicitud || '');
+                    mostrarBotonRegresarHistorial(true);
+                    const indicator = document.getElementById('modo-edicion-indicator');
+                    indicator.style.display = 'flex';
+                    document.getElementById('modo-edicion-texto').textContent = `✏️ Editando solicitud: ${data.numero_solicitud || 'SIN NÚMERO'}`;
+                    await switchView('form-view');
+                    cargarBorrador(datosFiltrados);
+                    return;
+                }
+
+                // VISUALIZAR usa una vista totalmente separada y de solo lectura.
+                // No se cargan campos en Nueva Solicitud y por tanto no activa borradores.
+                cancelarEdicion();
+                configurarBotonImpresion('');
+                mostrarBotonRegresarHistorial(false);
+                registroVisualizadoActual = data;
+                renderizarRegistroSoloLectura(data);
+                await switchView('record-view');
+            } catch (err) {
+                await mostrarAlerta('Error: ' + err.message);
+                console.error(err);
+            }
         }
 
         function cancelarEdicion() { solicitudEditandoId = null; document.getElementById('modo-edicion-indicator').style.display = 'none'; }
 
-        async function imprimirSolicitudDesdeHistorial(id) {
-            try {
-                const { data, error } = await supaUsers.from('historial_solicitudes').select('datos, numero_solicitud').eq('id', id).single(); if (error) throw error;
-                if (data && data.datos) { numeroSolicitudActual = data.numero_solicitud || ''; const datosFiltrados = filtrarFilasVacias(data.datos); cancelarEdicion(); switchView('form-view'); cargarBorrador(datosFiltrados); setTimeout(() => { imprimirSinGuardar(data.numero_solicitud || ''); }, 300); } else { await mostrarAlerta('No se encontraron datos para imprimir.'); }
-            } catch (err) { await mostrarAlerta('Error: ' + err.message); console.error(err); }
+        async function cerrarVistaRegistro() {
+            registroVisualizadoActual = null;
+            numeroSolicitudActual = '';
+            await switchView('history-view');
         }
 
-        function limpiarFiltrosHistorial() { document.getElementById('history-search-input').value = ''; document.getElementById('history-filter-month').value = ''; document.getElementById('history-filter-date-from').value = ''; document.getElementById('history-filter-date-to').value = ''; document.getElementById('history-filter-etapa').value = ''; aplicarFiltrosHistorial(); }
+        async function editarRegistroVisualizado() {
+            if (!registroVisualizadoActual?.id) return;
+            const id = registroVisualizadoActual.id;
+            registroVisualizadoActual = null;
+            await editarDelHistorial(id);
+        }
+
+        async function copiarRegistroVisualizado() {
+            if (!registroVisualizadoActual?.id) return;
+            const id = registroVisualizadoActual.id;
+            await copiarSolicitudDelHistorial(id);
+        }
+
+        function imprimirRegistroVisualizado() {
+            if (!registroVisualizadoActual) return;
+            document.body.classList.add('printing-record');
+            const limpiar = () => {
+                document.body.classList.remove('printing-record');
+                window.removeEventListener('afterprint', limpiar);
+            };
+            window.addEventListener('afterprint', limpiar);
+            window.print();
+            setTimeout(limpiar, 1500);
+        }
+
+        async function copiarSolicitudDelHistorial(id) {
+            try {
+                const { data, error } = await supaUsers.from('historial_solicitudes').select('datos, numero_solicitud').eq('id', id).single();
+                if (error) throw error;
+                if (!data?.datos) { await mostrarAlerta('No se encontraron datos para copiar.'); return; }
+
+                const copia = filtrarFilasVacias(structuredClone(data.datos));
+                copia['departamento'] = `${currentUserInfo.nombre.toUpperCase()} - ${currentUserInfo.rol.toUpperCase()}`;
+                copia['fecha-creacion'] = new Date().toISOString().split('T')[0];
+                copia['nombre-almacen'] = '';
+                copia['nombre-gerencia'] = '';
+                copia['canvas-almacen'] = '';
+                copia['canvas-gerencia'] = '';
+
+                cancelarEdicion();
+                registroVisualizadoActual = null;
+                solicitudEditandoId = null;
+                numeroSolicitudActual = '';
+                configurarBotonImpresion('');
+                mostrarBotonRegresarHistorial(true);
+                await switchView('form-view');
+                cargarBorrador(copia);
+                mostrarNotificacion('info', `Copia de ${data.numero_solicitud || 'la solicitud'} lista para guardar como una nueva solicitud.`);
+            } catch (err) {
+                await mostrarAlerta('Error al copiar: ' + err.message);
+                console.error(err);
+            }
+        }
+
+        async function imprimirSolicitudDesdeHistorial(id) {
+            try {
+                const { data, error } = await supaUsers.from('historial_solicitudes').select('id, datos, numero_solicitud, creado_por, departamento, user_id').eq('id', id).single();
+                if (error) throw error;
+                if (!data?.datos) { await mostrarAlerta('No se encontraron datos para imprimir.'); return; }
+                registroVisualizadoActual = data;
+                numeroSolicitudActual = data.numero_solicitud || '';
+                renderizarRegistroSoloLectura(data);
+                await switchView('record-view');
+                setTimeout(imprimirRegistroVisualizado, 150);
+            } catch (err) {
+                await mostrarAlerta('Error: ' + err.message);
+                console.error(err);
+            }
+        }
+
+        function limpiarFiltrosHistorial() {
+            document.getElementById('history-search-input').value = '';
+            document.getElementById('history-filter-date-from').value = '';
+            document.getElementById('history-filter-date-to').value = '';
+            document.getElementById('history-filter-etapa').value = '';
+            document.getElementById('history-filter-requester').value = '';
+            if (historialRangePicker) historialRangePicker.clear();
+            aplicarFiltrosHistorial();
+        }
 
         async function eliminarDelHistorial(id) {
             const confirmado = await mostrarConfirmacion('¿Eliminar esta solicitud?'); if (!confirmado) return;
@@ -1491,11 +2884,19 @@
             // Agregamos la clase que establece los anchos de impresión
             document.body.classList.add('print-preparing');
             
-            // Recalcular alturas de todos los textareas sin límite ahora que las reglas CSS cambiaron
+            // Recalcular alturas de todos los textareas y conservarlas también en impresión
             document.querySelectorAll('textarea').forEach(ta => {
-                ta.style.maxHeight = 'none'; // Quitar límite de altura temporalmente
+                ta.style.maxHeight = 'none';
                 autoResize(ta);
+                ta.style.setProperty('--print-height', `${Math.max(ta.scrollHeight, ta.offsetHeight)}px`);
             });
+
+            // Copiar toda la observación a un bloque de impresión que crece sin recortar texto
+            const obsGeneral = document.getElementById('observacion-general');
+            const obsGeneralPrint = document.getElementById('observacion-general-print');
+            if (obsGeneral && obsGeneralPrint) {
+                obsGeneralPrint.textContent = obsGeneral.value || '';
+            }
 
             // 1. Identificar y ocultar filas totalmente vacías
             document.querySelectorAll('.main-row').forEach(row => {
@@ -1552,7 +2953,8 @@
             
             // Recalcular textareas para volver al tamaño correcto en pantalla
             document.querySelectorAll('textarea').forEach(ta => {
-                ta.style.maxHeight = ''; // Restaurar restricciones de alto si las había
+                ta.style.maxHeight = '';
+                ta.style.removeProperty('--print-height');
                 autoResize(ta);
             });
             
@@ -1570,7 +2972,7 @@
             const emailActual = (currentUserInfo?.email || '').trim().toLowerCase();
             list.innerHTML = adminUsers.map(user => {
                 const esUsuarioActual = (user.email || '').trim().toLowerCase() === emailActual;
-                return `<tr class="${esUsuarioActual ? 'admin-current-user' : ''}"><td>${escaparHtml(user.nombre_completo)}${esUsuarioActual ? '<span class="admin-current-user-badge">Tu cuenta</span>' : ''}</td><td>${escaparHtml(user.email)}</td><td>${escaparHtml(user.rol)}</td><td><div class="admin-user-actions"><button type="button" class="btn btn-primary btn-editar-usuario" data-user-id="${escaparHtml(user.id)}">Editar</button><button type="button" class="btn btn-delete btn-eliminar-usuario" data-user-id="${escaparHtml(user.id)}">Eliminar</button></div></td></tr>`;
+                return `<tr class="${esUsuarioActual ? 'admin-current-user' : ''}"><td>${escaparHtml(user.nombre_completo)}${esUsuarioActual ? '<span class="admin-current-user-badge">Tu cuenta</span>' : ''}</td><td>${escaparHtml(user.email)}</td><td>${escaparHtml(user.rol)}</td><td><div class="admin-user-actions"><button type="button" class="btn btn-primary btn-editar-usuario" data-user-id="${escaparHtml(user.id)}">${etiquetaBoton('edit', 'Editar')}</button><button type="button" class="btn btn-delete btn-eliminar-usuario" data-user-id="${escaparHtml(user.id)}">${etiquetaBoton('delete', 'Eliminar')}</button></div></td></tr>`;
             }).join('');
             document.querySelectorAll('.btn-editar-usuario').forEach(button => { button.addEventListener('click', () => abrirFormularioUsuario(button.dataset.userId)); });
             document.querySelectorAll('.btn-eliminar-usuario').forEach(button => { button.addEventListener('click', () => eliminarUsuarioAdmin(button.dataset.userId)); });
@@ -1578,7 +2980,7 @@
         function mostrarCampoContrasena() { const crear = !document.getElementById('admin-user-id').value; const cambiar = document.getElementById('admin-cambiar-password').checked; const visible = crear || cambiar; document.getElementById('admin-password-group').style.display = visible ? 'block' : 'none'; document.getElementById('admin-password').required = visible; }
         function abrirFormularioUsuario(userId = null) {
             const user = userId ? adminUsers.find(item => item.id === userId) : null; const esEdicion = Boolean(user);
-            document.getElementById('admin-user-form').reset(); document.getElementById('admin-user-id').value = user?.id || ''; document.getElementById('admin-email').value = user?.email || ''; document.getElementById('admin-nombre').value = user?.nombre_completo || ''; document.getElementById('admin-rol').value = user?.rol || 'usuario'; document.getElementById('admin-cambiar-password').checked = false; document.getElementById('admin-change-password-label').style.display = esEdicion ? 'flex' : 'none'; document.getElementById('admin-form-title').textContent = esEdicion ? 'Editar usuario' : 'Crear usuario'; document.getElementById('btn-guardar-admin-user').textContent = esEdicion ? 'Guardar cambios' : 'Crear usuario'; document.getElementById('admin-msg').style.display = 'none'; mostrarCampoContrasena(); document.getElementById('admin-user-modal').classList.add('active');
+            document.getElementById('admin-user-form').reset(); document.getElementById('admin-user-id').value = user?.id || ''; document.getElementById('admin-email').value = user?.email || ''; document.getElementById('admin-nombre').value = user?.nombre_completo || ''; document.getElementById('admin-rol').value = user?.rol || 'usuario'; document.getElementById('admin-cambiar-password').checked = false; document.getElementById('admin-change-password-label').style.display = esEdicion ? 'flex' : 'none'; document.getElementById('admin-form-title').textContent = esEdicion ? 'Editar usuario' : 'Crear usuario'; document.getElementById('btn-guardar-admin-user').innerHTML = esEdicion ? etiquetaBoton('save', 'Guardar cambios') : etiquetaBoton('users', 'Crear usuario'); document.getElementById('admin-msg').style.display = 'none'; mostrarCampoContrasena(); document.getElementById('admin-user-modal').classList.add('active');
         }
         function cerrarFormularioUsuario() { document.getElementById('admin-user-modal').classList.remove('active'); }
         async function mensajeErrorFuncion(error) { if (error?.context instanceof Response) { const body = await error.context.clone().json().catch(() => null); if (body?.error) return body.error; } return error?.message || 'No se pudo completar la operación.'; }
@@ -1594,22 +2996,79 @@
             try {
                 const { error } = await supaUsers.functions.invoke('admin-users', { body: { action: esEdicion ? 'update' : 'create', userId: userId || undefined, email: document.getElementById('admin-email').value.trim(), nombre_completo: document.getElementById('admin-nombre').value.trim(), rol: document.getElementById('admin-rol').value, cambiarContrasena: esEdicion ? cambiarContrasena : true, nuevaContrasena: nuevaContrasena } });
                 if (error) throw error; cerrarFormularioUsuario(); mostrarNotificacion('success', esEdicion ? 'Usuario actualizado exitosamente.' : 'Usuario creado exitosamente.'); await cargarUsuariosAdmin();
-            } catch (error) { msgDiv.textContent = 'Error: ' + await mensajeErrorFuncion(error); msgDiv.className = 'admin-msg error'; msgDiv.style.display = 'block'; } finally { button.disabled = false; button.textContent = esEdicion ? 'Guardar cambios' : 'Crear usuario'; }
+            } catch (error) { msgDiv.textContent = 'Error: ' + await mensajeErrorFuncion(error); msgDiv.className = 'admin-msg error'; msgDiv.style.display = 'block'; } finally { button.disabled = false; button.innerHTML = esEdicion ? etiquetaBoton('save', 'Guardar cambios') : etiquetaBoton('users', 'Crear usuario'); }
         });
 
         // ========== PWA: MANIFEST Y SERVICE WORKER ==========
         function initPWA() {
-            const manifest = { name: "Sistema de Solicitudes de Compra", short_name: "Solicitudes", description: "Gestión de solicitudes de compra", start_url: "./", display: "standalone", background_color: "#f3f4f6", theme_color: "#3b82f6", icons: [{ src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E", sizes: "any", type: "image/svg+xml", purpose: "any" }] };
-            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' }); const manifestURL = URL.createObjectURL(manifestBlob); document.getElementById('manifest-link').href = manifestURL;
-            const swScript = `self.addEventListener('install', function(e) { e.waitUntil(caches.open('solicitudes-v1').then(function(cache) { return cache.addAll(['./']); })); }); self.addEventListener('fetch', function(e) { e.respondWith(caches.match(e.request).then(function(response) { return response || fetch(e.request); })); });`;
-            const swBlob = new Blob([swScript], { type: 'application/javascript' }); const swURL = URL.createObjectURL(swBlob);
-            if ('serviceWorker' in navigator) { navigator.serviceWorker.register(swURL, { scope: './' }).then(reg => console.log('Service Worker registrado', reg)).catch(err => console.warn('Error al registrar SW:', err)); }
-            const installBtn = document.getElementById('install-btn'); let deferredPrompt = null;
-            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; installBtn.onclick = async () => { if (deferredPrompt) { deferredPrompt.prompt(); const result = await deferredPrompt.userChoice; console.log('Resultado instalación:', result); deferredPrompt = null; installBtn.style.display = 'none'; } }; });
-            window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; mostrarNotificacion('success', 'Aplicación instalada correctamente.'); });
+            const installBtn = document.getElementById('install-btn');
+            let deferredPrompt = null;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+            if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+                navigator.serviceWorker.register('./sw.js', { scope: './' })
+                    .then(reg => console.log('Service Worker registrado:', reg.scope))
+                    .catch(err => console.warn('Error al registrar Service Worker:', err));
+            }
+
+            if (isStandalone) {
+                installBtn.style.display = 'none';
+            } else if (isIOS) {
+                installBtn.style.display = 'block';
+                installBtn.onclick = () => {
+                    mostrarNotificacion('info', 'En iPhone/iPad: toca Compartir y luego “Agregar a pantalla de inicio”.');
+                };
+            }
+
+            window.addEventListener('beforeinstallprompt', (event) => {
+                event.preventDefault();
+                deferredPrompt = event;
+                installBtn.style.display = 'block';
+                installBtn.onclick = async () => {
+                    if (!deferredPrompt) return;
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log('Resultado de instalación PWA:', outcome);
+                    deferredPrompt = null;
+                    if (outcome === 'accepted') installBtn.style.display = 'none';
+                };
+            });
+
+            window.addEventListener('appinstalled', () => {
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+                mostrarNotificacion('success', 'Aplicación instalada correctamente.');
+            });
         }
 
-        const STORAGE_KEY = 'solicitud_compra_v3'; const ROWS_INICIALES = 2; let rowCount = 0; let currentUserInfo = null;
+        const STORAGE_KEY = 'solicitud_compra_borrador_v4'; const LEGACY_STORAGE_KEY = 'solicitud_compra_v3'; const ROWS_INICIALES = 2;
+        const AUTOSAVE_INTERVAL_MS = 4 * 60 * 1000;
+        const INITIAL_DRAFT_SAVE_DELAY_MS = 1500;
+        let rowCount = 0; let currentUserInfo = null; let suspendDraftSave = false;
+        let draftSaveTimer = null; let draftPendingData = null; let currentAccessToken = '';
+        let draftAutoSaveInterval = null; let draftDirty = false; let lastDraftSignature = null; let autosaveStatusTimer = null;
+        let draftUserChanged = false; let draftInitialSaveDone = false; let draftInitialSaveTimer = null; let draftSaveInFlight = null; let draftExecutionInFlight = null;
+        let currentDraftId = null;
+
+        supaUsers.auth.onAuthStateChange((_event, session) => {
+            currentAccessToken = session?.access_token || '';
+        });
+
+        window.addEventListener('pagehide', () => {
+            if (document.getElementById('form-view')?.classList.contains('active')) {
+                try { guardarDatos(); } catch (_) {}
+            }
+            guardarBorradorKeepalive();
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                if (document.getElementById('form-view')?.classList.contains('active')) {
+                    try { guardarDatos(); } catch (_) {}
+                }
+                guardarBorradorKeepalive();
+            }
+        });
         console.log('Sistema de Solicitudes de Compra cargado.');
     </script>
 </body>
