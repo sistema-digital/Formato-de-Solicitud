@@ -1814,6 +1814,22 @@
 
         async function cerrarSesion() { if (draftAutoSaveInterval) clearInterval(draftAutoSaveInterval); await guardarBorradorPendienteAhora(); await supaUsers.auth.signOut(); location.reload(); }
 
+        function restaurarControlesFormulario() {
+            const btnGuardar = document.getElementById('btn-guardar-historial');
+            if (btnGuardar) {
+                btnGuardar.style.display = 'inline-flex';
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = etiquetaBoton('save', 'Guardar en historial');
+            }
+
+            const btnLimpiar = document.getElementById('btn-limpiar-formato');
+            if (btnLimpiar) {
+                btnLimpiar.style.display = 'inline-flex';
+                btnLimpiar.disabled = false;
+                btnLimpiar.innerHTML = etiquetaBoton('clear', 'Limpiar formato');
+            }
+        }
+
         async function abrirNuevaSolicitud() {
             const formView = document.getElementById('form-view');
             if (formView?.classList.contains('active') && !suspendDraftSave && (draftUserChanged || draftDirty)) {
@@ -1825,6 +1841,7 @@
             mostrarBotonRegresarHistorial(false);
             cargarFormularioVacio();
             await switchView('form-view');
+            restaurarControlesFormulario();
         }
 
         async function switchView(viewId) {
@@ -2390,6 +2407,7 @@
                 draftUserChanged = false;
                 draftInitialSaveDone = false;
                 if (draftInitialSaveTimer) { clearTimeout(draftInitialSaveTimer); draftInitialSaveTimer = null; }
+                restaurarControlesFormulario();
             }
         }
 
@@ -2531,7 +2549,7 @@
         }
 
         function configurarBotonImpresion(numeroSolicitud = '') {
-            const boton = document.querySelector('.controls-top .btn-print'); if (!boton) return;
+            const boton = document.getElementById('btn-imprimir-formato'); if (!boton) return;
             if (numeroSolicitud) { boton.dataset.numeroSolicitud = numeroSolicitud; boton.style.display = 'inline-flex'; } else { delete boton.dataset.numeroSolicitud; boton.style.display = 'none'; }
         }
 
