@@ -412,6 +412,49 @@
             50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.3), 0 12px 28px rgba(6, 95, 70, 0.32); }
         }
         .history-card.recently-created { animation: recent-solicitud-shadow 1s ease-in-out 4; }
+        .history-card.impresa {
+            border-left-color: var(--success);
+        }
+        .history-card.impresa:focus-visible {
+            outline-color: rgba(16, 185, 129, 0.35);
+        }
+        .solicitud-numero-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .btn-editar-numero-solicitud {
+            border: none;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 6px;
+            line-height: 1;
+            font-size: 14px;
+        }
+        .btn-editar-numero-solicitud:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .print-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+        .print-status-badge.impresa {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
         .history-card .solicitud-numero {
             background-color: #d1fae5;
             padding: 4px 14px;
@@ -1469,7 +1512,7 @@
                                 <div class="header-dates">
                                     <div class="header-date">
                                         <label>FECHA CREACIÓN:</label>
-                                        <input type="date" id="fecha-creacion" style="width:100px;" readonly onchange="guardarDatos(); quitarResaltado(this);" />
+                                        <input type="date" id="fecha-creacion" style="width:100px; background:#f0f0f0;" readonly onchange="guardarDatos(); quitarResaltado(this);" />
                                     </div>
                                     <div class="header-date">
                                         <label>FECHA ENTREGA:</label>
@@ -1717,6 +1760,18 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="numero-solicitud-modal">
+        <div class="modal-box">
+            <h3 style="margin-top:0;">Número de solicitud</h3>
+            <p style="font-size:13px; color:#6b7280; margin-bottom:12px;">Agrega o modifica el número que aparecerá en la tarjeta y en la impresión.</p>
+            <input type="text" id="numero-solicitud-input" maxlength="80" placeholder="Ej.: SC-2026-001" style="width:100%; padding:11px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:15px; text-transform:uppercase; margin-bottom:18px;" />
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="numero-solicitud-cancelar">Cancelar</button>
+                <button class="btn btn-primary" id="numero-solicitud-guardar">Guardar número</button>
+            </div>
+        </div>
+    </div>
+
     <button id="install-btn">📲 Instalar App</button>
 
     <script>
@@ -1925,6 +1980,28 @@
 
         function quitarResaltado(el) { el.classList.remove('campo-invalido'); }
 
+        function configurarEdicionFechaCreacion(esEdicion = false) {
+            const input = document.getElementById('fecha-creacion');
+            if (!input) return;
+            input.readOnly = !esEdicion;
+            input.style.background = esEdicion ? '#fff7ed' : '#f0f0f0';
+            input.style.border = esEdicion ? '1px solid #f59e0b' : 'none';
+            input.title = esEdicion ? 'Fecha editable mientras modificas esta solicitud' : 'La fecha de creación se asigna automáticamente';
+        }
+
+        function obtenerMetaSolicitud(datos) {
+            const meta = datos?.__meta && typeof datos.__meta === 'object' ? datos.__meta : {};
+            return {
+                ...meta,
+                impresiones: Math.max(0, Number(meta.impresiones) || 0),
+                ultima_impresion: meta.ultima_impresion || null
+            };
+        }
+
+        function obtenerConteoImpresiones(reg) {
+            return obtenerMetaSolicitud(reg?.datos).impresiones;
+        }
+
         function validarCamposObligatorios() {
             let valido = true;
             const campos = [{ id: 'observacion-general', nombre: 'Observación General' }, { id: 'fecha-creacion', nombre: 'Fecha Creación' }, { id: 'fecha-entrega', nombre: 'Fecha Entrega' }, { id: 'etapa', nombre: 'Etapa' }];
@@ -2069,6 +2146,7 @@
 
         function recopilarDatos() {
             let data = { rows: [] };
+            if (metaSolicitudActual && typeof metaSolicitudActual === 'object') data.__meta = structuredClone(metaSolicitudActual);
             const filasFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .main-row'));
             const observacionesFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .obs-row'));
             filasFormulario.forEach((row, i) => {
@@ -2408,6 +2486,8 @@
                 document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0;
                 document.getElementById('departamento').value = `${currentUserInfo?.nombre || 'USUARIO'} - ${currentUserInfo?.rol || 'usuario'}`.toUpperCase();
                 document.getElementById('fecha-creacion').value = new Date().toISOString().split('T')[0];
+                configurarEdicionFechaCreacion(false);
+                metaSolicitudActual = null;
                 document.getElementById('fecha-entrega').value = '';
                 document.getElementById('observacion-general').value = '';
                 document.getElementById('nombre-almacen').value = '';
@@ -2457,6 +2537,7 @@
                 currentDraftId = draftId || null;
                 draftPendingData = data ? structuredClone(data) : null;
                 lastDraftSignature = data ? firmaBorrador(data) : null;
+                metaSolicitudActual = data?.__meta ? structuredClone(data.__meta) : null;
                 draftDirty = false;
                 draftUserChanged = false;
                 draftInitialSaveDone = !!data;
@@ -2533,6 +2614,7 @@
         }
 
         let solicitudEditandoId = null; let numeroSolicitudActual = ''; let formularioAbiertoDesdeHistorial = false;
+        let metaSolicitudActual = null;
 
         function mostrarBotonRegresarHistorial(mostrar) {
             formularioAbiertoDesdeHistorial = !!mostrar;
@@ -2620,6 +2702,7 @@
         async function imprimirSinGuardar(numeroSolicitud = '') {
             configurarBotonImpresion(numeroSolicitud);
             if (!validarCamposObligatorios()) { await mostrarAlerta('No se puede imprimir: faltan campos obligatorios, incluyendo CANTIDAD en algún renglón con contenido.'); return; }
+            if (solicitudEditandoId) await registrarImpresionSolicitud(solicitudEditandoId);
             prepararImpresion(numeroSolicitud);
             const afterPrint = () => { restaurarDespuesImpresion(); window.removeEventListener('afterprint', afterPrint); };
             window.addEventListener('afterprint', afterPrint);
@@ -2756,17 +2839,34 @@
                 const numSolicitud = reg.numero_solicitud || 'SIN NÚMERO';
                 const rows = reg.datos?.rows || [];
                 const primerosItems = rows.slice(0, 5);
+                const impresiones = obtenerConteoImpresiones(reg);
+                const esImpresa = impresiones > 0;
                 const esAdminOPropietario = (currentUserInfo.rol === 'admin' || reg.user_id === currentUserInfo.id);
+                const btnEditarNumero = esAdminOPropietario
+                    ? `<button type="button" class="btn-editar-numero-solicitud" onclick="event.stopPropagation(); abrirModalNumeroSolicitud('${reg.id}')" title="Agregar o editar número" aria-label="Agregar o editar número de solicitud">✎</button>`
+                    : '';
                 const btnEliminar = esAdminOPropietario
                     ? `<button class="btn-sm btn-delete" onclick="event.stopPropagation(); eliminarDelHistorial('${reg.id}')">${etiquetaBoton('delete', 'Eliminar')}</button>`
                     : '';
+                const textoImpresiones = esImpresa ? `Impresa ${impresiones} ${impresiones === 1 ? 'vez' : 'veces'}` : 'No impresa';
                 const card = document.createElement('div');
-                card.className = 'history-card';
+                card.className = `history-card${esImpresa ? ' impresa' : ''}`;
                 card.dataset.numeroSolicitud = numSolicitud;
+                card.dataset.impresiones = String(impresiones);
                 card.setAttribute('role', 'button');
                 card.setAttribute('tabindex', '0');
-                card.setAttribute('aria-label', `Abrir solicitud ${numSolicitud}`);
-                card.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;"><span class="solicitud-numero">📁 ${numSolicitud}</span><span class="departamento">🏢 ${reg.departamento || 'SIN DEPTO'}</span>${reg.etapa ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 10px; border-radius:12px;">${reg.etapa}</span>` : ''}</div><div style="margin:10px 0 6px 0; flex:1;">${primerosItems.length > 0 ? `<div style="font-weight:600; font-size:13px; color:#4b5563; margin-bottom:4px;">Materiales:</div>${primerosItems.map(row => `<div class="material-item"><span class="desc">🔹 ${row.desc || 'Sin descripción'}</span>${row.code ? `<span class="code">Cód: ${row.code}</span>` : ''}</div>`).join('')}${rows.length > 5 ? `<div style="font-size:12px; color:#6b7280; margin-top:4px;">... y ${rows.length - 5} más</div>` : ''}` : `<div style="font-size:13px; color:#9ca3af;">Sin materiales registrados</div>`}</div><div class="fecha">📅 ${new Date(reg.fecha_guardado).toLocaleString()}</div><div class="history-actions"><button class="btn-sm btn-edit" onclick="event.stopPropagation(); editarDelHistorial('${reg.id}')">${etiquetaBoton('edit', 'Editar')}</button><button class="btn-sm btn-print" onclick="event.stopPropagation(); imprimirSolicitudDesdeHistorial('${reg.id}')">${etiquetaBoton('print', 'Imprimir')}</button><button class="btn-sm btn-open" onclick="event.stopPropagation(); copiarSolicitudDelHistorial('${reg.id}')">${etiquetaBoton('copy', 'Copiar solicitud')}</button>${btnEliminar}</div>`;
+                card.setAttribute('aria-label', `Abrir solicitud ${numSolicitud}. ${textoImpresiones}`);
+                card.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <span class="solicitud-numero-wrap"><span class="solicitud-numero">📁 ${escaparHtml(numSolicitud)}</span>${btnEditarNumero}</span>
+                    <span class="print-status-badge${esImpresa ? ' impresa' : ''}">🖨️ ${textoImpresiones}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:8px;">
+                    <span class="departamento">🏢 ${escaparHtml(reg.departamento || 'SIN DEPTO')}</span>
+                    ${reg.etapa ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 10px; border-radius:12px;">${escaparHtml(reg.etapa)}</span>` : ''}
+                </div>
+                <div style="margin:10px 0 6px 0; flex:1;">${primerosItems.length > 0 ? `<div style="font-weight:600; font-size:13px; color:#4b5563; margin-bottom:4px;">Materiales:</div>${primerosItems.map(row => `<div class="material-item"><span class="desc">🔹 ${escaparHtml(row.desc || 'Sin descripción')}</span>${row.code ? `<span class="code">Cód: ${escaparHtml(row.code)}</span>` : ''}</div>`).join('')}${rows.length > 5 ? `<div style="font-size:12px; color:#6b7280; margin-top:4px;">... y ${rows.length - 5} más</div>` : ''}` : `<div style="font-size:13px; color:#9ca3af;">Sin materiales registrados</div>`}</div>
+                <div class="fecha">📅 Creada: ${escaparHtml(reg.datos?.['fecha-creacion'] || 'SIN FECHA')} &nbsp;·&nbsp; Último guardado: ${new Date(reg.fecha_guardado).toLocaleString()}</div>
+                <div class="history-actions"><button class="btn-sm btn-edit" onclick="event.stopPropagation(); editarDelHistorial('${reg.id}')">${etiquetaBoton('edit', 'Editar')}</button><button class="btn-sm btn-print" onclick="event.stopPropagation(); imprimirSolicitudDesdeHistorial('${reg.id}')">${etiquetaBoton('print', 'Imprimir')}</button><button class="btn-sm btn-open" onclick="event.stopPropagation(); copiarSolicitudDelHistorial('${reg.id}')">${etiquetaBoton('copy', 'Copiar solicitud')}</button>${btnEliminar}</div>`;
                 card.addEventListener('click', () => abrirDelHistorial(reg.id));
                 card.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -2776,6 +2876,80 @@
                 });
                 grid.appendChild(card);
             });
+        }
+
+        let solicitudNumeroEditandoId = null;
+
+        function abrirModalNumeroSolicitud(id) {
+            solicitudNumeroEditandoId = id;
+            const modal = document.getElementById('numero-solicitud-modal');
+            const input = document.getElementById('numero-solicitud-input');
+            const registro = historialData.find(item => String(item.id) === String(id));
+            input.value = String(registro?.numero_solicitud || '');
+            modal.classList.add('active');
+            setTimeout(() => { input.focus(); input.select(); }, 50);
+        }
+
+        function cerrarModalNumeroSolicitud() {
+            solicitudNumeroEditandoId = null;
+            document.getElementById('numero-solicitud-modal')?.classList.remove('active');
+        }
+
+        async function guardarNumeroSolicitudCard() {
+            if (!solicitudNumeroEditandoId) return;
+            const input = document.getElementById('numero-solicitud-input');
+            const numero = (input?.value || '').trim().toUpperCase();
+            if (!numero) { await mostrarAlerta('Escribe el número de la solicitud.'); return; }
+            const btn = document.getElementById('numero-solicitud-guardar');
+            btn.disabled = true;
+            btn.textContent = 'Guardando...';
+            try {
+                const { data, error } = await supaUsers
+                    .from('historial_solicitudes')
+                    .update({ numero_solicitud: numero })
+                    .eq('id', solicitudNumeroEditandoId)
+                    .select('id, numero_solicitud')
+                    .single();
+                if (error) throw error;
+                if (!data?.id) throw new Error('No se pudo actualizar el número.');
+                cerrarModalNumeroSolicitud();
+                mostrarNotificacion('success', `Número actualizado: ${data.numero_solicitud}`);
+                await renderHistorial();
+            } catch (err) {
+                await mostrarAlerta('No se pudo guardar el número: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Guardar número';
+            }
+        }
+
+        async function registrarImpresionSolicitud(id) {
+            if (!id) return 0;
+            try {
+                const { data: actual, error: errorLectura } = await supaUsers
+                    .from('historial_solicitudes')
+                    .select('id, datos')
+                    .eq('id', id)
+                    .single();
+                if (errorLectura) throw errorLectura;
+                const datos = actual?.datos && typeof actual.datos === 'object' ? structuredClone(actual.datos) : {};
+                const meta = obtenerMetaSolicitud(datos);
+                meta.impresiones += 1;
+                meta.ultima_impresion = new Date().toISOString();
+                datos.__meta = meta;
+                const { error: errorUpdate } = await supaUsers
+                    .from('historial_solicitudes')
+                    .update({ datos })
+                    .eq('id', id);
+                if (errorUpdate) throw errorUpdate;
+                if (solicitudEditandoId === id) metaSolicitudActual = structuredClone(meta);
+                if (registroVisualizadoActual?.id === id) registroVisualizadoActual.datos = datos;
+                return meta.impresiones;
+            } catch (err) {
+                console.error('No se pudo registrar la impresión:', err);
+                mostrarNotificacion('warning', 'Se abrió la impresión, pero no se pudo actualizar el contador.', 5000);
+                return 0;
+            }
         }
 
         function resaltarSolicitudRecienCreada(numeroSolicitud) { const card = Array.from(document.querySelectorAll('.history-card')).find(item => item.dataset.numeroSolicitud === numeroSolicitud); if (!card) return; card.scrollIntoView({ behavior: 'smooth', block: 'center' }); requestAnimationFrame(() => card.classList.add('recently-created')); card.addEventListener('animationend', () => { card.classList.remove('recently-created'); }, { once: true }); }
@@ -2828,6 +3002,7 @@
                 if (!data?.datos) { await mostrarAlerta('No se encontraron datos.'); return; }
 
                 numeroSolicitudActual = data.numero_solicitud || '';
+                metaSolicitudActual = obtenerMetaSolicitud(data.datos);
 
                 if (modoEdicion) {
                     const datosFiltrados = prepararDatosRegistroParaFormulario(data);
@@ -2839,6 +3014,7 @@
                     document.getElementById('modo-edicion-texto').textContent = `✏️ Editando solicitud: ${data.numero_solicitud || 'SIN NÚMERO'}`;
                     await switchView('form-view');
                     cargarBorrador(datosFiltrados);
+                    configurarEdicionFechaCreacion(true);
                     return;
                 }
 
@@ -2856,7 +3032,7 @@
             }
         }
 
-        function cancelarEdicion() { solicitudEditandoId = null; document.getElementById('modo-edicion-indicator').style.display = 'none'; }
+        function cancelarEdicion() { solicitudEditandoId = null; configurarEdicionFechaCreacion(false); document.getElementById('modo-edicion-indicator').style.display = 'none'; }
 
         async function cerrarVistaRegistro() {
             registroVisualizadoActual = null;
@@ -2877,8 +3053,9 @@
             await copiarSolicitudDelHistorial(id);
         }
 
-        function imprimirRegistroVisualizado() {
+        async function imprimirRegistroVisualizado() {
             if (!registroVisualizadoActual) return;
+            await registrarImpresionSolicitud(registroVisualizadoActual.id);
             document.body.classList.add('printing-record');
             const limpiar = () => {
                 document.body.classList.remove('printing-record');
@@ -2902,8 +3079,10 @@
                 copia['nombre-gerencia'] = '';
                 copia['canvas-almacen'] = '';
                 copia['canvas-gerencia'] = '';
+                delete copia.__meta;
 
                 cancelarEdicion();
+                metaSolicitudActual = null;
                 registroVisualizadoActual = null;
                 solicitudEditandoId = null;
                 numeroSolicitudActual = '';
@@ -3070,6 +3249,9 @@
             const user = adminUsers.find(item => item.id === userId); if (!user) return; const confirmado = await mostrarConfirmacion(`¿Eliminar permanentemente a ${user.nombre_completo || user.email}? Esta acción borra su perfil y acceso.`); if (!confirmado) return;
             try { const { error } = await supaUsers.functions.invoke('admin-users', { body: { action: 'delete', userId } }); if (error) throw error; mostrarNotificacion('success', 'Usuario eliminado exitosamente.'); await cargarUsuariosAdmin(); } catch (error) { await mostrarAlerta('Error al eliminar usuario: ' + await mensajeErrorFuncion(error)); }
         }
+        document.getElementById('numero-solicitud-cancelar').addEventListener('click', cerrarModalNumeroSolicitud);
+        document.getElementById('numero-solicitud-guardar').addEventListener('click', guardarNumeroSolicitudCard);
+        document.getElementById('numero-solicitud-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); guardarNumeroSolicitudCard(); } });
         document.getElementById('btn-nuevo-usuario').addEventListener('click', () => abrirFormularioUsuario()); document.getElementById('btn-cancelar-admin-user').addEventListener('click', cerrarFormularioUsuario); document.getElementById('admin-cambiar-password').addEventListener('change', mostrarCampoContrasena);
         document.getElementById('admin-user-form').addEventListener('submit', async (e) => {
             e.preventDefault(); const msgDiv = document.getElementById('admin-msg'); const userId = document.getElementById('admin-user-id').value; const cambiarContrasena = document.getElementById('admin-cambiar-password').checked; const nuevaContrasena = document.getElementById('admin-password').value; const esEdicion = Boolean(userId);
