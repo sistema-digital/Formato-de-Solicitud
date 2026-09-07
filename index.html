@@ -1930,11 +1930,13 @@
             const campos = [{ id: 'observacion-general', nombre: 'Observación General' }, { id: 'fecha-creacion', nombre: 'Fecha Creación' }, { id: 'fecha-entrega', nombre: 'Fecha Entrega' }, { id: 'etapa', nombre: 'Etapa' }];
             campos.forEach(c => { const el = document.getElementById(c.id); if (el.value.trim() === '') { el.classList.add('campo-invalido'); valido = false; } else { el.classList.remove('campo-invalido'); } });
 
-            document.querySelectorAll('.main-row').forEach((row, i) => {
+            const filasFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .main-row'));
+            const observacionesFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .obs-row'));
+            filasFormulario.forEach((row, i) => {
                 const qty = row.querySelector('.row-qty');
                 const desc = row.querySelector('.row-desc');
                 const code = row.querySelector('.row-code');
-                const obsRow = document.querySelectorAll('.obs-row')[i];
+                const obsRow = observacionesFormulario[i];
                 const obs = obsRow ? obsRow.querySelector('.row-obs') : null;
                 const tieneContenido = [qty, desc, code, obs].some(el => el && el.value.trim() !== '');
                 if (tieneContenido && qty.value.trim() === '') { qty.classList.add('campo-invalido'); valido = false; }
@@ -1983,7 +1985,7 @@
         }
 
         function eliminarRenglon(id) {
-            const row = document.querySelector(`.main-row[data-id="${id}"]`); const obsRow = document.querySelector(`.obs-row[data-id="${id}"]`);
+            const row = document.querySelector(`#tbody-materiales > .main-row[data-id="${id}"]`); const obsRow = document.querySelector(`#tbody-materiales > .obs-row[data-id="${id}"]`);
             rowsToRestore = rowsToRestore.filter(item => item.row !== row); row?.remove(); obsRow?.remove();
             const secondaryTable = document.getElementById('tabla-materiales-2');
             if (secondaryTable && !secondaryTable.querySelector('.main-row')) { secondaryTable.remove(); restaurarDespuesImpresion(); }
@@ -1992,9 +1994,11 @@
 
         function recalcularNumeracion() {
             rowCount = 0;
-            document.querySelectorAll('.main-row').forEach((row, index) => {
+            const filasFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .main-row'));
+            const observacionesFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .obs-row'));
+            filasFormulario.forEach((row, index) => {
                 rowCount++;
-                const obsRow = document.querySelectorAll('.obs-row')[index];
+                const obsRow = observacionesFormulario[index];
                 const obsVisible = obsRow ? obsRow.style.display !== 'none' : false;
                 row.setAttribute('data-id', rowCount);
                 row.querySelector('.col-renglon').textContent = rowCount;
@@ -2065,7 +2069,22 @@
 
         function recopilarDatos() {
             let data = { rows: [] };
-            document.querySelectorAll('.main-row').forEach((row, i) => { const obsRow = document.querySelectorAll('.obs-row')[i]; data.rows.push({ qty: row.querySelector('.row-qty').value.toUpperCase(), desc: row.querySelector('.row-desc').value.toUpperCase(), code: row.querySelector('.row-code').value.toUpperCase(), obs: obsRow ? obsRow.querySelector('.row-obs').value.toUpperCase() : '' }); });
+            const filasFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .main-row'));
+            const observacionesFormulario = Array.from(document.querySelectorAll('#tbody-materiales > .obs-row'));
+            filasFormulario.forEach((row, i) => {
+                const qty = row.querySelector('.row-qty');
+                const desc = row.querySelector('.row-desc');
+                const code = row.querySelector('.row-code');
+                const obsRow = observacionesFormulario[i];
+                const obs = obsRow ? obsRow.querySelector('.row-obs') : null;
+                if (!qty || !desc || !code) return;
+                data.rows.push({
+                    qty: qty.value.toUpperCase(),
+                    desc: desc.value.toUpperCase(),
+                    code: code.value.toUpperCase(),
+                    obs: obs ? obs.value.toUpperCase() : ''
+                });
+            });
             data['departamento'] = document.getElementById('departamento').value.toUpperCase(); data['etapa'] = document.getElementById('etapa').value.toUpperCase();
             ['fecha-creacion', 'fecha-entrega', 'observacion-general', 'nombre-almacen', 'nombre-gerencia'].forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value.toUpperCase(); });
             ['canvas-almacen', 'canvas-gerencia'].forEach(id => { const c = document.getElementById(id); if (c) data[id] = c.toDataURL(); });
@@ -2529,23 +2548,68 @@
             await switchView('history-view');
         }
 
+        let guardadoSolicitudEnCurso = false;
+
         async function guardarEnHistorial() {
+            if (guardadoSolicitudEnCurso) return;
             if (!validarCamposObligatorios()) { await mostrarAlerta('Complete todos los campos obligatorios, incluyendo CANTIDAD en cada renglón con contenido.'); return; }
             let data = recopilarDatos(); data = filtrarFilasVacias(data); if (data.rows.length === 0) { await mostrarAlerta('No hay ningún ítem con contenido para guardar.'); return; }
             if (!currentUserInfo) { await mostrarAlerta('Debe iniciar sesión.'); return; }
+
+            const idEditando = solicitudEditandoId;
+            const btnGuardar = document.getElementById('btn-guardar-historial');
             let numeroSolicitudCreada = null;
+            guardadoSolicitudEnCurso = true;
+            if (btnGuardar) { btnGuardar.disabled = true; btnGuardar.innerHTML = etiquetaBoton('save', idEditando ? 'Actualizando...' : 'Guardando...'); }
+
             try {
-                if (solicitudEditandoId) {
-                    const { error } = await supaUsers.from('historial_solicitudes').update({ departamento: data['departamento'] || 'SIN DEPTO', etapa: data['etapa'] || 'SIN ETAPA', datos: data, fecha_guardado: new Date().toISOString() }).eq('id', solicitudEditandoId);
-                    if (error) throw error; mostrarNotificacion('success', 'Solicitud actualizada exitosamente.');
+                if (idEditando) {
+                    const { data: registroActualizado, error } = await supaUsers
+                        .from('historial_solicitudes')
+                        .update({
+                            departamento: data['departamento'] || 'SIN DEPTO',
+                            etapa: data['etapa'] || 'SIN ETAPA',
+                            datos: data,
+                            fecha_guardado: new Date().toISOString()
+                        })
+                        .eq('id', idEditando)
+                        .select('id, numero_solicitud')
+                        .single();
+                    if (error) throw error;
+                    if (!registroActualizado?.id) throw new Error('La solicitud no pudo ser actualizada.');
+                    numeroSolicitudActual = registroActualizado.numero_solicitud || numeroSolicitudActual;
+                    mostrarNotificacion('success', 'Solicitud actualizada exitosamente. Puedes editarla nuevamente cuando quieras.');
                 } else {
                     const { data: registroCreado, error } = await supaUsers.from('historial_solicitudes').insert([{ user_id: currentUserInfo.id, creado_por: currentUserInfo.nombre, departamento: data['departamento'] || 'SIN DEPTO', etapa: data['etapa'] || 'SIN ETAPA', datos: data }]).select('id, numero_solicitud').single();
-                    if (error) throw error; numeroSolicitudCreada = registroCreado?.numero_solicitud || null; mostrarNotificacion('success', 'Solicitud guardada exitosamente.');
+                    if (error) throw error;
+                    numeroSolicitudCreada = registroCreado?.numero_solicitud || null;
+                    mostrarNotificacion('success', 'Solicitud guardada exitosamente.');
                 }
-                cancelarEdicion(); await limpiarSolicitudActual(true);
-                if (numeroSolicitudCreada) { document.getElementById('history-search-input').value = ''; document.getElementById('history-filter-date-from').value = ''; document.getElementById('history-filter-date-to').value = ''; document.getElementById('history-filter-etapa').value = ''; document.getElementById('history-filter-requester').value = ''; if (historialRangePicker) historialRangePicker.clear(); }
-                await switchView('history-view'); if (numeroSolicitudCreada) { resaltarSolicitudRecienCreada(numeroSolicitudCreada); }
-            } catch (err) { await mostrarAlerta('Error: ' + err.message); console.error(err); }
+
+                cancelarEdicion();
+                registroVisualizadoActual = null;
+                const tbodyRegistro = document.getElementById('record-tbody-materiales');
+                if (tbodyRegistro) tbodyRegistro.innerHTML = '';
+                await limpiarSolicitudActual(true);
+
+                if (numeroSolicitudCreada) {
+                    document.getElementById('history-search-input').value = '';
+                    document.getElementById('history-filter-date-from').value = '';
+                    document.getElementById('history-filter-date-to').value = '';
+                    document.getElementById('history-filter-etapa').value = '';
+                    document.getElementById('history-filter-requester').value = '';
+                    if (historialRangePicker) historialRangePicker.clear();
+                }
+
+                await switchView('history-view');
+                if (numeroSolicitudCreada) resaltarSolicitudRecienCreada(numeroSolicitudCreada);
+            } catch (err) {
+                await mostrarAlerta('Error: ' + err.message);
+                console.error(err);
+            } finally {
+                guardadoSolicitudEnCurso = false;
+                restaurarControlesFormulario();
+            }
         }
 
         function configurarBotonImpresion(numeroSolicitud = '') {
@@ -2744,7 +2808,7 @@
             const tbody = document.getElementById('record-tbody-materiales');
             tbody.innerHTML = rows.map((row, index) => {
                 const obs = (row.obs || '').trim();
-                return `<tr class="main-row">
+                return `<tr class="record-main-row">
                     <td class="col-renglon" style="text-align:center;">${index + 1}</td>
                     <td class="col-cantidad" style="text-align:center; font-weight:600;">${escaparHtml(row.qty || '')}</td>
                     <td class="col-descripcion">${escaparHtml(row.desc || '')}</td>
@@ -2917,17 +2981,17 @@
             }
 
             // 1. Identificar y ocultar filas totalmente vacías
-            document.querySelectorAll('.main-row').forEach(row => {
+            document.querySelectorAll('#tbody-materiales > .main-row').forEach(row => {
                 const qty = row.querySelector('.row-qty').value.trim(); const desc = row.querySelector('.row-desc').value.trim(); const code = row.querySelector('.row-code').value.trim();
                 if (qty === '' && desc === '' && code === '') { row.classList.add('fila-vacia'); } else { row.classList.remove('fila-vacia'); }
             });
-            document.querySelectorAll('.obs-row').forEach(obsRow => {
+            document.querySelectorAll('#tbody-materiales > .obs-row').forEach(obsRow => {
                 const obsText = obsRow.querySelector('.row-obs').value.trim();
                 if (obsText === '') { obsRow.classList.add('obs-vacia'); } else { obsRow.classList.remove('obs-vacia'); }
             });
 
             // 2. Dejar en la primera hoja solo los renglones que no invaden el pie fijo.
-            const activeRows = Array.from(document.querySelectorAll('.main-row:not(.fila-vacia)'));
+            const activeRows = Array.from(document.querySelectorAll('#tbody-materiales > .main-row:not(.fila-vacia)'));
             const footer = document.getElementById('print-footer');
             const footerTop = footer.getBoundingClientRect().top;
             const firstOverflowIndex = activeRows.findIndex(row => {
@@ -2976,7 +3040,7 @@
                 autoResize(ta);
             });
             
-            document.querySelectorAll('.main-row.fila-vacia').forEach(row => row.classList.remove('fila-vacia'));
+            document.querySelectorAll('#tabla-materiales .main-row.fila-vacia').forEach(row => row.classList.remove('fila-vacia'));
         }
 
         // ========== ADMIN ==========
