@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Solicitudes" />
-    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="manifest" href="./manifest-solicitudes-compra.webmanifest" />
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3018,16 +3018,70 @@
         });
 
         // ========== PWA: MANIFEST Y SERVICE WORKER ==========
-        function initPWA() {
+        // Esta app usa una identidad PWA propia para evitar conflictos con otras aplicaciones.
+        const PWA_APP_ID = 'solicitudes-compra-cadasa-v1';
+        const PWA_SW_FILE = './sw-solicitudes-compra.js';
+
+        async function limpiarServiceWorkerAjeno() {
+            if (!('serviceWorker' in navigator)) return true;
+            try {
+                const controller = navigator.serviceWorker.controller;
+                if (!controller) {
+                    sessionStorage.removeItem('solicitudes_sw_cleanup');
+                    return true;
+                }
+
+                const scriptUrl = controller.scriptURL || '';
+                const esNuestro = scriptUrl.includes('/sw-solicitudes-compra.js');
+                if (esNuestro) {
+                    sessionStorage.removeItem('solicitudes_sw_cleanup');
+                    return true;
+                }
+
+                // Si un SW de otra aplicación está controlando esta página, lo quitamos.
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const reg of registrations) {
+                    const activeUrl = reg.active?.scriptURL || reg.waiting?.scriptURL || reg.installing?.scriptURL || '';
+                    if (activeUrl && activeUrl === scriptUrl) {
+                        await reg.unregister();
+                    }
+                }
+
+                // Una sola recarga libera esta pestaña del controlador anterior.
+                if (!sessionStorage.getItem('solicitudes_sw_cleanup')) {
+                    sessionStorage.setItem('solicitudes_sw_cleanup', '1');
+                    location.reload();
+                    return false;
+                }
+            } catch (err) {
+                console.warn('No se pudo limpiar el Service Worker anterior:', err);
+            }
+            return true;
+        }
+
+        async function initPWA() {
             const installBtn = document.getElementById('install-btn');
             let deferredPrompt = null;
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 
+            const continuar = await limpiarServiceWorkerAjeno();
+            if (!continuar) return;
+
+            // Importante: si esta app está publicada en la RAÍZ junto con otras apps,
+            // no registramos un SW global. Así evitamos que una app capture a las demás.
+            // Si está dentro de su propia carpeta (recomendado), sí activamos el SW.
             if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-                navigator.serviceWorker.register('./sw.js', { scope: './' })
-                    .then(reg => console.log('Service Worker registrado:', reg.scope))
-                    .catch(err => console.warn('Error al registrar Service Worker:', err));
+                const appDir = new URL('./', location.href).pathname;
+                const estaEnCarpetaPropia = appDir !== '/';
+
+                if (estaEnCarpetaPropia) {
+                    navigator.serviceWorker.register(PWA_SW_FILE, { scope: './' })
+                        .then(reg => console.log(`[${PWA_APP_ID}] Service Worker registrado:`, reg.scope))
+                        .catch(err => console.warn(`[${PWA_APP_ID}] Error al registrar Service Worker:`, err));
+                } else {
+                    console.info(`[${PWA_APP_ID}] SW desactivado en la raíz para evitar conflictos con otras aplicaciones.`);
+                }
             }
 
             if (isStandalone) {
