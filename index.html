@@ -675,10 +675,11 @@
         th, td { border: 1px solid var(--border-color); padding: 1px 3px; vertical-align: middle; }
         th { background-color: #f9f9f9; text-align: center; font-weight: bold; font-size: 10px; }
         .col-renglon { width: 5%; text-align: center; font-weight: bold; }
-        .col-cantidad { width: 10%; text-align: center; }
+        .col-cantidad { width: 9%; text-align: center; }
         .row-qty { text-align: center !important; font-weight: 600; }
-        .col-descripcion { width: 70%; position: relative; }
-        .col-codigo { width: 15%; }
+        .col-descripcion { width: 51%; position: relative; }
+        .col-codigo { width: 18%; }
+        .col-inventario { width: 17%; }
         input[type="text"], input[type="date"], textarea, select {
             width: 100%;
             border: none;
@@ -812,7 +813,7 @@
         body.print-preparing .signature-box canvas { width: 130px; height: 35px; }
         body.print-preparing .header-date input[type="date"] { width: 120px !important; min-width: 120px; font-size: 11px !important; }
         body.print-preparing .row-code::placeholder { color: transparent !important; opacity: 0 !important; }
-        body.print-preparing .main-row.fila-vacia, body.print-preparing .main-row.fila-vacia + .obs-row, body.print-preparing .obs-row.obs-vacia { display: none !important; }
+        body.print-preparing .main-row.fila-vacia, body.print-preparing .obs-row.obs-vacia { display: none !important; }
 
         /* ========== IMPRESIÓN ========== */
         @media print {
@@ -839,7 +840,7 @@
             }
             table { width: 100% !important; min-width: 100%; table-layout: fixed; font-size: 10px; }
             th, td { padding: 2px 4px; }
-            .col-renglon { width: 7%; } .col-cantidad { width: 10%; } .col-descripcion { width: 68%; } .col-codigo { width: 15%; }
+            .col-renglon { width: 6%; } .col-cantidad { width: 9%; } .col-descripcion { width: 50%; } .col-codigo { width: 18%; } .col-inventario { width: 17%; }
             thead { display: table-header-group; }
             tr { page-break-inside: avoid; }
             #print-footer { position: absolute; right: 5mm; bottom: 2rem; left: 5mm; }
@@ -888,7 +889,7 @@
             .campo-invalido { border: none !important; background: transparent !important; }
             .obs-row { display: table-row !important; }
             .main-row.fila-vacia { display: none !important; }
-            .main-row.fila-vacia+.obs-row { display: none !important; }
+            .main-row.fila-vacia { display: none !important; }
             .obs-row.obs-vacia { display: none !important; }
             .obs-row td { background: #fafafa !important; font-size: 9px; padding: 2px 4px; }
             .obs-row .obs-label { font-weight: bold; color: #333; margin-right: 4px; }
@@ -1395,6 +1396,123 @@
             body.printing-record .record-readonly .record-general-observation { border: 1px solid #000 !important; }
         }
 
+        .inventario-cell {
+            background: #f8fafc;
+            vertical-align: top;
+        }
+        .inventario-referencia {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-height: 34px;
+            font-size: 10px;
+            line-height: 1.2;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+        .inventario-referencia .inv-disponible { color: #166534; }
+        .inventario-referencia .inv-agotado { color: #b91c1c; }
+        .inventario-referencia .inv-pedido { color: #92400e; }
+        @media print {
+            .inventario-cell { background: #fff !important; }
+            .inventario-referencia, .inventario-referencia span { color: #000 !important; font-size: 9px; }
+        }
+    
+        /* Ajuste exacto de las columnas del formato (incluye la segunda hoja). */
+        .document-container table {
+            width: 100%; max-width: 100%; table-layout: fixed; border-collapse: collapse;
+        }
+        .document-container table th.col-renglon { width: 8%; }
+        .document-container table th.col-cantidad { width: 10%; }
+        .document-container table th.col-descripcion { width: 50%; }
+        .document-container table th.col-codigo { width: 16%; }
+        .document-container table th.col-inventario { width: 16%; }
+        .document-container table th { overflow-wrap: anywhere; padding: 2px 3px; }
+        .document-container .main-row td, .document-container .record-main-row td {
+            padding: 3px; overflow-wrap: anywhere; vertical-align: middle;
+        }
+        .document-container .inventario-referencia {
+            min-height: 0; gap: 2px; font-size: 9px; line-height: 1.2;
+        }
+        .document-container .row-code, .document-container .row-desc { min-width: 0; }
+        @media screen {
+            .document-container .row-desc { min-height: 18px !important; padding: 1px 0; line-height: 14px; }
+            .document-container .btn-search-db { flex-shrink: 0; gap: 4px; padding: 3px 7px; font-size: 10px; }
+            .document-container .btn-delete-row.icon-only { flex-shrink: 0; width: 25px; min-width: 25px; height: 25px; }
+            .document-container .btn-toggle-obs { margin-top: 2px; font-size: 10px; }
+            .document-container .col-codigo > div { gap: 3px !important; }
+        }
+        @media screen and (max-width: 768px) {
+            .document-container { min-width: 580px; }
+        }
+        body.print-preparing .document-container { min-width: 0; }
+        @media print {
+            .document-container table th { padding: 2px 3px; }
+            .document-container .main-row td, .document-container .record-main-row td { padding: 2px 3px; }
+            .document-container .inventario-referencia { font-size: 9px; }
+        }
+
+        /* Impresión independiente del formulario: las firmas quedan en la primera página. */
+        #solicitud-print-pages {
+            position: absolute; left: -10000px; top: 0; width: 215.9mm;
+            visibility: hidden; pointer-events: none; font-family: Arial, Helvetica, sans-serif;
+        }
+        #solicitud-print-pages .solicitud-print-page {
+            position: relative; box-sizing: border-box; width: 215.9mm;
+            height: 245mm; padding: 5mm 5mm 4mm; background: white;
+            text-align: left; color: #000; font-size: 10px;
+        }
+        #solicitud-print-pages .solicitud-print-page.print-overflow { height: auto; min-height: 245mm; }
+        #solicitud-print-pages .header { margin-bottom: 10px; }
+        #solicitud-print-pages .header-details, #solicitud-print-pages .header-dates { flex-direction: row; gap: 0; }
+        #solicitud-print-pages .header-user { width: 50%; padding-left: 5%; text-align: left; }
+        #solicitud-print-pages .header-department { width: 50%; padding-right: 5%; text-align: right; }
+        #solicitud-print-pages .header-stage { justify-content: flex-end; }
+        #solicitud-print-pages .header-date { justify-content: flex-start; }
+        #solicitud-print-pages table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 10px; margin: 0; }
+        #solicitud-print-pages th, #solicitud-print-pages td { padding: 2px 3px; border: 1px solid #000; overflow-wrap: anywhere; vertical-align: middle; }
+        #solicitud-print-pages th.col-renglon { width: 8%; }
+        #solicitud-print-pages th.col-cantidad { width: 10%; }
+        #solicitud-print-pages th.col-descripcion { width: 50%; }
+        #solicitud-print-pages th.col-codigo, #solicitud-print-pages th.col-inventario { width: 16%; }
+        #solicitud-print-pages .print-field { white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 600; font-size: inherit; }
+        #solicitud-print-pages .row-qty { text-align: center; }
+        #solicitud-print-pages .col-descripcion > div { display: block !important; }
+        #solicitud-print-pages .row-desc, #solicitud-print-pages .row-code, #solicitud-print-pages .row-qty, #solicitud-print-pages .row-obs { display: block !important; height: auto !important; min-height: 0 !important; overflow: visible !important; line-height: 1.15 !important; }
+        #solicitud-print-pages .obs-row, #solicitud-print-pages .record-obs-row { display: table-row !important; }
+        #solicitud-print-pages .obs-row td, #solicitud-print-pages .record-obs-row td { padding: 2px 3px; background: white; font-size: 9px; }
+        #solicitud-print-pages .inventario-cell { background: white !important; }
+        #solicitud-print-pages .inventario-referencia, #solicitud-print-pages .inventario-referencia span { min-height: 0; gap: 1px; font-size: 9px; color: #000 !important; }
+        #solicitud-print-pages .solicitud-print-footer { position: absolute; left: 5mm; right: 5mm; bottom: 5mm; }
+        #solicitud-print-pages .print-general { font-size: 10px; }
+        #solicitud-print-pages .print-general-text { border: 1px solid #000; padding: 4px; min-height: 25px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.25; font-size: 11px; }
+        #solicitud-print-pages .signatures-section { display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; gap: 20px; margin-top: 14px; }
+        #solicitud-print-pages .signature-box { max-width: 180px; flex: 1; padding: 3px; }
+        #solicitud-print-pages .signature-box .print-signature, #solicitud-print-pages .record-signature-image, #solicitud-print-pages .record-signature-empty { display: block; width: 130px; height: 35px; object-fit: contain; border: 0; border-bottom: 1px solid #000; margin-bottom: 3px; }
+        #solicitud-print-pages .signature-name, #solicitud-print-pages .signature-name-static { min-height: 15px; width: 100%; text-align: center; border-bottom: 1px solid #000; font-size: 9px; }
+        #solicitud-print-pages .signature-box label { font-size: 8px; }
+        @media print {
+            html:has(#solicitud-print-pages), body:has(#solicitud-print-pages) { height: auto !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+            body:has(#solicitud-print-pages) > :not(#solicitud-print-pages) { display: none !important; }
+            #solicitud-print-pages { position: static; visibility: visible; pointer-events: auto; width: 215.9mm; }
+            #solicitud-print-pages .solicitud-print-page { break-after: page; page-break-after: always; break-inside: avoid; }
+            #solicitud-print-pages .solicitud-print-page:last-child { break-after: auto; page-break-after: auto; }
+            #solicitud-print-pages .solicitud-print-page.print-overflow { break-inside: auto; }
+            #solicitud-print-pages tbody { break-inside: avoid; }
+            #solicitud-print-pages .print-overflow tbody { break-inside: auto; }
+            #solicitud-print-pages .print-overflow tr { break-inside: auto; page-break-inside: auto; }
+        }
+        .fecha-formato { position: relative; display: inline-flex; align-items: center; justify-content: space-between; gap: 5px; width: 120px; min-height: 20px; padding: 2px 5px; font-size: 11px; font-weight: 600; color: #111827; background: #fff; border: 1px solid #cbd5e1; border-radius: 3px; }
+        .fecha-formato:has(input[readonly]) { background: #f0f0f0; border-color: transparent; }
+        .fecha-formato:has(input[readonly]) .fecha-calendario { visibility: hidden; }
+        .fecha-formato:focus-within { outline: 2px solid #3b82f6; outline-offset: 1px; }
+        .fecha-formato:has(.campo-invalido) { border: 2px solid red; background: #ffe6e6; }
+        .fecha-formato input[type="date"] { position: absolute; inset: 0; width: 100% !important; min-width: 0 !important; height: 100%; opacity: 0; cursor: pointer; margin: 0; }
+        .fecha-formato input[type="date"]::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; cursor: pointer; }
+        .fecha-formato input[readonly] { cursor: default; }
+        .fecha-visible { white-space: nowrap; pointer-events: none; }
+        .fecha-calendario { display: inline-flex; pointer-events: none; }
+        @media print { .fecha-formato { border: none; background: transparent; padding: 0; } .fecha-calendario { display: none; } }
     </style>
 </head>
 <body>
@@ -1512,11 +1630,11 @@
                                 <div class="header-dates">
                                     <div class="header-date">
                                         <label>FECHA CREACIÓN:</label>
-                                        <input type="date" id="fecha-creacion" style="width:100px; background:#f0f0f0;" readonly onchange="guardarDatos(); quitarResaltado(this);" />
+                                        <span class="fecha-formato" data-fecha="fecha-creacion"><span class="fecha-visible" aria-hidden="true">DD/MM/AAAA</span><span class="fecha-calendario" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><input type="date" id="fecha-creacion" style="width:100px; background:#f0f0f0;" readonly oninput="sincronizarFechaSolicitud(this);" onchange="sincronizarFechaSolicitud(this); guardarDatos(); quitarResaltado(this);" aria-label="Fecha de creación" /></span>
                                     </div>
                                     <div class="header-date">
                                         <label>FECHA ENTREGA:</label>
-                                        <input type="date" id="fecha-entrega" style="width:100px;" placeholder="Seleccionar fecha" onchange="guardarDatos(); quitarResaltado(this);" />
+                                        <span class="fecha-formato" data-fecha="fecha-entrega"><span class="fecha-visible" aria-hidden="true">DD/MM/AAAA</span><span class="fecha-calendario" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><input type="date" id="fecha-entrega" style="width:100px;" placeholder="Seleccionar fecha" oninput="sincronizarFechaSolicitud(this);" onchange="sincronizarFechaSolicitud(this); guardarDatos(); quitarResaltado(this);" aria-label="Fecha de entrega" /></span>
                                     </div>
                                 </div>
                             </div>
@@ -1528,6 +1646,7 @@
                                         <th class="col-cantidad">CANTIDAD <span style="color:red;">*</span></th>
                                         <th class="col-descripcion">DESCRIPCIÓN DEL MATERIAL</th>
                                         <th class="col-codigo">CÓDIGO</th>
+                                        <th class="col-inventario">EXISTENCIA / PEDIDO</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-materiales"></tbody>
@@ -1604,6 +1723,7 @@
                                         <th class="col-cantidad">CANTIDAD</th>
                                         <th class="col-descripcion">DESCRIPCIÓN DEL MATERIAL</th>
                                         <th class="col-codigo">CÓDIGO</th>
+                                        <th class="col-inventario">EXISTENCIA / PEDIDO</th>
                                     </tr>
                                 </thead>
                                 <tbody id="record-tbody-materiales"></tbody>
@@ -1826,7 +1946,7 @@
 
         window.onload = async function() {
             const fechaInput = document.getElementById('fecha-creacion');
-            if (fechaInput && !fechaInput.value) { fechaInput.value = new Date().toISOString().split('T')[0]; }
+            if (fechaInput && !fechaInput.value) { asignarFechaSolicitud('fecha-creacion', fechaHoySolicitud()); }
             document.getElementById('dashboard').style.display = 'none';
             const { data: { session } } = await supaUsers.auth.getSession();
             if (session) { currentAccessToken = session.access_token || ''; await cargarPerfil(session.user.id, session.user.email); } else { document.getElementById('login-screen').style.display = 'flex'; }
@@ -1980,6 +2100,45 @@
 
         function quitarResaltado(el) { el.classList.remove('campo-invalido'); }
 
+        function fechaSolicitudISO(valor) {
+            const texto = String(valor ?? '').trim();
+            const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(texto);
+            const local = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(texto);
+            const partes = iso ? [iso[1], iso[2], iso[3]] : local ? [local[3], local[2], local[1]] : null;
+            if (!partes) return '';
+            const [y, m, d] = partes;
+            const prueba = new Date(`${y}-${m}-${d}T00:00:00Z`);
+            return Number.isFinite(prueba.getTime()) && prueba.toISOString().slice(0, 10) === `${y}-${m}-${d}` ? `${y}-${m}-${d}` : '';
+        }
+        function formatoFechaSolicitud(valor) {
+            const iso = fechaSolicitudISO(valor);
+            return iso ? iso.split('-').reverse().join('/') : '';
+        }
+        function sincronizarFechaSolicitud(input) {
+            if (!input) return;
+            const visible = input.closest('.fecha-formato')?.querySelector('.fecha-visible');
+            if (visible) visible.textContent = formatoFechaSolicitud(input.value) || 'DD/MM/AAAA';
+        }
+        function asignarFechaSolicitud(id, valor) {
+            const input = document.getElementById(id);
+            input.value = fechaSolicitudISO(valor);
+            sincronizarFechaSolicitud(input);
+        }
+        function fechaHoySolicitud() { return fechaLocalISO(new Date()); }
+        function formatoFechaHoraSolicitud(valor, incluirHora = true) {
+            const fecha = new Date(valor);
+            if (!Number.isFinite(fecha.getTime())) return '';
+            const dia = formatoFechaSolicitud(fechaLocalISO(fecha));
+            return incluirHora ? `${dia} ${fecha.toLocaleTimeString('es-PA', {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false})}` : dia;
+        }
+        document.querySelectorAll('.fecha-formato input').forEach(input => {
+            input.addEventListener('click', () => {
+                if (!input.readOnly && typeof input.showPicker === 'function') {
+                    try { input.showPicker(); } catch (_) { /* selector nativo como respaldo */ }
+                }
+            });
+        });
+
         function configurarEdicionFechaCreacion(esEdicion = false) {
             const input = document.getElementById('fecha-creacion');
             if (!input) return;
@@ -2022,6 +2181,94 @@
             return valido;
         }
 
+        // Inventario de referencia: únicamente coincidencias exactas del código.
+        const inventarioPendiente = new Set();
+        const inventarioVersion = new WeakMap();
+        let inventarioTimer = null;
+        function codigoInventario(row) {
+            return String(row.querySelector('.row-code')?.value ?? row.dataset.codigoInventario ?? '').trim();
+        }
+        function filaReferenciaInventario(row) {
+            return row?.querySelector('.inventario-referencia') || null;
+        }
+        function limpiarReferenciaInventario(row) {
+            const ref = filaReferenciaInventario(row);
+            if (ref) ref.replaceChildren();
+        }
+        function invalidarInventario(row) {
+            const version = (inventarioVersion.get(row) || 0) + 1;
+            inventarioVersion.set(row, version);
+            limpiarReferenciaInventario(row);
+            return version;
+        }
+        function programarInventario(row) {
+            if (!row) return;
+            invalidarInventario(row);
+            inventarioPendiente.delete(row);
+            if (codigoInventario(row)) inventarioPendiente.add(row);
+            clearTimeout(inventarioTimer);
+            inventarioTimer = setTimeout(() => {
+                const filas = [...inventarioPendiente];
+                inventarioPendiente.clear();
+                actualizarInventario(filas);
+            }, 350);
+        }
+        function pintarReferenciaInventario(row, dato) {
+            const ref = filaReferenciaInventario(row);
+            if (!ref || !dato) return;
+            const fisica = Number(dato.cantidad_fisica);
+            const ordenada = Number(dato.cantidad_ordenada);
+            if (dato.cantidad_fisica == null || dato.cantidad_ordenada == null || !Number.isFinite(fisica) || !Number.isFinite(ordenada)) return;
+            const exist = document.createElement('span');
+            exist.className = fisica > 0 ? 'inv-disponible' : 'inv-agotado';
+            exist.textContent = `EXISTENCIA: ${fisica}`;
+            const pedido = document.createElement('span');
+            pedido.className = ordenada > 0 ? 'inv-pedido' : '';
+            pedido.textContent = ordenada > 0 ? `PEDIDO: SÍ (${ordenada})` : 'PEDIDO: NO';
+            ref.replaceChildren(exist, pedido);
+        }
+        async function consultarLoteInventario(codigos) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000);
+            try {
+                const { data, error } = await supaProducts.rpc('rpc_consultar_inventario_publico', { p_codigos: codigos }).abortSignal(controller.signal);
+                if (error) throw error;
+                if (!Array.isArray(data)) throw new Error('Respuesta de inventario no válida');
+                const solicitados = new Set(codigos);
+                return new Map(data.filter(item => item && solicitados.has(item.cod_producto)).map(item => [item.cod_producto, item]));
+            } finally { clearTimeout(timeout); }
+        }
+        async function actualizarInventario(filas, avisarError = false) {
+            const objetivos = [...new Set(filas)].filter(row => row.isConnected).map(row => {
+                inventarioPendiente.delete(row);
+                return { row, codigo: codigoInventario(row), version: invalidarInventario(row) };
+            }).filter(item => item.codigo);
+            const codigos = [...new Set(objetivos.map(item => item.codigo))];
+            let fallo = false;
+            const lotes = [];
+            for (let i = 0; i < codigos.length; i += 100) lotes.push(codigos.slice(i, i + 100));
+            await Promise.all(lotes.map(async lote => {
+                try {
+                    const resultado = await consultarLoteInventario(lote);
+                    objetivos.forEach(({ row, codigo, version }) => {
+                        if (row.isConnected && inventarioVersion.get(row) === version && codigoInventario(row) === codigo && resultado.has(codigo)) {
+                            pintarReferenciaInventario(row, resultado.get(codigo));
+                        }
+                    });
+                } catch (error) {
+                    fallo = true;
+                    console.warn('No se pudo consultar el inventario:', error?.message || error);
+                }
+            }));
+            if (fallo && avisarError) mostrarNotificacion('warning', 'No se pudo actualizar toda la referencia de inventario. No se mostrarán datos sin verificar.', 5000);
+        }
+        function actualizarInventarioFormato() {
+            return actualizarInventario(document.querySelectorAll('#printable-area .main-row'), true);
+        }
+        function actualizarInventarioRegistro() {
+            return actualizarInventario(document.querySelectorAll('#record-tbody-materiales .record-main-row'), true);
+        }
+
         function agregarRenglon(data = null) {
             let tbody = document.getElementById('tbody-materiales');
             if (!tbody) return;
@@ -2034,28 +2281,40 @@
                 <td class="col-cantidad"><input type="text" class="row-qty" placeholder="Cant." value="${data?.qty || ''}" required aria-required="true" oninput="forzarMayusculas(this); quitarResaltado(this); guardarDatos()"></td>
                 <td class="col-descripcion">
                     <div style="display:flex; gap:4px; align-items:flex-start;">
-                        <textarea class="row-desc" id="desc-${rowCount}" rows="1" placeholder="Descripción del material" oninput="forzarMayusculas(this); autoResize(this); guardarDatos();" style="flex:1;">${data?.desc || ''}</textarea>
+                        <textarea class="row-desc" id="desc-${rowCount}" rows="1" placeholder="Descripción o código" oninput="forzarMayusculas(this); autoResize(this); guardarDatos();" style="flex:1;">${data?.desc || ''}</textarea>
                         <button type="button" class="btn-search-db no-print" onclick="buscarProducto(${rowCount})">${etiquetaBoton('search', 'Buscar')}</button>
                     </div>
                     <button type="button" class="btn-toggle-obs no-print" id="btn-toggle-obs-${rowCount}" onclick="toggleObs(${rowCount})">${getObsToggleMarkup(hasObs)}</button>
                     <ul class="dropdown-results" id="dropdown-${rowCount}"></ul>
                 </td>
                 <td class="col-codigo">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <input type="text" class="row-code" id="code-${rowCount}" placeholder="Código" value="${data?.code || ''}" style="width:80%;" oninput="forzarMayusculas(this); guardarDatos()">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                        <input type="text" class="row-code" id="code-${rowCount}" placeholder="Código" value="${data?.code || ''}" style="width:100%;" oninput="forzarMayusculas(this); guardarDatos()">
                         <button type="button" class="btn-delete-row no-print icon-only" onclick="eliminarRenglon(${rowCount})" title="Eliminar renglón" aria-label="Eliminar renglón">${iconoVector('delete')}</button>
                     </div>
                 </td>
+                <td class="col-inventario inventario-cell"><div class="inventario-referencia"></div></td>
             `;
             const trObs = document.createElement('tr');
             trObs.className = 'obs-row'; trObs.setAttribute('data-id', rowCount); trObs.id = `obs-row-${rowCount}`; trObs.style.display = hasObs ? 'table-row' : 'none';
             trObs.innerHTML = `
-                <td colspan="4" style="padding:2px 4px; background:#fafafa;">
+                <td colspan="5" style="padding:2px 4px; background:#fafafa;">
                     <span class="obs-label" style="font-weight:bold; font-size:9px; color:#666;">OBSERVACIÓN DE LA LÍNEA ${rowCount}:</span>
                     <textarea class="row-obs" rows="1" placeholder="Observación adicional" oninput="forzarMayusculas(this); autoResize(this); guardarDatos();" style="width:100%; border:1px dashed #ccc; padding:2px; min-height:16px;">${data?.obs || ''}</textarea>
                 </td>
             `;
-            tbody.appendChild(trMain); tbody.appendChild(trObs);
+            tbody.append(trMain, trObs);
+            const inputDesc = trMain.querySelector('.row-desc');
+            inputDesc.addEventListener('input', () => invalidarBusquedaProducto(trMain));
+            inputDesc.addEventListener('keydown', event => {
+                if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+                    event.preventDefault();
+                    buscarProducto(trMain.dataset.id);
+                }
+            });
+            const inputCodigo = trMain.querySelector('.row-code');
+            inputCodigo.addEventListener('input', () => programarInventario(trMain));
+            programarInventario(trMain);
             actualizarBotonObservacion(document.getElementById(`btn-toggle-obs-${rowCount}`), hasObs);
             setTimeout(() => { autoResize(trMain.querySelector('.row-desc')); autoResize(trObs.querySelector('.row-obs')); }, 0);
             if (!data) guardarDatos();
@@ -2063,9 +2322,8 @@
 
         function eliminarRenglon(id) {
             const row = document.querySelector(`#tbody-materiales > .main-row[data-id="${id}"]`); const obsRow = document.querySelector(`#tbody-materiales > .obs-row[data-id="${id}"]`);
-            rowsToRestore = rowsToRestore.filter(item => item.row !== row); row?.remove(); obsRow?.remove();
-            const secondaryTable = document.getElementById('tabla-materiales-2');
-            if (secondaryTable && !secondaryTable.querySelector('.main-row')) { secondaryTable.remove(); restaurarDespuesImpresion(); }
+            if (row) { inventarioPendiente.delete(row); invalidarInventario(row); }
+            row?.remove(); obsRow?.remove();
             recalcularNumeracion(); guardarDatos();
         }
 
@@ -2121,16 +2379,70 @@
             }
         }
 
-        async function buscarProducto(id) {
-            const query = document.getElementById(`desc-${id}`).value.trim(); const dd = document.getElementById(`dropdown-${id}`);
-            if (query.length < 2) { await mostrarAlerta('Escribe al menos 2 letras.'); return; }
-            dd.style.display = 'block'; dd.innerHTML = '<li>Buscando...</li>';
-            const { data, error } = await supaProducts.from('mv_producto_busqueda_solicitud_go').select('nombre, cod_producto').ilike('nombre', `%${query}%`).limit(15);
-            dd.innerHTML = '';
-            if (error || !data || data.length === 0) { dd.innerHTML = '<li style="color:red;">No se encontraron resultados</li>'; setTimeout(() => dd.style.display = 'none', 2000); return; }
-            data.forEach(item => { const li = document.createElement('li'); li.textContent = `${item.nombre} - [${item.cod_producto}]`; li.onclick = () => { const elDesc = document.getElementById(`desc-${id}`); elDesc.value = item.nombre.toUpperCase(); autoResize(elDesc); document.getElementById(`code-${id}`).value = (item.cod_producto || '').toUpperCase(); dd.style.display = 'none'; guardarDatos(); }; dd.appendChild(li); });
+        const versionBusquedaProducto = new WeakMap();
+        function invalidarBusquedaProducto(row) {
+            const version = (versionBusquedaProducto.get(row) || 0) + 1;
+            versionBusquedaProducto.set(row, version);
+            const dd = row.querySelector('.dropdown-results');
+            dd.style.display = 'none';
+            dd.replaceChildren();
+            return version;
         }
-        document.addEventListener('click', e => { if (!e.target.closest('.col-descripcion')) document.querySelectorAll('.dropdown-results').forEach(dd => dd.style.display = 'none'); });
+        async function buscarProducto(id) {
+            const elDesc = document.getElementById(`desc-${id}`);
+            const row = elDesc?.closest('.main-row');
+            if (!row) return;
+            const query = elDesc.value.trim();
+            const dd = row.querySelector('.dropdown-results');
+            const version = invalidarBusquedaProducto(row);
+            if (!query) { await mostrarAlerta('Escribe la descripción o el código del material.'); return; }
+            dd.style.display = 'block'; dd.innerHTML = '<li>Buscando...</li>';
+            const sigueVigente = () => row.isConnected && versionBusquedaProducto.get(row) === version && elDesc.value.trim() === query;
+            const catalogo = () => supaProducts.from('mv_producto_busqueda_solicitud_go').select('nombre, cod_producto');
+            const elegir = item => {
+                if (!sigueVigente()) return;
+                invalidarBusquedaProducto(row);
+                elDesc.value = String(item.nombre || '').toUpperCase();
+                autoResize(elDesc);
+                row.querySelector('.row-code').value = String(item.cod_producto || '').toUpperCase();
+                programarInventario(row);
+                guardarDatos();
+            };
+            try {
+                // Exact code first, then partial code and description separately.
+                const exacto = await catalogo().eq('cod_producto', query.toUpperCase()).limit(15);
+                if (!sigueVigente()) return;
+                if (exacto.error) throw exacto.error;
+                const exactos = [...new Map((exacto.data || []).map(item => [JSON.stringify([item.cod_producto, item.nombre]), item])).values()];
+                if (exactos.length === 1) { elegir(exactos[0]); return; }
+                const patron = `%${query.replace(/[\\%_*]/g, c => '\\' + c)}%`;
+                const resultados = exactos.length ? [] : await Promise.all([
+                    catalogo().ilike('cod_producto', patron).limit(15),
+                    catalogo().ilike('nombre', patron).limit(15)
+                ]);
+                if (!sigueVigente()) return;
+                if (resultados.length && resultados.every(r => r.error)) throw resultados[0].error;
+                const productos = [...new Map([...exactos, ...resultados.flatMap(r => r.error ? [] : (r.data || []))].map(item => [JSON.stringify([item.cod_producto, item.nombre]), item])).values()].slice(0, 15);
+                dd.replaceChildren();
+                if (!productos.length) {
+                    const li = document.createElement('li');
+                    li.textContent = 'No se encontraron resultados';
+                    dd.appendChild(li);
+                    return;
+                }
+                productos.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `${item.nombre} - [${item.cod_producto}]`;
+                    li.onclick = () => elegir(item);
+                    dd.appendChild(li);
+                });
+            } catch (error) {
+                if (!sigueVigente()) return;
+                dd.innerHTML = '<li style="color:red;">No se pudo consultar el catálogo. Intenta nuevamente.</li>';
+                console.warn('Error de búsqueda de material:', error?.message || error);
+            }
+        }
+        document.addEventListener('click', e => { if (!e.target.closest('.col-descripcion')) document.querySelectorAll('.main-row').forEach(row => { if (row.querySelector('.dropdown-results')?.style.display === 'block') invalidarBusquedaProducto(row); }); });
 
         let canvasesSetup = false;
         function initCanvases() { if (canvasesSetup) return; ['canvas-almacen', 'canvas-gerencia'].forEach(setupCanvas); canvasesSetup = true; }
@@ -2485,10 +2797,10 @@
             try {
                 document.getElementById('tbody-materiales').innerHTML = ''; rowCount = 0;
                 document.getElementById('departamento').value = `${currentUserInfo?.nombre || 'USUARIO'} - ${currentUserInfo?.rol || 'usuario'}`.toUpperCase();
-                document.getElementById('fecha-creacion').value = new Date().toISOString().split('T')[0];
+                asignarFechaSolicitud('fecha-creacion', fechaHoySolicitud());
                 configurarEdicionFechaCreacion(false);
                 metaSolicitudActual = null;
-                document.getElementById('fecha-entrega').value = '';
+                asignarFechaSolicitud('fecha-entrega', '');
                 document.getElementById('observacion-general').value = '';
                 document.getElementById('nombre-almacen').value = '';
                 document.getElementById('nombre-gerencia').value = '';
@@ -2527,7 +2839,8 @@
                     if (id === 'departamento') {
                         el.value = data?.departamento || `${currentUserInfo?.nombre || 'USUARIO'} - ${currentUserInfo?.rol || 'usuario'}`.toUpperCase();
                     } else {
-                        el.value = data?.[id] || (id === 'fecha-creacion' ? new Date().toISOString().split('T')[0] : '');
+                        if (id === 'fecha-creacion' || id === 'fecha-entrega') asignarFechaSolicitud(id, data?.[id] || (id === 'fecha-creacion' ? fechaHoySolicitud() : ''));
+                        else el.value = data?.[id] || '';
                     }
                     if (el.tagName === 'TEXTAREA') autoResize(el);
                 });
@@ -2560,8 +2873,8 @@
                 const items = data.rows || [];
                 const primera = escaparHtml(items.find(r => (r.desc || '').trim() !== '')?.desc || 'SIN DESCRIPCIÓN');
                 const etapa = escaparHtml(data.etapa || 'SIN DEFINIR');
-                const fechaEntrega = escaparHtml(data['fecha-entrega'] || 'SIN DEFINIR');
-                const fecha = borrador.updatedAt ? new Date(borrador.updatedAt).toLocaleString() : 'Fecha no disponible';
+                const fechaEntrega = escaparHtml(formatoFechaSolicitud(data['fecha-entrega']) || 'SIN DEFINIR');
+                const fecha = borrador.updatedAt ? formatoFechaHoraSolicitud(borrador.updatedAt) : 'Fecha no disponible';
                 return `<div class="draft-card" style="margin-bottom:16px;">
                     <h3>Borrador ${index + 1}</h3>
                     <div class="draft-meta"><strong>Guardado en:</strong> Supabase<br><strong>Última actualización:</strong> ${fecha}<br><strong>Renglones con contenido:</strong> ${items.length}</div>
@@ -2703,11 +3016,8 @@
             configurarBotonImpresion(numeroSolicitud);
             if (!validarCamposObligatorios()) { await mostrarAlerta('No se puede imprimir: faltan campos obligatorios, incluyendo CANTIDAD en algún renglón con contenido.'); return; }
             if (solicitudEditandoId) await registrarImpresionSolicitud(solicitudEditandoId);
-            prepararImpresion(numeroSolicitud);
-            const afterPrint = () => { restaurarDespuesImpresion(); window.removeEventListener('afterprint', afterPrint); };
-            window.addEventListener('afterprint', afterPrint);
-            window.print();
-            setTimeout(() => { restaurarDespuesImpresion(); window.removeEventListener('afterprint', afterPrint); }, 1000);
+            await actualizarInventarioFormato();
+            imprimirPaginasSolicitud(numeroSolicitud);
         }
 
         async function actualizarDashboard() {
@@ -2724,7 +3034,7 @@
                     list.innerHTML = '';
                     recent.forEach(reg => {
                         const item = document.createElement('div'); item.className = 'recent-item';
-                        item.innerHTML = `<div class="info"><span class="departamento">${reg.departamento || 'SIN DEPTO'}</span><span class="fecha">${new Date(reg.fecha_guardado || Date.now()).toLocaleDateString()}</span>${reg.etapa ? `<span class="etapa">${reg.etapa}</span>` : ''}</div><div class="actions"><button class="btn-sm btn-open icon-only" onclick="abrirDelHistorial('${reg.id}')" title="Abrir">${iconoVector('open')}</button><button class="btn-sm btn-edit icon-only" onclick="editarDelHistorial('${reg.id}')" title="Editar">${iconoVector('edit')}</button><button class="btn-sm btn-delete icon-only" onclick="eliminarDelHistorial('${reg.id}')" title="Eliminar">${iconoVector('delete')}</button><button class="btn-sm btn-print icon-only" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')" title="Imprimir">${iconoVector('print')}</button></div>`;
+                        item.innerHTML = `<div class="info"><span class="departamento">${reg.departamento || 'SIN DEPTO'}</span><span class="fecha">${formatoFechaHoraSolicitud(reg.fecha_guardado || Date.now(), false)}</span>${reg.etapa ? `<span class="etapa">${reg.etapa}</span>` : ''}</div><div class="actions"><button class="btn-sm btn-open icon-only" onclick="abrirDelHistorial('${reg.id}')" title="Abrir">${iconoVector('open')}</button><button class="btn-sm btn-edit icon-only" onclick="editarDelHistorial('${reg.id}')" title="Editar">${iconoVector('edit')}</button><button class="btn-sm btn-delete icon-only" onclick="eliminarDelHistorial('${reg.id}')" title="Eliminar">${iconoVector('delete')}</button><button class="btn-sm btn-print icon-only" onclick="imprimirSolicitudDesdeHistorial('${reg.id}')" title="Imprimir">${iconoVector('print')}</button></div>`;
                         list.appendChild(item);
                     });
                 }
@@ -2865,7 +3175,7 @@
                     ${reg.etapa ? `<span style="font-size:11px; background:#f3f4f6; padding:2px 10px; border-radius:12px;">${escaparHtml(reg.etapa)}</span>` : ''}
                 </div>
                 <div style="margin:10px 0 6px 0; flex:1;">${primerosItems.length > 0 ? `<div style="font-weight:600; font-size:13px; color:#4b5563; margin-bottom:4px;">Materiales:</div>${primerosItems.map(row => `<div class="material-item"><span class="desc">🔹 ${escaparHtml(row.desc || 'Sin descripción')}</span>${row.code ? `<span class="code">Cód: ${escaparHtml(row.code)}</span>` : ''}</div>`).join('')}${rows.length > 5 ? `<div style="font-size:12px; color:#6b7280; margin-top:4px;">... y ${rows.length - 5} más</div>` : ''}` : `<div style="font-size:13px; color:#9ca3af;">Sin materiales registrados</div>`}</div>
-                <div class="fecha">📅 Creada: ${escaparHtml(reg.datos?.['fecha-creacion'] || 'SIN FECHA')} &nbsp;·&nbsp; Último guardado: ${new Date(reg.fecha_guardado).toLocaleString()}</div>
+                <div class="fecha">📅 Creada: ${escaparHtml(formatoFechaSolicitud(reg.datos?.['fecha-creacion']) || 'SIN FECHA')} &nbsp;·&nbsp; Último guardado: ${formatoFechaHoraSolicitud(reg.fecha_guardado)}</div>
                 <div class="history-actions"><button class="btn-sm btn-edit" onclick="event.stopPropagation(); editarDelHistorial('${reg.id}')">${etiquetaBoton('edit', 'Editar')}</button><button class="btn-sm btn-print" onclick="event.stopPropagation(); imprimirSolicitudDesdeHistorial('${reg.id}')">${etiquetaBoton('print', 'Imprimir')}</button><button class="btn-sm btn-open" onclick="event.stopPropagation(); copiarSolicitudDelHistorial('${reg.id}')">${etiquetaBoton('copy', 'Copiar solicitud')}</button>${btnEliminar}</div>`;
                 card.addEventListener('click', () => abrirDelHistorial(reg.id));
                 card.addEventListener('keydown', (e) => {
@@ -2971,8 +3281,8 @@
             const rows = datos.rows || [];
             document.getElementById('record-usuario').textContent = datos.departamento || obtenerEtiquetaUsuarioOriginal(reg) || 'SIN USUARIO';
             document.getElementById('record-etapa').textContent = datos.etapa || 'SIN DEFINIR';
-            document.getElementById('record-fecha-creacion').textContent = datos['fecha-creacion'] || '';
-            document.getElementById('record-fecha-entrega').textContent = datos['fecha-entrega'] || '';
+            document.getElementById('record-fecha-creacion').textContent = formatoFechaSolicitud(datos['fecha-creacion']);
+            document.getElementById('record-fecha-entrega').textContent = formatoFechaSolicitud(datos['fecha-entrega']);
             document.getElementById('record-observacion-general').textContent = datos['observacion-general'] || '';
             document.getElementById('record-nombre-almacen').textContent = datos['nombre-almacen'] || '';
             document.getElementById('record-nombre-gerencia').textContent = datos['nombre-gerencia'] || '';
@@ -2982,13 +3292,15 @@
             const tbody = document.getElementById('record-tbody-materiales');
             tbody.innerHTML = rows.map((row, index) => {
                 const obs = (row.obs || '').trim();
-                return `<tr class="record-main-row">
+                return `<tr class="record-main-row" data-codigo-inventario="${escaparHtml(row.code || '')}">
                     <td class="col-renglon" style="text-align:center;">${index + 1}</td>
                     <td class="col-cantidad" style="text-align:center; font-weight:600;">${escaparHtml(row.qty || '')}</td>
                     <td class="col-descripcion">${escaparHtml(row.desc || '')}</td>
                     <td class="col-codigo">${escaparHtml(row.code || '')}</td>
-                </tr>${obs ? `<tr class="record-obs-row"><td colspan="4"><strong>OBSERVACIÓN DE LA LÍNEA ${index + 1}:</strong> <span class="record-obs-text">${escaparHtml(obs)}</span></td></tr>` : ''}`;
+                    <td class="col-inventario inventario-cell"><div class="inventario-referencia"></div></td>
+                </tr>${obs ? `<tr class="record-obs-row"><td colspan="5"><strong>OBSERVACIÓN DE LA LÍNEA ${index + 1}:</strong> <span class="record-obs-text">${escaparHtml(obs)}</span></td></tr>` : ''}`;
             }).join('');
+            actualizarInventarioRegistro();
         }
 
         async function editarDelHistorial(id) {
@@ -3056,14 +3368,8 @@
         async function imprimirRegistroVisualizado() {
             if (!registroVisualizadoActual) return;
             await registrarImpresionSolicitud(registroVisualizadoActual.id);
-            document.body.classList.add('printing-record');
-            const limpiar = () => {
-                document.body.classList.remove('printing-record');
-                window.removeEventListener('afterprint', limpiar);
-            };
-            window.addEventListener('afterprint', limpiar);
-            window.print();
-            setTimeout(limpiar, 1500);
+            await actualizarInventarioRegistro();
+            imprimirPaginasSolicitud(registroVisualizadoActual.numero_solicitud || '', true);
         }
 
         async function copiarSolicitudDelHistorial(id) {
@@ -3074,7 +3380,7 @@
 
                 const copia = filtrarFilasVacias(structuredClone(data.datos));
                 copia['departamento'] = `${currentUserInfo.nombre.toUpperCase()} - ${currentUserInfo.rol.toUpperCase()}`;
-                copia['fecha-creacion'] = new Date().toISOString().split('T')[0];
+                copia['fecha-creacion'] = fechaHoySolicitud();
                 copia['nombre-almacen'] = '';
                 copia['nombre-gerencia'] = '';
                 copia['canvas-almacen'] = '';
@@ -3129,7 +3435,6 @@
         }
 
         // ========== IMPRESIÓN NUEVA LÓGICA ==========
-        let rowsToRestore = [];
 
         function configurarNumeroSolicitudImpresion(numeroSolicitud) {
             let style = document.getElementById('print-solicitud-page-style');
@@ -3138,89 +3443,116 @@
             style.textContent = `@page { @top-left { content: "${numeroSeguro}"; font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-left: 5mm; text-align: left; } @bottom-left { content: "${numeroSeguro}"; font-family: 'Segoe UI', Roboto, Arial, sans-serif; font-size: 10px; margin-left: 5mm; text-align: left; } }`;
         }
 
-        function prepararImpresion(numeroSolicitud = '') {
-            if (rowsToRestore.length > 0 || document.getElementById('tabla-materiales-2') || document.body.classList.contains('print-preparing')) { restaurarDespuesImpresion(); }
+        function clonarParaImpresion(origen) {
+            const copia = origen.cloneNode(true);
+            const campos = origen.querySelectorAll('input, textarea, select, canvas');
+            const clonados = copia.querySelectorAll('input, textarea, select, canvas');
+            campos.forEach((campo, i) => {
+                const destino = clonados[i];
+                if (campo.tagName === 'CANVAS') {
+                    const img = document.createElement('img');
+                    img.className = 'print-signature';
+                    img.src = campo.toDataURL();
+                    destino.replaceWith(img);
+                } else {
+                    const valor = document.createElement('span');
+                    valor.className = `${campo.className} print-field`;
+                    valor.textContent = campo.type === 'date' ? formatoFechaSolicitud(campo.value) : campo.value;
+                    const contenedorFecha = destino.closest('.fecha-formato');
+                    if (contenedorFecha) { valor.className = 'record-date-value print-field'; contenedorFecha.replaceWith(valor); }
+                    else destino.replaceWith(valor);
+                }
+            });
+            copia.querySelectorAll('.no-print, button, .dropdown-results').forEach(el => el.remove());
+            [copia, ...copia.querySelectorAll('[id]')].forEach(el => el.removeAttribute('id'));
+            copia.querySelectorAll('[style]').forEach(el => {
+                if (el.matches('.row-obs, .row-desc, .row-code, .row-qty')) el.removeAttribute('style');
+            });
+            return copia;
+        }
+
+        function prepararImpresion(numeroSolicitud = '', esRegistro = false) {
+            restaurarDespuesImpresion();
             configurarNumeroSolicitudImpresion(numeroSolicitud);
-            
-            // Agregamos la clase que establece los anchos de impresión
-            document.body.classList.add('print-preparing');
-            
-            // Recalcular alturas de todos los textareas y conservarlas también en impresión
-            document.querySelectorAll('textarea').forEach(ta => {
-                ta.style.maxHeight = 'none';
-                autoResize(ta);
-                ta.style.setProperty('--print-height', `${Math.max(ta.scrollHeight, ta.offsetHeight)}px`);
-            });
+            const fuente = document.getElementById(esRegistro ? 'record-printable-area' : 'printable-area');
+            const tabla = fuente.querySelector('table');
+            const originalFooter = fuente.querySelector(esRegistro ? '#record-print-footer' : '#print-footer');
+            const observacion = fuente.querySelector(esRegistro ? '#record-observacion-general' : '#observacion-general');
+            const textoGeneral = (esRegistro ? observacion.textContent : observacion.value) || '';
+            const root = document.createElement('div');
+            root.id = 'solicitud-print-pages';
+            document.body.appendChild(root);
 
-            // Copiar toda la observación a un bloque de impresión que crece sin recortar texto
-            const obsGeneral = document.getElementById('observacion-general');
-            const obsGeneralPrint = document.getElementById('observacion-general-print');
-            if (obsGeneral && obsGeneralPrint) {
-                obsGeneralPrint.textContent = obsGeneral.value || '';
+            function nuevaPagina(primera) {
+                const pagina = document.createElement('section');
+                pagina.className = 'solicitud-print-page record-readonly';
+                pagina.appendChild(clonarParaImpresion(fuente.querySelector('.header')));
+                const t = document.createElement('table');
+                t.appendChild(clonarParaImpresion(tabla.tHead));
+                pagina.appendChild(t);
+                if (primera) {
+                    const footer = document.createElement('div');
+                    footer.className = 'solicitud-print-footer';
+                    const general = document.createElement('div');
+                    general.className = 'print-general';
+                    general.innerHTML = '<strong>OBSERVACIÓN GENERAL:</strong><div class="print-general-text"></div>';
+                    general.lastElementChild.textContent = textoGeneral;
+                    footer.append(general, clonarParaImpresion(originalFooter.querySelector('.signatures-section')));
+                    pagina.appendChild(footer);
+                }
+                root.appendChild(pagina);
+                return { pagina, tabla: t, footer: pagina.querySelector('.solicitud-print-footer') };
             }
-
-            // 1. Identificar y ocultar filas totalmente vacías
-            document.querySelectorAll('#tbody-materiales > .main-row').forEach(row => {
-                const qty = row.querySelector('.row-qty').value.trim(); const desc = row.querySelector('.row-desc').value.trim(); const code = row.querySelector('.row-code').value.trim();
-                if (qty === '' && desc === '' && code === '') { row.classList.add('fila-vacia'); } else { row.classList.remove('fila-vacia'); }
-            });
-            document.querySelectorAll('#tbody-materiales > .obs-row').forEach(obsRow => {
-                const obsText = obsRow.querySelector('.row-obs').value.trim();
-                if (obsText === '') { obsRow.classList.add('obs-vacia'); } else { obsRow.classList.remove('obs-vacia'); }
-            });
-
-            // 2. Dejar en la primera hoja solo los renglones que no invaden el pie fijo.
-            const activeRows = Array.from(document.querySelectorAll('#tbody-materiales > .main-row:not(.fila-vacia)'));
-            const footer = document.getElementById('print-footer');
-            const footerTop = footer.getBoundingClientRect().top;
-            const firstOverflowIndex = activeRows.findIndex(row => {
-                const obsRow = document.getElementById(`obs-row-${row.getAttribute('data-id')}`);
-                const lastRow = obsRow && !obsRow.classList.contains('obs-vacia') ? obsRow : row;
-                return lastRow.getBoundingClientRect().bottom > footerTop - 4;
-            });
-
-            if (firstOverflowIndex !== -1) {
-                const rowsToMove = activeRows.slice(firstOverflowIndex);
-                const originalTable = document.getElementById('tabla-materiales');
-                const table2 = document.createElement('table'); table2.id = 'tabla-materiales-2'; table2.style.width = '100%'; table2.style.pageBreakBefore = 'always';
-                const originalThead = originalTable.querySelector('thead');
-                if (originalThead) { table2.appendChild(originalThead.cloneNode(true)); }
-                const tbody2 = document.createElement('tbody'); table2.appendChild(tbody2);
-                
-                rowsToMove.forEach(row => {
-                    const id = row.getAttribute('data-id'); const obsRow = document.getElementById(`obs-row-${id}`);
-                    rowsToRestore.push({ row: row, obsRow: obsRow, parent: row.parentNode, nextSibling: obsRow ? obsRow.nextSibling : row.nextSibling });
-                    tbody2.appendChild(row); if (obsRow) { tbody2.appendChild(obsRow); }
-                });
-                if (tbody2.querySelector('.main-row') && footer && footer.parentNode) { footer.parentNode.insertBefore(table2, footer.nextSibling); }
+            function limite(p) {
+                return p.footer ? p.footer.getBoundingClientRect().top - 8 : p.pagina.getBoundingClientRect().bottom - 20;
+            }
+            let actual = nuevaPagina(true);
+            const filas = [...tabla.querySelectorAll(esRegistro ? '.record-main-row' : '.main-row')];
+            for (const fila of filas) {
+                const obs = fila.nextElementSibling;
+                const tieneObs = obs?.matches(esRegistro ? '.record-obs-row' : '.obs-row') && (esRegistro ? obs.textContent.trim() : obs.querySelector('.row-obs')?.value.trim());
+                if (!esRegistro && !tieneObs && ![...fila.querySelectorAll('.row-qty, .row-desc, .row-code')].some(el => el.value.trim())) continue;
+                const grupo = document.createElement('tbody');
+                grupo.appendChild(clonarParaImpresion(fila));
+                if (tieneObs) {
+                    const obsClon = clonarParaImpresion(obs);
+                    obsClon.style.display = 'table-row';
+                    grupo.appendChild(obsClon);
+                }
+                actual.tabla.appendChild(grupo);
+                if (actual.tabla.getBoundingClientRect().bottom > limite(actual)) {
+                    grupo.remove();
+                    if (actual.footer || actual.tabla.tBodies.length) actual = nuevaPagina(false);
+                    actual.tabla.appendChild(grupo);
+                    // Un renglón excepcionalmente largo puede continuar en otra hoja sin cortar datos.
+                    if (actual.tabla.getBoundingClientRect().bottom > limite(actual)) actual.pagina.classList.add('print-overflow');
+                }
             }
         }
 
         function restaurarDespuesImpresion() {
-            for (let i = rowsToRestore.length - 1; i >= 0; i--) {
-                const item = rowsToRestore[i];
-                if (item.nextSibling) {
-                    if (item.obsRow) item.parent.insertBefore(item.obsRow, item.nextSibling);
-                    item.parent.insertBefore(item.row, item.obsRow || item.nextSibling);
-                } else {
-                    item.parent.appendChild(item.row); if (item.obsRow) item.parent.appendChild(item.obsRow);
-                }
-            }
-            const table2 = document.getElementById('tabla-materiales-2'); if (table2) { table2.remove(); }
-            rowsToRestore = [];
-            
-            // Retirar la preparación de impresión
-            document.body.classList.remove('print-preparing');
-            
-            // Recalcular textareas para volver al tamaño correcto en pantalla
-            document.querySelectorAll('textarea').forEach(ta => {
-                ta.style.maxHeight = '';
-                ta.style.removeProperty('--print-height');
-                autoResize(ta);
-            });
-            
-            document.querySelectorAll('#tabla-materiales .main-row.fila-vacia').forEach(row => row.classList.remove('fila-vacia'));
+            document.getElementById('solicitud-print-pages')?.remove();
+            document.getElementById('print-solicitud-page-style')?.remove();
         }
+
+        function imprimirPaginasSolicitud(numero, esRegistro = false) {
+            prepararImpresion(numero, esRegistro);
+            const limpiar = () => restaurarDespuesImpresion();
+            window.addEventListener('afterprint', limpiar, { once: true });
+            try { window.print(); }
+            catch (error) { limpiar(); throw error; }
+        }
+
+        // También protege la impresión iniciada directamente desde el navegador.
+        window.addEventListener('beforeprint', () => {
+            if (document.getElementById('solicitud-print-pages')) return;
+            if (document.getElementById('record-view').classList.contains('active') && registroVisualizadoActual) {
+                prepararImpresion(registroVisualizadoActual.numero_solicitud || '', true);
+            } else if (document.getElementById('form-view').classList.contains('active')) {
+                prepararImpresion(numeroSolicitudActual || '', false);
+            }
+        });
+        window.addEventListener('afterprint', restaurarDespuesImpresion);
 
         // ========== ADMIN ==========
         let adminUsers = [];
