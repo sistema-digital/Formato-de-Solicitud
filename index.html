@@ -1473,16 +1473,15 @@
         #solicitud-print-pages th, #solicitud-print-pages td { padding: 2px 3px; border: 1px solid #000; overflow-wrap: anywhere; vertical-align: middle; }
         #solicitud-print-pages th.col-renglon { width: 8%; }
         #solicitud-print-pages th.col-cantidad { width: 10%; }
-        #solicitud-print-pages th.col-descripcion { width: 50%; }
-        #solicitud-print-pages th.col-codigo, #solicitud-print-pages th.col-inventario { width: 16%; }
+        #solicitud-print-pages th.col-descripcion { width: 66%; }
+        #solicitud-print-pages th.col-codigo { width: 16%; }
         #solicitud-print-pages .print-field { white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 600; font-size: inherit; }
         #solicitud-print-pages .row-qty { text-align: center; }
         #solicitud-print-pages .col-descripcion > div { display: block !important; }
         #solicitud-print-pages .row-desc, #solicitud-print-pages .row-code, #solicitud-print-pages .row-qty, #solicitud-print-pages .row-obs { display: block !important; height: auto !important; min-height: 0 !important; overflow: visible !important; line-height: 1.15 !important; }
         #solicitud-print-pages .obs-row, #solicitud-print-pages .record-obs-row { display: table-row !important; }
         #solicitud-print-pages .obs-row td, #solicitud-print-pages .record-obs-row td { padding: 2px 3px; background: white; font-size: 9px; }
-        #solicitud-print-pages .inventario-cell { background: white !important; }
-        #solicitud-print-pages .inventario-referencia, #solicitud-print-pages .inventario-referencia span { min-height: 0; gap: 1px; font-size: 9px; color: #000 !important; }
+
         #solicitud-print-pages .solicitud-print-footer { position: absolute; left: 5mm; right: 5mm; bottom: 5mm; }
         #solicitud-print-pages .print-general { font-size: 10px; }
         #solicitud-print-pages .print-general-text { border: 1px solid #000; padding: 4px; min-height: 25px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.25; font-size: 11px; }
@@ -1513,6 +1512,10 @@
         .fecha-visible { white-space: nowrap; pointer-events: none; }
         .fecha-calendario { display: inline-flex; pointer-events: none; }
         @media print { .fecha-formato { border: none; background: transparent; padding: 0; } .fecha-calendario { display: none; } }
+        @media print {
+            .col-inventario, .inventario-cell, .inventario-referencia { display: none !important; }
+            .document-container table th.col-descripcion { width: 66%; }
+        }
     </style>
 </head>
 <body>
@@ -3016,7 +3019,6 @@
             configurarBotonImpresion(numeroSolicitud);
             if (!validarCamposObligatorios()) { await mostrarAlerta('No se puede imprimir: faltan campos obligatorios, incluyendo CANTIDAD en algún renglón con contenido.'); return; }
             if (solicitudEditandoId) await registrarImpresionSolicitud(solicitudEditandoId);
-            await actualizarInventarioFormato();
             imprimirPaginasSolicitud(numeroSolicitud);
         }
 
@@ -3368,7 +3370,6 @@
         async function imprimirRegistroVisualizado() {
             if (!registroVisualizadoActual) return;
             await registrarImpresionSolicitud(registroVisualizadoActual.id);
-            await actualizarInventarioRegistro();
             imprimirPaginasSolicitud(registroVisualizadoActual.numero_solicitud || '', true);
         }
 
@@ -3463,7 +3464,9 @@
                     else destino.replaceWith(valor);
                 }
             });
-            copia.querySelectorAll('.no-print, button, .dropdown-results').forEach(el => el.remove());
+            // La referencia de inventario es exclusiva de la interfaz, nunca del documento impreso.
+            copia.querySelectorAll('.no-print, button, .dropdown-results, .col-inventario, .inventario-cell').forEach(el => el.remove());
+            copia.querySelectorAll('td[colspan="5"], th[colspan="5"]').forEach(el => el.colSpan = 4);
             [copia, ...copia.querySelectorAll('[id]')].forEach(el => el.removeAttribute('id'));
             copia.querySelectorAll('[style]').forEach(el => {
                 if (el.matches('.row-obs, .row-desc, .row-code, .row-qty')) el.removeAttribute('style');
